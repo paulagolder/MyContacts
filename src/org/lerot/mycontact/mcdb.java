@@ -127,7 +127,12 @@ public class mcdb extends JFrame implements ActionListener
         propsfile = dotcontacts + "properties.xml";
         props = readProperties(propsfile);
         dbsource = props.getProperty("database", "mcdb.sqlite");
-        budir = props.getProperty("backxupdirectory", dotcontacts + "backups");
+        budir = props.getProperty("backupdir", dotcontacts + "backups");
+        if (!new File(budir).isAbsolute()) budir = home + "/" + budir;
+        budir = budir.replaceAll("/+$", "");
+        File budirfile = new File(budir);
+        if (!budirfile.isDirectory() && !budirfile.mkdirs())
+            System.err.println("Cannot create backup directory " + budir);
         docs = props.getProperty("docs", "Documents/correspondance/");
         currentcon = new mcDataSource(dotcontacts + dbsource);
         templist = new mcContactSet();
