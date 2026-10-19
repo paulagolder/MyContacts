@@ -28,7 +28,6 @@ public class correspondancePanel extends jswVerticalPanel implements ActionListe
     private final String notesfolder;
     private final String sentfolder;
     private final String receivedfolder;
-    Color correspondancepanelcolor = new Color(200, 220, 200);
     private Vector<mcCorrespondance> letters;
     private int editid = 0;
     private jswDropDownBox statuseditbox;
@@ -52,8 +51,7 @@ public class correspondancePanel extends jswVerticalPanel implements ActionListe
         jswScrollPane correspondancescroll = new jswScrollPane(letterpanel, 0, 0);
         correspondancescroll.setName("resultscroll");
         correspondancescroll
-                .setBorder(BorderFactory.createLineBorder(Color.green));
-        letterpanel.setBackground(correspondancepanelcolor);
+                .setBorder(jswStyle.makeLineBorder());
         if (selcontact != null)
         {
             letters = getCorrespondance();
@@ -95,9 +93,9 @@ public class correspondancePanel extends jswVerticalPanel implements ActionListe
         bottom.add(" WIDTH=100 ", makenote);
         jswDropPane correspondancereceived = new jswDropPane("received");
         bottom.add("  FILLW ", correspondancereceived);
-        correspondancereceived.setBorder(jswStyle.makeLineBorder(Color.YELLOW, 3));
-        makenote.setBorder(jswStyle.makeLineBorder(Color.RED, 3));
-        correspondancesent.setBorder(jswStyle.makeLineBorder(Color.GREEN, 3));
+        correspondancereceived.setBorder(jswStyle.makeLineBorder());
+        makenote.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 6));
+        correspondancesent.setBorder(jswStyle.makeLineBorder());
         this.add("FILLW  ", bottom);
 
 
@@ -292,9 +290,9 @@ public class correspondancePanel extends jswVerticalPanel implements ActionListe
         bottom.add(" WIDTH=100 ", makenote);
         jswDropPane correspondancereceived = new jswDropPane("received");
         bottom.add("  FILLW ", correspondancereceived);
-        correspondancereceived.setBorder(jswStyle.makeLineBorder(Color.YELLOW, 3));
-        makenote.setBorder(jswStyle.makeLineBorder(Color.RED, 3));
-        correspondancesent.setBorder(jswStyle.makeLineBorder(Color.GREEN, 3));
+        correspondancereceived.setBorder(jswStyle.makeLineBorder());
+        makenote.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 6));
+        correspondancesent.setBorder(jswStyle.makeLineBorder());
         return bottom;
     }
 
@@ -385,22 +383,21 @@ public class correspondancePanel extends jswVerticalPanel implements ActionListe
 
         //tablestyle.putAttribute("backgroundColor", new Color(200,220,200));
         tablestyle.putAttribute("foregroundColor", "Green");
-        tablestyle.putAttribute("borderWidth", "2");
-        tablestyle.putAttribute("borderColor", "blue");
+        tablestyle.putAttribute("borderWidth", "1");
+        tablestyle.putAttribute("borderColor", jswTheme.BORDER);
 
         jswStyle cellstyle = tablestyles.makeStyle("xcell");
-        cellstyle.putAttribute("backgroundColor", "#C0C0C0");
         cellstyle.putAttribute("foregroundColor", "Blue");
         cellstyle.putAttribute("borderWidth", "1");
-        cellstyle.putAttribute("borderColor", "white");
+        cellstyle.putAttribute("borderColor", jswTheme.CELLBORDER);
         cellstyle.setHorizontalAlign("LEFT");
-        cellstyle.putAttribute("fontsize", "14");
+        cellstyle.putAttribute("fontsize", jswTheme.TEXT);
 
         jswStyle cellcstyle = tablestyles.makeStyle("xcellcontent");
         cellcstyle.putAttribute("backgroundColor", "transparent");
         cellcstyle.putAttribute("foregroundColor", "Red");
         cellcstyle.setHorizontalAlign("LEFT");
-        cellcstyle.putAttribute("fontsize", "11");
+        cellcstyle.putAttribute("fontsize", jswTheme.TEXT);
 
         jswStyle rowstyle = tablestyles.makeStyle("row");
         //col0style.putAttribute("fontStyle", Font.BOLD);

@@ -29,7 +29,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
     private static jswStyles linktablestyles;
     private final jswTextBox[] attfieldeditbox = new jswTextBox[10];
     private final jswCheckbox[] tagcheckbox = new jswCheckbox[10];
-    private final Color background = new Color(220, 200, 200);
+    private final Color background = Color.decode(jswTheme.EDITAREA);
     boolean addselector = false;
     private jswTextBox atteditbox;
     private mcAttribute edattribute;
@@ -63,21 +63,16 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         jswStyles tablestyles = new jswStyles();
         tablestyles.name = "defaulttable";
         jswStyle tablestyle = tablestyles.makeStyle("table");
-        //tablestyle.putAttribute("backgroundColor", "#c0d6f2");
         tablestyle.putAttribute("borderwidth", "1");
-        tablestyle.putAttribute("borderColor", "green");
+        tablestyle.putAttribute("borderColor", jswTheme.BORDER);
         jswStyle cellstyle = tablestyles.makeStyle("cell");
-        //	cellstyle.putAttribute("backgroundColor", "#c0d6f2");
-        cellstyle.putAttribute("fontSize", "12");
+        cellstyle.putAttribute("fontSize", jswTheme.TEXT);
         cellstyle.putAttribute("fontStyle", Font.PLAIN);
-        cellstyle.putAttribute("borderColor", "black");
+        cellstyle.putAttribute("borderColor", jswTheme.CELLBORDER);
         cellstyle.putAttribute("borderWidth", 1);
         cellstyle.putAttribute("padding", 4);
-
         jswStyle rowstyle = tablestyles.makeStyle("row");
-        //row0style.putAttribute("fontStyle", Font.BOLD + Font.ITALIC);
         rowstyle.putAttribute("minheight", 50);
-
         jswStyle cell00style = tablestyles.makeStyle("cell");
         //cell00style.putAttribute("foregroundColor", "transparent");
         cell00style.putAttribute("minheight", 50);
@@ -85,27 +80,14 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         colstyle.setHorizontalAlign("RIGHT");
         jswStyle col0style = tablestyles.makeStyle("col_0");
         col0style.putAttribute("fontStyle", Font.BOLD);
-        col0style.putAttribute("fontSize", "16");
-        col0style.putAttribute("backgroundColor", "PINK");
+        col0style.putAttribute("fontSize", jswTheme.HEADING);
         col0style.putAttribute("minwidth", true);
         col0style.setHorizontalAlign("LEFT");
-
         jswStyle col1style = tablestyles.makeStyle("col_1");
         col1style.putAttribute("width", 100);
-        //col1style.putAttribute("fontSize", "16");
-        //col1style.putAttribute("backgroundColor", "BLUE");
-
         jswStyle col2style = tablestyles.makeStyle("col_2");
-        //col1style.putAttribute("fontStyle", Font.BOLD);
-        //col2style.putAttribute("fontSize", "16");
-        //col2style.putAttribute("minwidth", true);
-        col2style.putAttribute("backgroundColor", "GREEN");
         jswStyle col3style = tablestyles.makeStyle("col_3");
-        //col1style.putAttribute("fontStyle", Font.BOLD);
-        //col2style.putAttribute("fontSize", "16");
         col3style.putAttribute("minwidth", true);
-        col3style.putAttribute("backgroundColor", "GREEN");
-
         return tablestyles;
     }
 
@@ -411,14 +393,11 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                     try
                     {
                         nextcontact = cr.getContact();
-
                         System.out.println(" Loading.... " + nextcontact);
-
                     } catch (mcGetContactException e)
                     {
                         System.out.println(" exception... " + cr.getExceptions().size());
                     }
-
                 }
                 System.out.println(" returniung.with exceptions  " + cr.getExceptions().size());
                 return nextcontact;
@@ -445,18 +424,17 @@ public class editPanel extends jswVerticalPanel implements ActionListener
     {
         jswStyles tablestyles = jswStyles.clone("ArrayTableStyles", MyContacts.getTableStyles());
         jswStyle cellstyle = tablestyles.makeStyle("cell");
-        cellstyle.putAttribute("backgroundColor", "#C0C0C0");
         cellstyle.putAttribute("foregroundColor", "BLACK");
         cellstyle.putAttribute("borderWidth", "1");
-        cellstyle.putAttribute("borderColor", "white");
+        cellstyle.putAttribute("borderColor", jswTheme.CELLBORDER);
         cellstyle.setHorizontalAlign("LEFT");
-        cellstyle.putAttribute("fontsize", "14");
+        cellstyle.putAttribute("fontsize", jswTheme.TEXT);
 
         jswStyle cellcstyle = tablestyles.makeStyle("xcellcontent");
         // cellcstyle.putAttribute("backgroundColor", "transparent");
         cellcstyle.putAttribute("foregroundColor", "Red");
         cellcstyle.setHorizontalAlign("LEFT");
-        cellcstyle.putAttribute("fontsize", "11");
+        cellcstyle.putAttribute("fontsize", jswTheme.TEXT);
 
         jswStyle col0style = tablestyles.makeStyle("col_0");
         col0style.putAttribute("fontStyle", Font.BOLD);
@@ -468,10 +446,9 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         col1style.setHorizontalAlign("RIGHT");
 
         jswStyle tablestyle = tablestyles.makeStyle("table");
-        tablestyle.putAttribute("backgroundColor", "White");
         tablestyle.putAttribute("foregroundColor", "Green");
         tablestyle.putAttribute("borderWidth", "2");
-        tablestyle.putAttribute("borderColor", "blue");
+        tablestyle.putAttribute("borderColor", jswTheme.BORDER);
 
         return tablestyles;
     }
@@ -603,27 +580,23 @@ public class editPanel extends jswVerticalPanel implements ActionListener
     {
         jswStyles tablestyles = jswStyles.clone("ArrayTableStyles", MyContacts.getTableStyles());
         jswStyle cellstyle = tablestyles.makeStyle("cell");
-        cellstyle.putAttribute("backgroundColor", "#C0C0C0");
         cellstyle.putAttribute("foregroundColor", "Blue");
         cellstyle.putAttribute("borderWidth", "1");
-        cellstyle.putAttribute("borderColor", "white");
+        cellstyle.putAttribute("borderColor", jswTheme.CELLBORDER);
         cellstyle.setHorizontalAlign("LEFT");
-        cellstyle.putAttribute("fontsize", "14");
+        cellstyle.putAttribute("fontsize", jswTheme.TEXT);
 
         jswStyle hpstyle = tablestyles.makeStyle("xjswHorizontalPanel");
-        hpstyle.putAttribute("backgroundColor", "#C0C0C0");
-        hpstyle.putAttribute("cellbackgroundColor", "#C0C0C0");
         hpstyle.putAttribute("foregroundColor", "Green");
         hpstyle.putAttribute("borderWidth", "2");
         hpstyle.putAttribute("borderColor", "gray");
-        hpstyle.putAttribute("cellBorderColor", "RED");
+        hpstyle.putAttribute("cellBorderColor", jswTheme.CELLBORDER);
         hpstyle.putAttribute("cellBorderWidth", "10");
 
         jswStyle bpstyle = tablestyles.makeStyle("buttonpanel");
-        bpstyle.putAttribute("backgroundColor", "RED");
         bpstyle.putAttribute("foregroundColor", "Green");
         bpstyle.putAttribute("borderWidth", "2");
-        bpstyle.putAttribute("borderColor", "blue");
+        bpstyle.putAttribute("borderColor", jswTheme.BORDER);
 
         jswStyle col0style = tablestyles.makeStyle("col_0");
         col0style.putAttribute("fontStyle", Font.BOLD);
@@ -790,18 +763,17 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         jswStyles tablestyles = jswStyles.clone("TableStyles", MyContacts.getTableStyles());
 
         jswStyle tablestyle = tablestyles.makeStyle("table");
-        tablestyle.putAttribute("backgroundColor", "#C0C0C0");
         tablestyle.putAttribute("foregroundColor", "Green");
         tablestyle.putAttribute("borderWidth", "2");
-        tablestyle.putAttribute("borderColor", "blue");
+        tablestyle.putAttribute("borderColor", jswTheme.BORDER);
 
         jswStyle jtablestyle = tablestyles.makeStyle("jswtable");
         jtablestyle.putAttribute("borderWidth", "2");
-        jtablestyle.putAttribute("borderColor", "blue");
+        jtablestyle.putAttribute("borderColor", jswTheme.BORDER);
 
         jswStyle bpstyle = tablestyles.makeStyle("buttonpanel");
         bpstyle.putAttribute("borderWidth", "2");
-        bpstyle.putAttribute("borderColor", "blue");
+        bpstyle.putAttribute("borderColor", jswTheme.BORDER);
 
         jswStyle cellstyle = tablestyles.makeStyle("cell");
         cellstyle.setHorizontalAlign("LEFT");
@@ -809,7 +781,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         jswStyle cellcstyle = tablestyles.makeStyle("xcellcontent");
         cellcstyle.putAttribute("foregroundColor", "Red");
         cellcstyle.setHorizontalAlign("LEFT");
-        cellcstyle.putAttribute("fontsize", "11");
+        cellcstyle.putAttribute("fontsize", jswTheme.TEXT);
 
         jswStyle col0style = tablestyles.makeStyle("col_0");
         col0style.putAttribute("fontStyle", Font.BOLD);
@@ -838,24 +810,22 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         jswStyles tablestyles = jswStyles.clone("TagTableStyles", MyContacts.getTableStyles());
 
         jswStyle tablestyle = tablestyles.makeStyle("table");
-        tablestyle.putAttribute("backgroundColor", "#C0C0C0");
         tablestyle.putAttribute("foregroundColor", "Green");
         tablestyle.putAttribute("borderWidth", "2");
-        tablestyle.putAttribute("borderColor", "blue");
+        tablestyle.putAttribute("borderColor", jswTheme.BORDER);
 
         jswStyle cellstyle = tablestyles.makeStyle("cell");
-        cellstyle.putAttribute("backgroundColor", "#C0C0C0");
         cellstyle.putAttribute("foregroundColor", "Blue");
         cellstyle.putAttribute("borderWidth", "1");
-        cellstyle.putAttribute("borderColor", "white");
+        cellstyle.putAttribute("borderColor", jswTheme.CELLBORDER);
         cellstyle.setHorizontalAlign("LEFT");
-        cellstyle.putAttribute("fontsize", "14");
+        cellstyle.putAttribute("fontsize", jswTheme.TEXT);
 
         jswStyle cellcstyle = tablestyles.makeStyle("cellcontent");
         // cellcstyle.putAttribute("backgroundColor", "xtransparent");
         cellcstyle.putAttribute("foregroundColor", "Blue");
         cellcstyle.setHorizontalAlign("LEFT");
-        cellcstyle.putAttribute("fontsize", "11");
+        cellcstyle.putAttribute("fontsize", jswTheme.TEXT);
 
         jswStyle col0style = tablestyles.makeStyle("col_0");
         col0style.putAttribute("fontStyle", Font.BOLD);
@@ -864,10 +834,9 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         col0style.putAttribute("width", "50");
 
         jswStyle tabletyle = tablestyles.makeStyle("table");
-        tabletyle.putAttribute("backgroundColor", "White");
         tabletyle.putAttribute("foregroundColor", "Green");
         tabletyle.putAttribute("borderWidth", "2");
-        tabletyle.putAttribute("borderColor", "green");
+        tabletyle.putAttribute("borderColor", jswTheme.BORDER);
 
         jswStyle col3style = tablestyles.makeStyle("col_1");
         col3style.putAttribute("horizontalAlignment", "RIGHT");

@@ -1,8 +1,5 @@
 package org.lerot.mycontacts;
 
-import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
-import com.jgoodies.looks.plastic.PlasticLookAndFeel;
-import com.jgoodies.looks.plastic.theme.DesertBluer;
 import org.lerot.mycontacts.gui.*;
 import org.lerot.mycontacts.gui.widgets.jswDropDownContactBox;
 import org.lerot.mywidgets.*;
@@ -147,7 +144,7 @@ public class MyContacts extends JFrame implements ActionListener
         });
         initiateStyles();
         bigpanel = new jswVerticalPanel("bigpanel", true, true);
-        bigpanel.setBorder(BorderFactory.createLineBorder(Color.blue));
+        bigpanel.setBorder(jswStyle.makeLineBorder());
         bigpanel.setName("bigpanel");
         bigpanel.setPreferredSize(defdimension);
         bigpanel.setSize(defdimension);
@@ -155,33 +152,37 @@ public class MyContacts extends JFrame implements ActionListener
         getContentPane().add(bigpanel);
         jswHorizontalPanel optionBar = new jswHorizontalPanel();
         buttonset = new jswPushButtonset(this, "mode", false, false);
-        buttonset.setBorder(jswStyle.makeLineBorder(Color.red, 1));
+        buttonset.setBorder(BorderFactory.createEmptyBorder());
         buttonset.addNewButton("Browse");
         buttonset.addNewButton("Search");
         buttonset.addNewButton("Edit");
         buttonset.addNewButton("Tools");
         buttonset.setButtonSelection("Browse");
         optionBar.add(" RIGHT ", buttonset);
-        optionBar.setBorder(jswStyle.makeLineBorder(Color.pink, 1));
+        optionBar.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
+        jswTheme.tint(optionBar, jswTheme.NAVAREA);
         bigpanel.add(" FILLW ", optionBar);
         jswHorizontalPanel sourceBar = new jswHorizontalPanel();
         title = new jswLabel(dbtitle);
         sourceBar.add(" ", title);
         source = new jswLabel(dbsource);
         sourceBar.add(" ", source);
-        sourceBar.setBorder(jswStyle.makeLineBorder(Color.GREEN, 1));
-        bigpanel.add(" height=40 ", sourceBar);
+        sourceBar.setBorder(BorderFactory.createEmptyBorder(2, 8, 2, 8));
+        jswTheme.tint(sourceBar, jswTheme.NAVAREA);
+        bigpanel.add(" FILLW height=40 ", sourceBar);
         sourceBar.setStyleAttribute(" height", 50);
         sourceBar.applyStyle();
         selbox = new selectorBox(this, this);
+        jswTheme.tint(selbox, jswTheme.SELECTAREA);
         bigpanel.add("FILLW", selbox);
         mainpanel = new jswVerticalPanel("mainpanel", false, false);
         mainpanel.setPanelname("mainpanel");
         //mainpanel.setTrace(true);
         bigpanel.add(" FILLH FILLW", mainpanel);
-        bigpanel.setBorder(jswStyle.makeLineBorder(Color.GRAY, 3));
+        bigpanel.setBorder(jswStyle.makeLineBorder());
         abrowsepanel = new browsePanel();
         abrowsepanel.setTrace(true);
+        jswTheme.tint(abrowsepanel, jswTheme.DETAILAREA);
         mainpanel.add(" FILLH FILLW ", abrowsepanel);
         asearchpanel = new searchPanel("search", false, false);
         asearchpanel.makesearchPanel(selbox, this);
@@ -189,6 +190,7 @@ public class MyContacts extends JFrame implements ActionListener
         selbox.setEnabled(true);
         startup();
         toolspanel = new ToolsPanel(this);
+        jswTheme.tint(toolspanel, jswTheme.TOOLSAREA);
         selbox.setTaglist();
         selbox.refreshAllContacts("1");
         refreshView();
@@ -198,13 +200,7 @@ public class MyContacts extends JFrame implements ActionListener
 
     public static void main(String[] args)
     {
-        try
-        {
-            PlasticLookAndFeel.setPlasticTheme(new DesertBluer());
-            UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
-        } catch (Exception e)
-        {
-        }
+        jswTheme.install();
         UIManager.put("FileChooser.readOnly", Boolean.TRUE);
         mframe = new MyContacts(1200, 900);
         mframe.setVisible(true);
@@ -235,24 +231,22 @@ public class MyContacts extends JFrame implements ActionListener
         panelstyles.name = "panel";
 
         jswStyle jswWidgetStyles = panelstyles.makeStyle("jswWidget");
-        jswWidgetStyles.putAttribute("backgroundColor", "#e0dcdf");
-        jswWidgetStyles.putAttribute("boxbackgroundColor", "GREEN");
         jswWidgetStyles.putAttribute("foregroundColor", "Black");
         jswWidgetStyles.putAttribute("borderWidth", "0");
-        jswWidgetStyles.putAttribute("fontsize", "14");
-        jswWidgetStyles.putAttribute("borderColor", "blue");
+        jswWidgetStyles.putAttribute("fontsize", jswTheme.TEXT);
+        jswWidgetStyles.putAttribute("borderColor", jswTheme.BORDER);
 
         jswStyle jswLabelStyles = panelstyles.makeStyle("jswLabel");
         jswStyle largelabelStyle = panelstyles.makeStyle("largeLabel");
-        largelabelStyle.putAttribute("fontsize", "30");
+        largelabelStyle.putAttribute("fontsize", jswTheme.TITLE);
         largelabelStyle.putAttribute("foregroundColor", "Red");
 
         jswStyle mediumlabelStyle = panelstyles.makeStyle("mediumLabel");
-        mediumlabelStyle.putAttribute("fontsize", "19");
+        mediumlabelStyle.putAttribute("fontsize", jswTheme.TITLE);
         mediumlabelStyle.putAttribute("foregroundColor", "Blue");
 
         jswStyle jswButtonStyles = panelstyles.makeStyle("jswButton");
-        jswButtonStyles.putAttribute("fontsize", "10");
+        jswButtonStyles.putAttribute("fontsize", jswTheme.TEXT);
 
         jswStyle jswToggleButtonStyles = panelstyles
                 .makeStyle("jswToggleButton");
@@ -260,35 +254,29 @@ public class MyContacts extends JFrame implements ActionListener
 
         jswStyle jswTextBoxStyles = panelstyles.makeStyle("jswTextBox");
 
-        jswTextBoxStyles.putAttribute("backgroundColor", "#e0dcdf");
-
         jswStyle jswDropDownBoxStyles = panelstyles.makeStyle("jswDropDownBox");
 
         jswStyle jswhpStyles = panelstyles.makeStyle("jswContainer");
-        jswhpStyles.putAttribute("backgroundColor", "#C0C0C0");
 
         jswStyle jswDropDownContactBoxStyles = panelstyles
                 .makeStyle("jswDropDownContactBox");
-        jswDropDownContactBoxStyles.putAttribute("backgroundColor", "#C0C0C0");
-        jswDropDownContactBoxStyles.putAttribute("fontsize", "10");
+        jswDropDownContactBoxStyles.putAttribute("fontsize", jswTheme.TEXT);
 
         jswStyle jswScrollPaneStyles = panelstyles
                 .makeStyle("jswScrollPaneStyles");
-        jswScrollPaneStyles.putAttribute("backgroundColor", "#C0C0C0");
-        jswScrollPaneStyles.putAttribute("fontsize", "10");
+        jswScrollPaneStyles.putAttribute("fontsize", jswTheme.TEXT);
 
         jswStyle jswBorderStyle = panelstyles.makeStyle("borderstyle");
         jswBorderStyle.putAttribute("borderWidth", "1");
-        jswBorderStyle.putAttribute("borderColor", "black");
+        jswBorderStyle.putAttribute("borderColor", jswTheme.BORDER);
 
         jswStyle hpanelStyle = panelstyles.makeStyle("hpanelstyle");
         hpanelStyle.putAttribute("borderWidth", "2");
-        hpanelStyle.putAttribute("borderColor", "blue");
+        hpanelStyle.putAttribute("borderColor", jswTheme.BORDER);
         hpanelStyle.putAttribute("height", "100");
 
         jswStyle pbStyle = panelstyles.makeStyle("jswPushButton");
-        pbStyle.putAttribute("backgroundColor", "#C0C0C0");
-        pbStyle.putAttribute("fontsize", "10");
+        pbStyle.putAttribute("fontsize", jswTheme.TEXT);
 
         pbStyle.putAttribute("foregroundColor", "black");
         jswStyle greenfont = panelstyles.makeStyle("greenfont");
@@ -303,12 +291,12 @@ public class MyContacts extends JFrame implements ActionListener
         jswStyle tablestyle = tablestyles.makeStyle("table");
         //tablestyle.putAttribute("backgroundColor", "#c0d6f2");
         tablestyle.putAttribute("borderwidth", "1");
-        tablestyle.putAttribute("borderColor", "green");
+        tablestyle.putAttribute("borderColor", jswTheme.BORDER);
         jswStyle cellstyle = tablestyles.makeStyle("cell");
         //	cellstyle.putAttribute("backgroundColor", "#c0d6f2");
-        cellstyle.putAttribute("fontSize", "12");
+        cellstyle.putAttribute("fontSize", jswTheme.TEXT);
         cellstyle.putAttribute("fontStyle", Font.PLAIN);
-        cellstyle.putAttribute("borderColor", "black");
+        cellstyle.putAttribute("borderColor", jswTheme.CELLBORDER);
         cellstyle.putAttribute("borderWidth", 1);
         cellstyle.putAttribute("padding", 4);
 
@@ -323,22 +311,19 @@ public class MyContacts extends JFrame implements ActionListener
         colstyle.setHorizontalAlign("RIGHT");
         jswStyle col0style = tablestyles.makeStyle("col_0");
         col0style.putAttribute("fontStyle", Font.BOLD);
-        col0style.putAttribute("fontSize", "16");
-        col0style.putAttribute("backgroundColor", "PINK");
+        col0style.putAttribute("fontSize", jswTheme.HEADING);
         col0style.putAttribute("minwidth", true);
         col0style.setHorizontalAlign("LEFT");
 
         jswStyle col1style = tablestyles.makeStyle("col_1");
         //col1style.putAttribute("fontStyle", Font.BOLD);
-        //col1style.putAttribute("fontSize", "16");
+        //col1style.putAttribute("fontSize", jswTheme.HEADING);
         //col1style.putAttribute("backgroundColor", "BLUE");
 
         jswStyle col2style = tablestyles.makeStyle("col_1");
         //col1style.putAttribute("fontStyle", Font.BOLD);
-        //col2style.putAttribute("fontSize", "16");
+        //col2style.putAttribute("fontSize", jswTheme.HEADING);
         col2style.putAttribute("minwidth", true);
-        col2style.putAttribute("backgroundColor", "GREEN");
-
         return tablestyles;
     }
 

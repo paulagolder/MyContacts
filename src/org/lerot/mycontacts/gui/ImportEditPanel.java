@@ -122,18 +122,17 @@ public class ImportEditPanel extends jswVerticalPanel implements ActionListener
 	{
 		jswStyles tablestyles = new jswStyles("edittable");
 		jswStyle cellstyle = tablestyles.makeStyle("cell");
-		cellstyle.putAttribute("backgroundColor", "#C0C0C0");
 		cellstyle.putAttribute("foregroundColor", "Blue");
 		cellstyle.putAttribute("borderWidth", "1");
-		cellstyle.putAttribute("borderColor", "white");
+		cellstyle.putAttribute("borderColor", jswTheme.CELLBORDER);
 		cellstyle.setHorizontalAlign("LEFT");
-		cellstyle.putAttribute("fontsize", "14");
+		cellstyle.putAttribute("fontsize", jswTheme.TEXT);
 
 		jswStyle cellcstyle = tablestyles.makeStyle("cellcontent");
 		cellcstyle.putAttribute("backgroundColor", "transparent");
 		cellcstyle.putAttribute("foregroundColor", "Red");
 		cellcstyle.setHorizontalAlign("LEFT");
-		cellcstyle.putAttribute("fontsize", "11");
+		cellcstyle.putAttribute("fontsize", jswTheme.TEXT);
 
 		// tablestyles.makeStyle("cell_0_0");
 		jswStyle col0style = tablestyles.makeStyle("col_0");
@@ -148,10 +147,9 @@ public class ImportEditPanel extends jswVerticalPanel implements ActionListener
 		col1style.putAttribute("minwidth", "true");
 
 		jswStyle tabletyle = tablestyles.makeStyle("table");
-		tabletyle.putAttribute("backgroundColor", "White");
 		tabletyle.putAttribute("foregroundColor", "Green");
 		tabletyle.putAttribute("borderWidth", "2");
-		tabletyle.putAttribute("borderColor", "green");
+		tabletyle.putAttribute("borderColor", jswTheme.BORDER);
 
 		jswStyle col3style = tablestyles.makeStyle("col_3");
 		col3style.putAttribute("horizontalAlignment", "RIGHT");
@@ -163,18 +161,17 @@ public class ImportEditPanel extends jswVerticalPanel implements ActionListener
 	{
 		jswStyles tablestyles = new jswStyles("fieldedit");
 		jswStyle cellstyle = tablestyles.makeStyle("cell");
-		cellstyle.putAttribute("backgroundColor", "#C0C0C0");
 		cellstyle.putAttribute("foregroundColor", "Blue");
 		cellstyle.putAttribute("borderWidth", "1");
-		cellstyle.putAttribute("borderColor", "white");
+		cellstyle.putAttribute("borderColor", jswTheme.CELLBORDER);
 		cellstyle.setHorizontalAlign("LEFT");
-		cellstyle.putAttribute("fontsize", "14");
+		cellstyle.putAttribute("fontsize", jswTheme.TEXT);
 
 		jswStyle cellcstyle = tablestyles.makeStyle("cellcontent");
 		cellcstyle.putAttribute("backgroundColor", "transparent");
 		cellcstyle.putAttribute("foregroundColor", "Red");
 		cellcstyle.setHorizontalAlign("LEFT");
-		cellcstyle.putAttribute("fontsize", "11");
+		cellcstyle.putAttribute("fontsize", jswTheme.TEXT);
 
 		// tablestyles.makeStyle("cell_0_0");
 		jswStyle col0style = tablestyles.makeStyle("col_0");
@@ -189,10 +186,9 @@ public class ImportEditPanel extends jswVerticalPanel implements ActionListener
 		// col1style.putAttribute("minwidth", "true");
 
 		jswStyle tabletyle = tablestyles.makeStyle("table");
-		tabletyle.putAttribute("backgroundColor", "White");
 		tabletyle.putAttribute("foregroundColor", "Green");
 		tabletyle.putAttribute("borderWidth", "2");
-		tabletyle.putAttribute("borderColor", "green");
+		tabletyle.putAttribute("borderColor", jswTheme.BORDER);
 
 		jswStyle col3style = tablestyles.makeStyle("col_1");
 		col3style.putAttribute("horizontalAlignment", "RIGHT");
@@ -206,7 +202,7 @@ public class ImportEditPanel extends jswVerticalPanel implements ActionListener
 		ImportEditPanel thispanel = this;
 		editcontact = MyContacts.selbox.getSelcontact();
 		thispanel.removeAll();
-		thispanel.setBackground(new Color(0, 0, 0, 0));
+		thispanel.setBackground(null);
 		jswHorizontalPanel idbox = new jswHorizontalPanel("idbox", false);
 		thispanel.add(idbox);
 		optset = new jswOptionset(this,"source",true,true);

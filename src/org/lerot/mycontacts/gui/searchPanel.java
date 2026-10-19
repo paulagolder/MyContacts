@@ -91,9 +91,7 @@ String action = cmd;
 
     public void makesearchPanel(selectorBox selbox, ActionListener alistener)
     {
-        jswStyle scrollstyle = MyContacts.panelstyles.getStyle("jswScrollPaneStyles");
-        Color bcolor = scrollstyle.getColor("backgroundColor", Color.BLUE);
-        setBackground(bcolor);
+        jswTheme.tint(this, jswTheme.DETAILAREA);
         parentlistener = alistener;
         jswVerticalPanel searchpanel = this;
         //this.setTag("trace");
@@ -156,7 +154,6 @@ String action = cmd;
                 searchpanel.add(" FILLW ", resulttable);
             } else
             {
-                resulttable.setBackground(Color.lightGray);
                 jswScrollPane scrollableTextArea = new jswScrollPane(resulttable,
                         -10, -10);
                 resulttable.setStyleAttribute("mywidth",500);
@@ -189,12 +186,12 @@ String action = cmd;
         jswStyle tablestyle = tablestyles.makeStyle("table");
         //tablestyle.putAttribute("backgroundColor", "#c0d6f2");
         tablestyle.putAttribute("borderwidth", "1");
-        tablestyle.putAttribute("borderColor", "green");
+        tablestyle.putAttribute("borderColor", jswTheme.BORDER);
         jswStyle cellstyle = tablestyles.makeStyle("cell");
         //	cellstyle.putAttribute("backgroundColor", "#c0d6f2");
-        cellstyle.putAttribute("fontSize", "12");
+        cellstyle.putAttribute("fontSize", jswTheme.TEXT);
         cellstyle.putAttribute("fontStyle", Font.PLAIN);
-        cellstyle.putAttribute("borderColor", "black");
+        cellstyle.putAttribute("borderColor", jswTheme.CELLBORDER);
         cellstyle.putAttribute("borderWidth", 1);
         cellstyle.putAttribute("padding", 4);
 
@@ -209,27 +206,23 @@ String action = cmd;
         colstyle.setHorizontalAlign("RIGHT");
         jswStyle col0style = tablestyles.makeStyle("col_0");
         col0style.putAttribute("fontStyle", Font.BOLD);
-        col0style.putAttribute("fontSize", "16");
-        col0style.putAttribute("backgroundColor", "PINK");
+        col0style.putAttribute("fontSize", jswTheme.HEADING);
         col0style.putAttribute("minwidth", true);
         col0style.setHorizontalAlign("LEFT");
 
         jswStyle col1style = tablestyles.makeStyle("col_1");
         //col1style.putAttribute("fontStyle", Font.BOLD);
-        //col1style.putAttribute("fontSize", "16");
+        //col1style.putAttribute("fontSize", jswTheme.HEADING);
         //col1style.putAttribute("backgroundColor", "BLUE");
 
         jswStyle col2style = tablestyles.makeStyle("col_2");
         //col1style.putAttribute("fontStyle", Font.BOLD);
-        //col2style.putAttribute("fontSize", "16");
+        //col2style.putAttribute("fontSize", jswTheme.HEADING);
         col2style.putAttribute("minwidth", true);
-        col2style.putAttribute("backgroundColor", "GREEN");
         jswStyle col3style = tablestyles.makeStyle("col_3");
         //col1style.putAttribute("fontStyle", Font.BOLD);
-        //col2style.putAttribute("fontSize", "16");
+        //col2style.putAttribute("fontSize", jswTheme.HEADING);
         col3style.putAttribute("minwidth", true);
-        col3style.putAttribute("backgroundColor", "GREEN");
-
         return tablestyles;
     }
 }

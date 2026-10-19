@@ -241,8 +241,6 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 								}
 								String value = anattribute.getFormattedValue();// paul
 								jswLabel slabel = new jswLabel(value);
-								slabel.setBorder(jswStyle.makeLineBorder(Color.blue, 2));
-								slabel.getLabel().setBackground(Color.green);
 								attributepanel.addCell(slabel, " LEFT ", row,
 										1);
 							}
@@ -394,6 +392,7 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 
 			jswVerticalPanel correspondance = new correspondancePanel(selcontact, "letters");
            correspondance.setPreferredSize(new Dimension(500,500));
+           jswTheme.tint(correspondance, jswTheme.SECONDARYAREA);
             this.add(" FILLH FILLW ", correspondance);
 		}
 
@@ -633,10 +632,9 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 		jswStyles tablestyles = jswStyles.clone("AttributeTableStyles",MyContacts.getTableStyles());
 		
 		jswStyle tablestyle = tablestyles.makeStyle("table");
-		tablestyle.putAttribute("backgroundColor", "#C0C0C0");
 		tablestyle.putAttribute("foregroundColor", "Green");
 		tablestyle.putAttribute("borderWidth", "2");
-		tablestyle.putAttribute("borderColor", "blue");
+		tablestyle.putAttribute("borderColor", jswTheme.BORDER);
 		tablestyle.putAttribute("padding", "10");
 		
 		jswStyle rowstyle = tablestyles.makeStyle("row");
@@ -644,7 +642,7 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 		
 		jswStyle cellstyle = tablestyles.makeStyle("cell");
 		cellstyle.putAttribute("minheight", "40");
-		cellstyle.putAttribute("cellbordercolor", "red");
+		cellstyle.putAttribute("cellbordercolor", jswTheme.CELLBORDER);
 		cellstyle.putAttribute("cellborderwidth", "1");
 		cellstyle.putAttribute("padding", "10");
 
@@ -674,10 +672,9 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 		jswStyles tablestyles = jswStyles.clone("LinkTableStyles",MyContacts.getTableStyles());
 
 		jswStyle tablestyle = tablestyles.makeStyle("table");
-		tablestyle.putAttribute("backgroundColor", "#C0C0C0");
 		tablestyle.putAttribute("foregroundColor", "Green");
 		tablestyle.putAttribute("borderWidth", "2");
-		tablestyle.putAttribute("borderColor", "blue");
+		tablestyle.putAttribute("borderColor", jswTheme.BORDER);
 
 		jswStyle col0style = tablestyles.makeStyle("col_0");
 		col0style.putAttribute("fontStyle", Font.BOLD);
@@ -729,12 +726,12 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 		jswStyle tablestyle = tablestyles.makeStyle("table");
 		//tablestyle.putAttribute("backgroundColor", "#c0d6f2");
 		tablestyle.putAttribute("borderwidth", "1");
-		tablestyle.putAttribute("borderColor", "green");
+		tablestyle.putAttribute("borderColor", jswTheme.BORDER);
 		jswStyle cellstyle = tablestyles.makeStyle("cell");
 		//	cellstyle.putAttribute("backgroundColor", "#c0d6f2");
-		cellstyle.putAttribute("fontSize", "12");
+		cellstyle.putAttribute("fontSize", jswTheme.TEXT);
 		cellstyle.putAttribute("fontStyle", Font.PLAIN);
-		cellstyle.putAttribute("borderColor", "black");
+		cellstyle.putAttribute("borderColor", jswTheme.CELLBORDER);
 		cellstyle.putAttribute("borderWidth", 1);
 		cellstyle.putAttribute("padding", 4);
 
@@ -749,27 +746,23 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 		colstyle.setHorizontalAlign("RIGHT");
 		jswStyle col0style = tablestyles.makeStyle("col_0");
 		col0style.putAttribute("fontStyle", Font.BOLD);
-		col0style.putAttribute("fontSize", "16");
-		col0style.putAttribute("backgroundColor", "PINK");
+		col0style.putAttribute("fontSize", jswTheme.HEADING);
 		col0style.putAttribute("minwidth", true);
 		col0style.setHorizontalAlign("LEFT");
 
 		jswStyle col1style = tablestyles.makeStyle("col_1");
 		//col1style.putAttribute("fontStyle", Font.BOLD);
-		//col1style.putAttribute("fontSize", "16");
+		//col1style.putAttribute("fontSize", jswTheme.HEADING);
 		//col1style.putAttribute("backgroundColor", "BLUE");
 
 		jswStyle col2style = tablestyles.makeStyle("col_2");
 		//col1style.putAttribute("fontStyle", Font.BOLD);
-		//col2style.putAttribute("fontSize", "16");
+		//col2style.putAttribute("fontSize", jswTheme.HEADING);
 		col2style.putAttribute("minwidth", true);
-		col2style.putAttribute("backgroundColor", "GREEN");
 		jswStyle col3style = tablestyles.makeStyle("col_3");
 		//col1style.putAttribute("fontStyle", Font.BOLD);
-		//col2style.putAttribute("fontSize", "16");
+		//col2style.putAttribute("fontSize", jswTheme.HEADING);
 		col3style.putAttribute("minwidth", true);
-		col3style.putAttribute("backgroundColor", "GREEN");
-
 		return tablestyles;
 	}
 }

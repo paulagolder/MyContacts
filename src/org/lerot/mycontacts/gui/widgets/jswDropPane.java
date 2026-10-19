@@ -132,7 +132,7 @@ public class jswDropPane extends jswHorizontalPanel
         if (dragOver)
         {
             Graphics2D g2d = (Graphics2D) g.create();
-            g2d.setColor(new Color(0, 255, 0, 64));
+            g2d.setColor(new Color(0x5B, 0x7F, 0xA6, 64));
             g2d.fill(new Rectangle(getWidth(), getHeight()));
             if (dragPoint != null && target != null)
             {

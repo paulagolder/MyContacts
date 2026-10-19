@@ -65,7 +65,7 @@ public class selectorBox extends jswVerticalPanel
         filterbox.setEnabled(true);
         filterbox.addFocusListener(this);
         filterbox.addKeyListener(this);
-        filterbox.setBorder(jswStyle.makeLineBorder(Color.gray, 1));
+        filterbox.setBorder(BorderFactory.createEmptyBorder());
         filterpanel.add(" WIDTH=90 ", filterbox);
         filterbox.setStyleAttribute("mywidth", 200);
         filterbox.applyStyle();
@@ -84,7 +84,7 @@ public class selectorBox extends jswVerticalPanel
         jswButton next = new jswButton(this, "Next");
         selectbox.add(" RIGHT ", next);
         this.add(" FILLW ", selectbox);
-        this.setBorder(jswStyle.makeLineBorder(Color.red, 2));
+        this.setBorder(jswStyle.makeLineBorder());
     }
 
     @Override
@@ -531,16 +531,15 @@ public class selectorBox extends jswVerticalPanel
         jswStyle jswBorderStyle = panelstyles.makeStyle("borderstyle");
         jswBorderStyle.putAttribute("borderWidth", "1");
         // jswBorderStyle.putAttribute("borderColor", "#C0C0C0");
-        jswBorderStyle.putAttribute("borderColor", "black");
+        jswBorderStyle.putAttribute("borderColor", jswTheme.BORDER);
 
         jswStyle hpanelStyle = panelstyles.makeStyle("hpanelstyle");
         hpanelStyle.putAttribute("padding", "5");
         hpanelStyle.putAttribute("borderWidth", "2");
-        hpanelStyle.putAttribute("borderColor", "red");
+        hpanelStyle.putAttribute("borderColor", jswTheme.BORDER);
         hpanelStyle.putAttribute("height", "100");
         jswStyle pbStyle = panelstyles.makeStyle("jswPushButton");
-        pbStyle.putAttribute("backgroundColor", "#C0C0C0");
-        pbStyle.putAttribute("fontsize", "10");
+        pbStyle.putAttribute("fontsize", jswTheme.TEXT);
         pbStyle.putAttribute("foregroundColor", "black");
         jswStyle greenfont = panelstyles.makeStyle("greenfont");
         greenfont.putAttribute("foregroundColor", "green");

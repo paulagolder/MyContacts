@@ -45,15 +45,14 @@ public class editListPanel extends jswVerticalPanel implements ActionListener
 		tags.reloadTags();
 		progressbar.add(" FILLW ", taglistbox);
 		atttable = new jswTable(this,"members", makeTagsTableStyles());
-		atttable.setBackground(Color.lightGray);
-		atttable.setBorder(BorderFactory.createLineBorder(Color.blue));
+		atttable.setBorder(jswStyle.makeLineBorder());
 		taglistbox.setList(tags.getTaglist());
 		tag = taglistbox.getSelectedValue();
 		displaylist(tag);
 		jswScrollPane scrollpane = new jswScrollPane(atttable,0, 0);
 		scrollpane.setName("resultscroll");
 		scrollpane
-				.setBorder(BorderFactory.createLineBorder(Color.green));
+				.setBorder(jswStyle.makeLineBorder());
 		this.add(" FILLH FILLW ", scrollpane);
 		//scrollableTextArea.setMaximumSize(new Dimension(600, 200));
 		atttable.setVisible(true);
@@ -69,24 +68,22 @@ public class editListPanel extends jswVerticalPanel implements ActionListener
         jswStyles tablestyles = MyContacts.getTableStyles();
 
         jswStyle tablestyle = tablestyles.makeStyle("table");
-        tablestyle.putAttribute("backgroundColor", "White");
         tablestyle.putAttribute("foregroundColor", "Green");
         tablestyle.putAttribute("borderWidth", "2");
-        tablestyle.putAttribute("borderColor", "blue");
+        tablestyle.putAttribute("borderColor", jswTheme.BORDER);
 
         jswStyle cellstyle = tablestyles.makeStyle("cell");
-        cellstyle.putAttribute("backgroundColor", "#C0C0C0");
         cellstyle.putAttribute("foregroundColor", "Blue");
         cellstyle.putAttribute("borderWidth", "1");
-        cellstyle.putAttribute("borderColor", "white");
+        cellstyle.putAttribute("borderColor", jswTheme.CELLBORDER);
         cellstyle.setHorizontalAlign("LEFT");
-        cellstyle.putAttribute("fontsize", "14");
+        cellstyle.putAttribute("fontsize", jswTheme.TEXT);
 
         jswStyle cellcstyle = tablestyles.makeStyle("cellcontent");
         cellcstyle.putAttribute("backgroundColor", "transparent");
         cellcstyle.putAttribute("foregroundColor", "Red");
         cellcstyle.setHorizontalAlign("LEFT");
-        cellcstyle.putAttribute("fontsize", "11");
+        cellcstyle.putAttribute("fontsize", jswTheme.TEXT);
 
         jswStyle col0style = tablestyles.makeStyle("col_0");
         col0style.putAttribute("fontStyle", Font.BOLD);
