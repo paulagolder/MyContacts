@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="MyContacts" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="org.lerot.mycontacts.MyContacts" />
+    <module name="MyContacts" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
