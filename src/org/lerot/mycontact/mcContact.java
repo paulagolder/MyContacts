@@ -139,7 +139,8 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
     @Override
     public int compareTo(mcContact othercontact)
     {
-        return TID.compareTo(othercontact.TID);
+        return Objects.compare(TID, othercontact.TID,
+                Comparator.nullsFirst(Comparator.naturalOrder()));
     }
 
     public boolean containsValue(String testvalue)
@@ -220,8 +221,8 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
     {
         int id = this.getCID();
         String[] part = mcUtilities.parseLabel(attkey.toLowerCase());
-        doDelete("attributeValues", " cid=" + id + " and  root  = '" + part[0]
-                + "' and qualifier ='" + part[1] + "' ;");
+        doDelete("attributeValues", " cid=? and root = ? and qualifier = ? ;",
+                id, part[0], part[1]);
         System.out.println(
                 " deleting attribute from  " + this.TID + " " + attkey);
         attributes.remove(attkey);

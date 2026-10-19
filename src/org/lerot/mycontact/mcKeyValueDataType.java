@@ -35,9 +35,9 @@ public abstract class mcKeyValueDataType extends mcDataType
 
 	public void dbLoadFieldList()
 	{
-		String query = "select * from dataTypeFields where typekey LIKE '"
-				+ getTypekey() + "' order by displayOrder ";
-		ArrayList<Map<String, String>> rowlist = doQuery(query);
+		String query = "select * from dataTypeFields where typekey LIKE ? "
+				+ " order by displayOrder ";
+		ArrayList<Map<String, String>> rowlist = doQuery(query, getTypekey());
 		LinkedHashMap<String, mcfield> afieldlist = new LinkedHashMap<String, mcfield>();
 		Vector<String> akeylist = new Vector<String>();
 		for (Map<String, String> row : rowlist)

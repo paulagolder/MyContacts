@@ -96,17 +96,18 @@ public class mcdb extends JFrame implements ActionListener
         user = System.getProperty("user.name");
         osversion = System.getProperty("os.version");
         os = System.getProperty("os.name");
+        String home = userhome.replace('\\', '/');
         if (os.startsWith("Windows"))
         {
-            dotcontacts = "C:/Users/" + user + "/.mccontacts/";
-            letterfolder = "C:/Users/" + user + "/Documents/correspondance";
-            docsfolder = "C:/Users/" + user + "/Documents/correspondance";
+            dotcontacts = home + "/.mccontacts/";
+            letterfolder = home + "/Documents/correspondance";
+            docsfolder = home + "/Documents/correspondance";
         } else
         {
-            dotcontacts = "/home/" + user + "/.mccontacts/";
-            desktop = "/home/" + user + "/Desktop/";
+            dotcontacts = home + "/.mccontacts/";
+            desktop = home + "/Desktop/";
             letterfolder = desktop + "Labels and Letters/";
-            docsfolder = "/home/" + user + "/Documents/correspondance";
+            docsfolder = home + "/Documents/correspondance";
         }
         java.net.URL jstatIconURL = ClassLoader.getSystemClassLoader()
                 .getResource("mccontacts.png");
@@ -430,24 +431,18 @@ public class mcdb extends JFrame implements ActionListener
     public Properties readProperties(String propsfile)
     {
         Properties prop = new Properties();
-        try
+        try (FileInputStream in = new FileInputStream(propsfile))
         {
-            prop.loadFromXML(new FileInputStream(propsfile));
-            return prop;
-        } catch (InvalidPropertiesFormatException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            prop.loadFromXML(in);
         } catch (FileNotFoundException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.err.println("No properties file " + propsfile + ", using defaults");
         } catch (IOException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.err.println("Cannot read properties " + propsfile + " : " + e.getMessage()
+                    + ", using defaults");
         }
-        return null;
+        return prop;
     }
 
     private void initDragAndDrop()
@@ -492,7 +487,7 @@ public class mcdb extends JFrame implements ActionListener
                                         Paths.get(dest.getAbsolutePath()),
                                         StandardCopyOption.REPLACE_EXISTING);
                                 SimpleDateFormat sdf = new SimpleDateFormat(
-                                        "YYYY-MM-dd");
+                                        "yyyy-MM-dd");
                                 String date = sdf.format(source.lastModified());
 
 

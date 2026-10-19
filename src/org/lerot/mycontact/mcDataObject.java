@@ -42,14 +42,16 @@ public class mcDataObject
 		}
 	}
 	
-	public void doDelete(String table, String sqlstr)
+	public void doDelete(String table, String sqlstr, Object... params)
 	{
 		String sql = "DELETE FROM " + table + " WHERE " + sqlstr;
 		PreparedStatement preparedStatement = null;
 		try
-		{ 
+		{
 			 getConnection();
 			preparedStatement = con.prepareStatement(sql);
+			for (int i = 0; i < params.length; i++)
+				preparedStatement.setObject(i + 1, params[i]);
 			preparedStatement.execute();
 			preparedStatement.close();
 			disconnect();
@@ -85,21 +87,25 @@ public class mcDataObject
 
 	
 	
-	public static ArrayList<Map<String, String>> doQuery(String sqlstr)
+	public static ArrayList<Map<String, String>> doQuery(String sqlstr, Object... params)
 	{
 		ArrayList<Map<String, String>> Rowlist = new ArrayList<Map<String, String>>();
 		ResultSetMetaData rsmd = null;
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try
-		{  
-			//mcDataSource ds = mcdb.topgui.currentcon;
-			datasource.connect();
+		{
 			con =datasource.getConnection();
-			stmt = con.createStatement();
-			if (stmt == null)
-				System.out.println(" Processing error " + sqlstr);
-			rs = stmt.executeQuery(sqlstr);
+			if (con == null)
+			{
+				errorMessage = datasource.getErrorMessage();
+				System.err.println(errorMessage + " [" + sqlstr + "]");
+				return Rowlist;
+			}
+			stmt = con.prepareStatement(sqlstr);
+			for (int i = 0; i < params.length; i++)
+				stmt.setObject(i + 1, params[i]);
+			rs = stmt.executeQuery();
 			rsmd = rs.getMetaData();
 			int columnCount = rsmd.getColumnCount();
 			while (rs.next())
@@ -116,15 +122,15 @@ public class mcDataObject
 			}
 			rs.close();
 			stmt.close();
-			datasource.disconnect();
-			return Rowlist;
 		} catch (SQLException e)
 		{
 			errorMessage = e.getClass().getName() + ": " + e.getMessage();
-			System.err.println(errorMessage);
-			return null;
+			System.err.println(errorMessage + " [" + sqlstr + "]");
+		} finally
+		{
+			if (con != null) datasource.disconnect();
 		}
-		
+		return Rowlist;
 
 	}
 

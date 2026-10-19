@@ -187,7 +187,7 @@ public class jswDropPane extends jswHorizontalPanel
                         if (fobject instanceof java.nio.file.Path)
                         {
                             SimpleDateFormat sdf = new SimpleDateFormat(
-                                    "YYYY-MM-dd");
+                                    "yyyy-MM-dd");
                             BasicFileAttributes attr = null;
                             try
                             {

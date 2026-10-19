@@ -160,6 +160,7 @@ public class mcDataSource
 		Vector<String> databases = new Vector<String>();
 		File dotdir = new File(dotcontacts);
 		File[] files = dotdir.listFiles();
+		if (files == null) return databases;
 		for (File file : files)
 		{
 			String name = file.getName();
@@ -195,10 +196,9 @@ public class mcDataSource
 	public mcMappings createMappings(String direction,String name )
 	{
 		mcMappings newmapping = new mcMappings(name,direction);
-		String sql = "select * from labelMappings where mapping ='"
-				+  name + "' and direction ='" +  direction
-				+ "' order by sequence ";
-		ArrayList<Map<String, String>> rowlist = doQuery(sql);
+		String sql = "select * from labelMappings where mapping = ? and direction = ? "
+				+ " order by sequence ";
+		ArrayList<Map<String, String>> rowlist = doQuery(sql, name, direction);
 		LinkedHashMap<String, String> collection = new LinkedHashMap<String, String>();
 		System.out.println(sql);
 		for (Map<String, String> row : rowlist)
@@ -216,19 +216,24 @@ public class mcDataSource
 		return newmapping;
 	}
 	
-	public ArrayList<Map<String, String>> doQuery(String sqlstr)
+	public ArrayList<Map<String, String>> doQuery(String sqlstr, Object... params)
 	{
 		ArrayList<Map<String, String>> Rowlist = new ArrayList<Map<String, String>>();
 		ResultSetMetaData rsmd = null;
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try
 		{
 			getConnection();
-			stmt = con.createStatement();
-			if (stmt == null)
-				System.out.println(" Processing error " + sqlstr);
-			rs = stmt.executeQuery(sqlstr);
+			if (con == null)
+			{
+				System.err.println(errorMessage + " [" + sqlstr + "]");
+				return Rowlist;
+			}
+			stmt = con.prepareStatement(sqlstr);
+			for (int i = 0; i < params.length; i++)
+				stmt.setObject(i + 1, params[i]);
+			rs = stmt.executeQuery();
 			rsmd = rs.getMetaData();
 			int columnCount = rsmd.getColumnCount();
 			while (rs.next())
@@ -245,14 +250,15 @@ public class mcDataSource
 			}
 			rs.close();
 			stmt.close();
-			disconnect();
-			return Rowlist;
 		} catch (SQLException e)
 		{
 			errorMessage = e.getClass().getName() + ": " + e.getMessage();
-			System.err.println(errorMessage);
-			return null;
+			System.err.println(errorMessage + " [" + sqlstr + "]");
+		} finally
+		{
+			if (con != null) disconnect();
 		}
+		return Rowlist;
 
 	}
 
