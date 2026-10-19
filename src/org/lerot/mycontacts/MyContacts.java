@@ -20,10 +20,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.JarURLConnection;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import java.util.Map;
@@ -81,12 +84,10 @@ public class MyContacts extends JFrame implements ActionListener
     private final String userhome;
     private ImageIcon jstatIcon;
     private String dbtitle;
-    private final jswLabel title;
-    private final jswLabel source;
 
     public MyContacts(int w, int h)
     {
-        super("MyContacts " + version);
+        super("MyContacts");
         defdimension = new Dimension(w, h);
         userdir = System.getProperty("user.dir");
         userhome = System.getProperty("user.home");
@@ -159,19 +160,10 @@ public class MyContacts extends JFrame implements ActionListener
         buttonset.addNewButton("Tools");
         buttonset.setButtonSelection("Browse");
         optionBar.add(" RIGHT ", buttonset);
-        optionBar.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
+        optionBar.add(" RIGHT ", new jswButton(this, "Info", "INFO"));
+        optionBar.setBorder(BorderFactory.createEmptyBorder(2, 8, 2, 8));
         jswTheme.tint(optionBar, jswTheme.NAVAREA);
         bigpanel.add(" FILLW ", optionBar);
-        jswHorizontalPanel sourceBar = new jswHorizontalPanel();
-        title = new jswLabel(dbtitle);
-        sourceBar.add(" ", title);
-        source = new jswLabel(dbsource);
-        sourceBar.add(" ", source);
-        sourceBar.setBorder(BorderFactory.createEmptyBorder(2, 8, 2, 8));
-        jswTheme.tint(sourceBar, jswTheme.NAVAREA);
-        bigpanel.add(" FILLW height=40 ", sourceBar);
-        sourceBar.setStyleAttribute(" height", 50);
-        sourceBar.applyStyle();
         selbox = new selectorBox(this, this);
         jswTheme.tint(selbox, jswTheme.SELECTAREA);
         bigpanel.add("FILLW", selbox);
@@ -180,6 +172,7 @@ public class MyContacts extends JFrame implements ActionListener
         //mainpanel.setTrace(true);
         bigpanel.add(" FILLH FILLW", mainpanel);
         bigpanel.setBorder(jswStyle.makeLineBorder());
+        bigpanel.setPadding(2); // the titled-border padding left a wasted band at the top
         abrowsepanel = new browsePanel();
         abrowsepanel.setTrace(true);
         jswTheme.tint(abrowsepanel, jswTheme.DETAILAREA);
@@ -332,7 +325,11 @@ public class MyContacts extends JFrame implements ActionListener
     {
         String action = evt.getActionCommand().toUpperCase();
         System.out.println(" MyContacts action :" + action);
-        if (action.startsWith("MODE:"))
+        if (action.equals("INFO"))
+        {
+            showInfo();
+            return;
+        } else if (action.startsWith("MODE:"))
         {
             String vstr = action.substring(5);
             mode = vstr;
@@ -348,6 +345,63 @@ public class MyContacts extends JFrame implements ActionListener
         refreshView();
     }
 
+    // the Info popup: facts about this build and the open database, then the
+    // descriptive lines (and credits) from "infotext" in the properties file
+    public void showInfo()
+    {
+        JPanel info = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.WEST;
+        c.gridy = 0;
+        c.insets = new Insets(2, 0, 2, 12);
+        String[][] facts = {
+                {"Version", version.replaceFirst("^_", "")},
+                {"Built", buildDate()},
+                {"Database", dbtitle + "  (" + dbsource + ")"},
+                {"Contacts", String.valueOf(selbox.countAll())},
+                {"Settings", propsfile}};
+        for (String[] fact : facts)
+        {
+            c.gridx = 0;
+            JLabel name = new JLabel(fact[0]);
+            name.setFont(name.getFont().deriveFont(Font.BOLD));
+            info.add(name, c);
+            c.gridx = 1;
+            info.add(new JLabel(fact[1]), c);
+            c.gridy++;
+        }
+        c.gridx = 0;
+        c.gridwidth = 2;
+        c.insets = new Insets(12, 0, 0, 0);
+        String text = props.getProperty("infotext",
+                "Set \"infotext\" in " + propsfile + " to describe this application.");
+        for (String line : text.strip().split("\\R"))
+        {
+            info.add(new JLabel(line.strip()), c);
+            c.gridy++;
+            c.insets = new Insets(2, 0, 0, 0);
+        }
+        JOptionPane.showMessageDialog(this, info, "About MyContacts", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    // when this build was compiled: the timestamp of this class file (or of its jar entry)
+    static String buildDate()
+    {
+        try
+        {
+            URL url = MyContacts.class.getResource("MyContacts.class");
+            long time;
+            if (url.getProtocol().equals("jar"))
+                time = ((JarURLConnection) url.openConnection()).getJarEntry().getTime();
+            else
+                time = new File(url.toURI()).lastModified();
+            return new SimpleDateFormat("d MMM yyyy, HH:mm").format(new Date(time));
+        } catch (Exception e)
+        {
+            return "unknown";
+        }
+    }
+
     public void startup()
     {
         System.out.println(os + " " + userhome);
@@ -360,8 +414,6 @@ public class MyContacts extends JFrame implements ActionListener
         String ncon = mychecks.get("No of Contacts");
         dbtitle = mychecks.get("Title");
         System.out.println("title " + dbtitle);
-        title.setText(dbtitle);
-        source.setText(" (" + dbsource + ")");
         System.out.println("No of contacts = " + ncon);
         mcDataTypes.loadTypes();
         mcAttributeTypes.loadAttributeTypes();
