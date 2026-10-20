@@ -37,5 +37,5 @@ JPanel 0,0 1200x900
             JLabel 1,1 1184x18
         jswTable 'contactsfound' 0,60 1196x31
           jswCell 'acell' 2,1 169x27
-            jswLabel ' no contact selected ' 0,0 168x26
-              JLabel 1,1 166x24
+            jswLabel ' no contact selected ' 3,0 165x26
+              JLabel 1,1 163x24

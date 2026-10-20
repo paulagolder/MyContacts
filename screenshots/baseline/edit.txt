@@ -47,52 +47,52 @@ JPanel 0,0 1200x900
             JButton 0,0 72x30
         jswTable 'attributes' 0,60 1196x100
           jswCell 'acell' 2,1 52x32
-            jswLabel 'name' 0,0 51x31
-              JLabel 1,1 49x29
+            jswLabel 'name' 3,0 48x31
+              JLabel 1,1 46x29
           jswCell 'acell' 52,1 102x32
-            jswLabel 'type' 0,0 101x31
-              JLabel 1,1 99x29
+            jswLabel 'type' 3,0 98x31
+              JLabel 1,1 96x29
           jswCell 'acell' 152,1 957x32
-            jswLabel 'Jones  Carol' 0,0 956x31
-              JLabel 1,1 954x29
+            jswLabel 'Jones  Carol' 3,0 953x31
+              JLabel 1,1 951x29
           jswCell 'acell' 1107,1 89x32
-            jswVerticalPanel 'title' 0,0 88x31
-              jswButton 'EDIT ME.' 0,0 88x31
+            jswVerticalPanel 'title' 3,0 85x31
+              jswButton 'EDIT ME.' 0,0 85x31
                 JButton 0,0 82x30
           jswCell 'acell' 1107,1 89x32
-            jswButton 'EDIT ME..' 0,0 85x30
+            jswButton 'EDIT ME..' 3,0 85x30
               JButton 0,0 85x30
           jswCell 'acell' 2,33 52x32
-            jswLabel 'tags' 0,0 51x31
-              JLabel 1,1 49x29
+            jswLabel 'tags' 3,0 48x31
+              JLabel 1,1 46x29
           jswCell 'acell' 52,33 102x32
-            jswLabel 'type' 0,0 101x31
-              JLabel 1,1 99x29
+            jswLabel 'type' 3,0 98x31
+              JLabel 1,1 96x29
           jswCell 'acell' 152,33 957x32
-            jswLabel 'work; ' 0,0 956x31
-              JLabel 1,1 954x29
+            jswLabel 'work; ' 3,0 953x31
+              JLabel 1,1 951x29
           jswCell 'acell' 1107,33 89x32
-            jswVerticalPanel 'title' 0,0 88x31
-              jswButton 'EDIT ME.' 0,0 88x31
+            jswVerticalPanel 'title' 3,0 85x31
+              jswButton 'EDIT ME.' 0,0 85x31
                 JButton 0,0 82x30
           jswCell 'acell' 1107,33 89x32
-            jswButton 'EDIT ME..' 0,0 85x30
+            jswButton 'EDIT ME..' 3,0 85x30
               JButton 0,0 85x30
           jswCell 'acell' 2,65 52x32
-            jswLabel 'tid' 0,0 51x31
-              JLabel 1,1 49x29
+            jswLabel 'tid' 3,0 48x31
+              JLabel 1,1 46x29
           jswCell 'acell' 52,65 102x32
-            jswLabel 'type' 0,0 101x31
-              JLabel 1,1 99x29
+            jswLabel 'type' 3,0 98x31
+              JLabel 1,1 96x29
           jswCell 'acell' 152,65 957x32
-            jswLabel 'Jones  Carol' 0,0 956x31
-              JLabel 1,1 954x29
+            jswLabel 'Jones  Carol' 3,0 953x31
+              JLabel 1,1 951x29
           jswCell 'acell' 1107,65 89x32
-            jswVerticalPanel 'title' 0,0 88x31
-              jswButton 'EDIT ME.' 0,0 88x31
+            jswVerticalPanel 'title' 3,0 85x31
+              jswButton 'EDIT ME.' 0,0 85x31
                 JButton 0,0 82x30
           jswCell 'acell' 1107,65 89x32
-            jswButton 'EDIT ME..' 0,0 85x30
+            jswButton 'EDIT ME..' 3,0 85x30
               JButton 0,0 85x30
         jswHorizontalPanel 'HP:' 0,160 1196x50
           jswDropDownBox 'Select:' 5,5 100x40

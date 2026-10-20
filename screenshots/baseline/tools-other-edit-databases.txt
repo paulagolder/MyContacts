@@ -27,22 +27,22 @@ JPanel 0,0 1200x900
                       JButton 0,0 72x30
                   jswTable 'dbfound' 0,70 971x32
                     jswCell 'acell' 2,1 86x28
-                      jswLabel 'test.sqlite' 0,0 85x27
-                        JLabel 1,1 83x25
+                      jswLabel 'test.sqlite' 3,0 82x27
+                        JLabel 1,1 80x25
                     jswCell 'acell' 86,1 646x28
-                      jswLabel '/home/paul/Development/GitHubWorkspace/myContacts/build/screenshots/home/.mccontacts/test.sqlite' 0,0 645x27
-                        JLabel 1,1 643x25
+                      jswLabel '/home/paul/Development/GitHubWorkspace/myContacts/build/screenshots/home/.mccontacts/test.sqlite' 3,0 642x27
+                        JLabel 1,1 640x25
                     jswCell 'acell' 730,1 26x28
-                      jswLabel 'yes' 0,0 25x27
-                        JLabel 1,1 23x25
+                      jswLabel 'yes' 3,0 22x27
+                        JLabel 1,1 20x25
                     jswCell 'acell' 754,1 13x28
-                      jswLabel '3' 0,0 12x27
-                        JLabel 1,1 10x25
+                      jswLabel '3' 3,0 9x27
+                        JLabel 1,1 7x25
                     jswCell 'acell' 765,1 121x28
-                      jswLabel '2026-01-01 12:00:00' 0,0 120x27
-                        JLabel 1,1 118x25
+                      jswLabel '2026-01-01 12:00:00' 3,0 117x27
+                        JLabel 1,1 115x25
                     jswCell 'acell' 884,1 87x28
-                      jswHorizontalPanel 'HP:' 0,0 86x27
+                      jswHorizontalPanel 'HP:' 3,0 83x27
                         jswOptionset 'options' 0,0 83x27
                           jswOption 'select' 1,2 79x24
                             JRadioButton 0,0 55x20

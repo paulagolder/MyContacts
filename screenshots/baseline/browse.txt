@@ -46,14 +46,14 @@ JPanel 0,0 1200x863
             JButton 0,0 72x30
         jswTable 'attributes' 0,30 1196x31
           jswCell 'acell' 2,1 41x27
-            jswLabel 'tags' 0,0 40x26
-              JLabel 1,1 38x24
+            jswLabel 'tags' 3,0 37x26
+              JLabel 1,1 35x24
           jswCell 'acell' 41,1 1151x27
-            jswLabel 'work; ' 0,0 1150x26
-              JLabel 1,1 1148x24
+            jswLabel 'work; ' 3,0 1147x26
+              JLabel 1,1 1145x24
           jswCell 'acell' 1190,1 6x27
-            jswLabel '' 0,0 5x26
-              JLabel 1,1 3x24
+            jswLabel '' 3,0 2x26
+              JLabel 1,1 0x24
         jswLabel 'Correspondance' 0,61 101x20
           JLabel 1,1 99x18
         correspondancePanel 'correspondance panel' 0,81 1196x652

@@ -33,11 +33,11 @@ JPanel 0,0 1200x900
                       JViewport 1,1 1186x694
                         jswTable 'members' 0,0 1186x694
                           jswCell 'acell' 2,1 102x32
-                            jswLabel 'Smith  Alice' 0,0 101x31
-                              JLabel 1,1 99x29
+                            jswLabel 'Smith  Alice' 3,0 98x31
+                              JLabel 1,1 96x29
                           jswCell 'acell' 102,1 86x32
-                            jswButton 'REMOVE' 0,0 82x30
+                            jswButton 'REMOVE' 3,0 82x30
                               JButton 0,0 82x30
                           jswCell 'acell' 186,1 1000x32
-                            jswButton 'DELETE' 0,0 74x30
+                            jswButton 'DELETE' 3,0 74x30
                               JButton 0,0 74x30
