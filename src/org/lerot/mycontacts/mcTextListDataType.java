@@ -1,6 +1,6 @@
 package org.lerot.mycontacts;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -166,7 +166,7 @@ public class mcTextListDataType extends mcDataType
 		String sep = "";
 		for (String atoken : tokenlist)
 		{
-			String outtag = StringEscapeUtils.escapeXml(atoken);
+			String outtag = StringEscapeUtils.escapeXml10(atoken);
 			if (outtag.contains(",")) outtag = "\"" + outtag + "\"";
 			outxml += sep + outtag;
 			sep = ",";

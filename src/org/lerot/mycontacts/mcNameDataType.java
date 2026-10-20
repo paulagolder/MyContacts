@@ -1,6 +1,6 @@
 package org.lerot.mycontacts;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -208,7 +208,7 @@ public class mcNameDataType extends mcKeyValueDataType
 		{
 			String key = entry.getKey().trim();
 			String value = entry.getValue().trim();
-			String escvalue = StringEscapeUtils.escapeXml(value);
+			String escvalue = StringEscapeUtils.escapeXml10(value);
 			outxml += "  <field key='" + key + "' value='" + escvalue
 					+ "' />\n";
 		}

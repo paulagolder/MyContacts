@@ -1,6 +1,6 @@
 package org.lerot.mycontacts;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.sql.Timestamp;
 import java.util.LinkedHashMap;
@@ -59,7 +59,7 @@ public class mcTimeDataType extends mcDataType
 		@Override
 		public String toXML(String value)
 		{
-			return "  <value>"+StringEscapeUtils.escapeXml(value)+"</value>";
+			return "  <value>"+StringEscapeUtils.escapeXml10(value)+"</value>";
 		}
 
 		@Override

@@ -1,7 +1,7 @@
 package org.lerot.mycontacts;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.StringEscapeUtils;
+import org.apache.commons.text.WordUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -393,7 +393,7 @@ public abstract class mcKeyValueDataType extends mcDataType
 				if (value != null && !value.isEmpty()
 						&& !value.equalsIgnoreCase("null"))
 				{
-					String escvalue = StringEscapeUtils.escapeXml(value);
+					String escvalue = StringEscapeUtils.escapeXml10(value);
 					outxml += "  <field key='" + entry.getKey() + "' value='"
 							+ escvalue + "' />\n";
 				}

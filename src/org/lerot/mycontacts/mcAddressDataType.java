@@ -1,6 +1,6 @@
 package org.lerot.mycontacts;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.dom4j.Document;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
@@ -370,7 +370,7 @@ public class mcAddressDataType extends mcKeyValueDataType
 	protected String toXMLnonArray(String svalue)
 	{
 		String outxml = "";
-		String escvalue = StringEscapeUtils.escapeXml(svalue);
+		String escvalue = StringEscapeUtils.escapeXml10(svalue);
 		outxml += "  <field key='address' value='" + escvalue + "' />\n";
 		return outxml;
 	}

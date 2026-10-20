@@ -2,7 +2,7 @@ package org.lerot.mycontacts;
 
 import ezvcard.VCard;
 import ezvcard.property.StructuredName;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -991,7 +991,7 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
 
     public String toXML(Vector<String> attkeys)
     {
-        String xmlout = "<contact tid='" + StringEscapeUtils.escapeXml(getTID())
+        String xmlout = "<contact tid='" + StringEscapeUtils.escapeXml10(getTID())
                 + "' kind='" + getKind() + "' CID='" + getID() + "'   >" + "\n";
         for (String attkey : attkeys)
         {
@@ -1022,7 +1022,7 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
                         } else
                         {
                             System.out.println(" found link " + anattribute+"::"+acontacttid);
-                            xmlout += anattribute.toXML(StringEscapeUtils.escapeXml(acontacttid));
+                            xmlout += anattribute.toXML(StringEscapeUtils.escapeXml10(acontacttid));
                         }
                     }
 
@@ -1045,7 +1045,7 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
 
     public String toXCard(Vector<String> attkeys, mcMappings notusedhere)
     {
-        String xmlout = "<contact id='" + StringEscapeUtils.escapeXml(getTID())
+        String xmlout = "<contact id='" + StringEscapeUtils.escapeXml10(getTID())
                 + "' type='" + getKind() + "'   >" + "\n";
         for (String attkey : attkeys)
         {

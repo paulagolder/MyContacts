@@ -1,6 +1,6 @@
 package org.lerot.mycontacts;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.util.*;
 
@@ -265,7 +265,7 @@ public class mcTagListDataType extends mcTextListDataType
 		String sep = "";
 		for (String atag : taglist)
 		{
-			String outtag = StringEscapeUtils.escapeXml(atag);
+			String outtag = StringEscapeUtils.escapeXml10(atag);
 			if (outtag.contains(",")) outtag = "\"" + outtag + "\"";
 			outxml += sep + outtag;
 			sep = ",";
