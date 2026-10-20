@@ -66,19 +66,23 @@ public class manageTagsPanel extends jswVerticalPanel implements ActionListener
 
 				mergeto.replace(";", "");
 				mergeto = mergeto + ";";
-				for (jswCheckbox checkbox : checkboxes)
+				final String target = mergeto;
+				MyContacts.dbTransaction("Merging tags", () ->
 				{
-					if (checkbox != null && checkbox.isSelected())
+					for (jswCheckbox checkbox : checkboxes)
 					{
-						String mergefrom = checkbox.getTag();
-						mergefrom.replace(";", "");
-						mergefrom = mergefrom + ";";
-						if (!mergeto.equals(mergefrom))
+						if (checkbox != null && checkbox.isSelected())
 						{
-							tagList.replaceall("tags", mergefrom, mergeto);
+							String mergefrom = checkbox.getTag();
+							mergefrom.replace(";", "");
+							mergefrom = mergefrom + ";";
+							if (!target.equals(mergefrom))
+							{
+								tagList.replaceall("tags", mergefrom, target);
+							}
 						}
 					}
-				}
+				});
 			}
 			System.out.println("merging");
 		} else if (action.equals("DELETE"))
@@ -101,23 +105,24 @@ public class manageTagsPanel extends jswVerticalPanel implements ActionListener
 						"DELETE TAGS?", JOptionPane.YES_NO_OPTION);
 				if (n == YES)
 				{
-					for (jswCheckbox checkbox : checkboxes)
+					MyContacts.dbTransaction("Deleting tags", () ->
 					{
-						if (checkbox != null && checkbox.isSelected())
+						for (jswCheckbox checkbox : checkboxes)
 						{
-							String todelete = checkbox.getTag();
-                            tagList.delete("tags",todelete);
-							//(new mctagList()).delete("tags", todelete);
-
+							if (checkbox != null && checkbox.isSelected())
+							{
+								String todelete = checkbox.getTag();
+								tagList.delete("tags",todelete);
+							}
 						}
-					}
+					});
 				}
 			}
 			System.out.println("deleting");
 
 		} else if (action.equals("NORM"))
 		{
-			tagList.renorm();
+			MyContacts.dbTransaction("Normalising tags", () -> tagList.renorm());
 			System.out.println("norminging");
 		} else if (action.equals("RENAME"))
 		{
@@ -138,16 +143,18 @@ public class manageTagsPanel extends jswVerticalPanel implements ActionListener
 				newtag = newtag + ";";
 				if (newtag.length() > 4)
 				{
-
-					for (jswCheckbox checkbox : checkboxes)
+					final String renameto = newtag;
+					MyContacts.dbTransaction("Renaming tags", () ->
 					{
-						if (checkbox != null && checkbox.isSelected())
+						for (jswCheckbox checkbox : checkboxes)
 						{
-							String changefrom = checkbox.getTag();
-							tagList.replaceall("tags", changefrom, newtag);
-							row++;
+							if (checkbox != null && checkbox.isSelected())
+							{
+								String changefrom = checkbox.getTag();
+								tagList.replaceall("tags", changefrom, renameto);
+							}
 						}
-					}
+					});
 				}
 			}
 
@@ -172,16 +179,18 @@ public class manageTagsPanel extends jswVerticalPanel implements ActionListener
 				newtag =  newtag + ";";
 				if (newtag.length() > 4)
 				{
-
-					for (jswCheckbox checkbox : checkboxes)
+					final String copyto = newtag;
+					MyContacts.dbTransaction("Copying tags", () ->
 					{
-						if (checkbox != null && checkbox.isSelected())
+						for (jswCheckbox checkbox : checkboxes)
 						{
-							String changefrom = checkbox.getTag();
-							tagList.duplicateall("tags", changefrom, newtag);
-							row++;
+							if (checkbox != null && checkbox.isSelected())
+							{
+								String changefrom = checkbox.getTag();
+								tagList.duplicateall("tags", changefrom, copyto);
+							}
 						}
-					}
+					});
 				}
 			}
 

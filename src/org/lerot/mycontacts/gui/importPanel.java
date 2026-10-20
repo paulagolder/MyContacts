@@ -67,6 +67,7 @@ public class importPanel extends jswVerticalPanel implements ActionListener
 				break;
 			}
 			forcedselect = createContact(type);
+			if (forcedselect == null) return; // not saved; user already told
 			String seltid = forcedselect.getTID();
 			mcImportAttribute tidattribute = new mcImportAttribute("TID",
 					seltid, "HIDE");
@@ -307,6 +308,7 @@ public class importPanel extends jswVerticalPanel implements ActionListener
 		} else if (action.equals("CREATECONTACT"))
 		{
 			forcedselect = createContact("person");
+			if (forcedselect == null) return; // not saved; user already told
 			String seltid = forcedselect.getTID();
 			mcImportAttribute tidattribute = new mcImportAttribute("TID",
 					seltid, "HIDE");
@@ -750,38 +752,43 @@ public class importPanel extends jswVerticalPanel implements ActionListener
 		mcContact newcontact = new mcContact();
 		//newcontact.setKind(group);
 		newcontact.setTID(newname);
-		newcontact.insertNewContact();
-		newcontact.updateAttributebyKey("name", newname);
-		newcontact.updateAttributebyKey("tags", "imported");
-		// int importrownumber = currentimport.getRownumber();
-		mcImportAttribute tidattribute = new mcImportAttribute("TID", newname,
-				"HIDE");
-		attributes.addImportAttribute(tidattribute);
-		mcImportAttribute statusattribute = new mcImportAttribute(
-				"IMPORTSTATUS", "contactfound", "HIDE");
-		attributes.addImportAttribute(statusattribute);
-		currentimport.setTID(newname);
-		currentimport.setImportstatus("contactfound");
-		currentimport.update();
-
-		for (jswCheckbox anupdate : doupdate)
+		final String contactname = newname;
+		// the new contact and its import status are saved together or not at all
+		boolean saved = MyContacts.dbTransaction("Creating contact " + newname, () ->
 		{
-			if (anupdate != null && anupdate.isSelected())
+			newcontact.insertNewContact();
+			newcontact.updateAttributebyKey("name", contactname);
+			newcontact.updateAttributebyKey("tags", "imported");
+			// int importrownumber = currentimport.getRownumber();
+			mcImportAttribute tidattribute = new mcImportAttribute("TID", contactname,
+					"HIDE");
+			attributes.addImportAttribute(tidattribute);
+			mcImportAttribute statusattribute = new mcImportAttribute(
+					"IMPORTSTATUS", "contactfound", "HIDE");
+			attributes.addImportAttribute(statusattribute);
+			currentimport.setTID(contactname);
+			currentimport.setImportstatus("contactfound");
+			currentimport.update();
+
+			for (jswCheckbox anupdate : doupdate)
 			{
-				String attkey = anupdate.getTag();
-				mcImportAttribute editatt = attributes.get(attkey);
-				if (editatt != null)
+				if (anupdate != null && anupdate.isSelected())
 				{
-					String attvalue = editatt.getValue();
-					System.out.println(" update to " + editatt.getValue());
-					newcontact.updateAttributebyKey(attkey, attvalue);
-				} else
-				{
-					System.out.println(" not found " + attkey);
+					String attkey = anupdate.getTag();
+					mcImportAttribute editatt = attributes.get(attkey);
+					if (editatt != null)
+					{
+						String attvalue = editatt.getValue();
+						System.out.println(" update to " + editatt.getValue());
+						newcontact.updateAttributebyKey(attkey, attvalue);
+					} else
+					{
+						System.out.println(" not found " + attkey);
+					}
 				}
 			}
-		}
-		return newcontact;
+		});
+		return saved ? newcontact : null;
 
 	}
 

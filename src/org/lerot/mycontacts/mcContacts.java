@@ -1132,15 +1132,19 @@ public class mcContacts extends mcDataObject
 	{
 		//System.out.println("reloading all contacts ");
 		contactlist = new TreeMap<String, mcContact>(new MyContactComparator());
-		String query = "drop  table if exists allcontacts";
-		doExecute(query);
-		doExecute(query);
-		String query2 = "create table allcontacts  as SELECT  DISTINCT  t1.cid as 'cid' ,'tid' as 'tid' , 'done'  as 'tags' FROM attributeValues as t1 ; "; 
-		doExecute(query2);
-		String query3 = "update allcontacts  set tid = (select value from attributevalues av where allcontacts.cid = av.cid and av.root = 'tid');";
-		doExecute(query3);
-		String query4 = "update allcontacts  set tags = (select value from attributevalues av where allcontacts.cid = av.cid and av.root = 'tags');";
-		doExecute(query4);
+		// rebuild the allcontacts summary table in one step, so it is never
+		// left missing or half filled
+		ds().transaction(() ->
+		{
+			String query = "drop  table if exists allcontacts";
+			doExecute(query);
+			String query2 = "create table allcontacts  as SELECT  DISTINCT  t1.cid as 'cid' ,'tid' as 'tid' , 'done'  as 'tags' FROM attributeValues as t1 ; ";
+			doExecute(query2);
+			String query3 = "update allcontacts  set tid = (select value from attributevalues av where allcontacts.cid = av.cid and av.root = 'tid');";
+			doExecute(query3);
+			String query4 = "update allcontacts  set tags = (select value from attributevalues av where allcontacts.cid = av.cid and av.root = 'tags');";
+			doExecute(query4);
+		});
 		//String query5 = "select * from allcontacts where not tags like '%.%' ;";
 		String query5 = "select * from allcontacts where tags is null or tags not like '%.%' ;";
 		 ArrayList<Map<String, String>> rows = doQuery(query5);
@@ -1221,14 +1225,15 @@ public class mcContacts extends mcDataObject
 		return contactlist.size();
 	}
 
-	public void deleteAllContacts()
+	public boolean deleteAllContacts()
 	{
-		for (Entry<String, mcContact> anentry : contactlist.entrySet())
+		return ds().transaction(() ->
 		{
-			mcContact acontact = anentry.getValue();
-       	acontact.deleteContact();
-		}
-
+			for (mcContact acontact : new ArrayList<>(contactlist.values()))
+			{
+				acontact.deleteContact();
+			}
+		});
 	}
 
 	

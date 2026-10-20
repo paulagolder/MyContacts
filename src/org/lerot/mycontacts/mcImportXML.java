@@ -20,6 +20,7 @@ public class mcImportXML extends mcImports
 	int maxcid = 0;
 	int newobjects=0;
 	int changedobjects =0;
+	int failedobjects = 0;
 	jswLabel message;
 	static String[] Nfields = { "sn", "fn", "mn", "title", "sufix" };
 	static String[] ADRfields = { "pobox", "extaddr", "street", "city",
@@ -69,11 +70,17 @@ public class mcImportXML extends mcImports
 					if (existingcontact == null)
 					{
 						System.out.println(" make new  contact :" + importedcontact);
-						mcContact newcontact = new mcContact(importedcontact);
-					
-						int cid = newcontact.insertNewContact();
-						newcontact.updateContact();
-    					newobjects++;
+						// each contact is saved completely or not at all
+						boolean saved = MyContacts.topgui.currentcon.transaction(() ->
+						{
+							mcContact newcontact = new mcContact(importedcontact);
+							newcontact.insertNewContact();
+							newcontact.updateContact();
+						});
+						if (saved)
+							newobjects++;
+						else
+							failedobjects++;
 					} else
 					{
 	//		            System.out.println(" found "+existingcontact);
@@ -91,10 +98,13 @@ public class mcImportXML extends mcImports
 										.updateContact(importedcontact);
 								 if(changes>0)
 								 {
-								 existingcontact.updateContact();
-								 System.out.println(
+								 if (existingcontact.updateContact())
+								 {
+									 System.out.println(
 											" updated contact  :" + importedcontact + " "+changes);
-								 changedobjects++;
+									 changedobjects++;
+								 } else
+									 failedobjects++;
 								 }
 							}
 							k++;
@@ -102,7 +112,8 @@ public class mcImportXML extends mcImports
 					}
 				}
 				System.out
-						.println(" imported: " + newobjects+ " Contacts  and updated :"+changedobjects);
+						.println(" imported: " + newobjects+ " Contacts  and updated :"+changedobjects
+								+ (failedobjects > 0 ? "  FAILED: " + failedobjects : ""));
 			}
 
 		} catch (ParserConfigurationException pce)
@@ -118,7 +129,8 @@ public class mcImportXML extends mcImports
 
 		if (message != null)
 		{
-			message.setText("loaded  " + " contacts " + getCurrentposition());
+			message.setText("loaded  " + " contacts " + getCurrentposition()
+					+ (failedobjects > 0 ? "  (" + failedobjects + " failed, see console)" : ""));
 			message.repaint();
 		}
 		return exceptions;

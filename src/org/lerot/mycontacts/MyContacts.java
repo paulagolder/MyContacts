@@ -220,6 +220,21 @@ public class MyContacts extends JFrame implements ActionListener
         mframe.setLocation(x, y);
     }
 
+    // Run database work from the GUI as one transaction. If it fails nothing
+    // is saved, so tell the user and reload the contact list from the database.
+    public static boolean dbTransaction(String what, Runnable work)
+    {
+        boolean ok = topgui.currentcon.transaction(work);
+        if (!ok)
+        {
+            JOptionPane.showMessageDialog(mframe,
+                    what + " failed, so no changes were saved.\nSee the console output for details.",
+                    "Database error", JOptionPane.ERROR_MESSAGE);
+            if (selbox != null) selbox.refreshAllContacts("rollback");
+        }
+        return ok;
+    }
+
     public static void initiateStyles()
     {
         panelstyles = jswStyles.getDefaultStyles();

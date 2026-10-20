@@ -100,6 +100,7 @@ public class mctagList extends mcDataObject
 		} catch (Exception e)
 		{
 			e.printStackTrace();
+			ds().markFailed();
 		}
 
 	}

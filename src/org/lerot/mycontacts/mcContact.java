@@ -1093,16 +1093,19 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
         updateAttribute(part[0], part[1], newattributevalue);
     }
 
-    public void updateContact()
+    public boolean updateContact()
     {
-        for (Entry<String, mcAttribute> arec : attributes.entrySet())
+        return ds().transaction(() ->
         {
-            mcAttribute imatt = arec.getValue();
-            imatt.setID(this.getID());
-            if (!imatt.getRoot().equalsIgnoreCase("prodid/")
-                    && !imatt.getRoot().equalsIgnoreCase("version/"))
-                imatt.dbupsertAttribute();
-        }
+            for (Entry<String, mcAttribute> arec : attributes.entrySet())
+            {
+                mcAttribute imatt = arec.getValue();
+                imatt.setID(this.getID());
+                if (!imatt.getRoot().equalsIgnoreCase("prodid/")
+                        && !imatt.getRoot().equalsIgnoreCase("version/"))
+                    imatt.dbupsertAttribute();
+            }
+        });
     }
 
     public void updateContactTID(String text)

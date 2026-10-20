@@ -83,16 +83,20 @@ public class mergeContactPanel extends jswVerticalPanel implements
 			}
 			if (mergeto != null && mergefromlist.size() > 0)
 			{
-				for (mcContact acontact : mergefromlist)
+				final mcContact target = mergeto;
+				MyContacts.dbTransaction("Merging contacts", () ->
 				{
-					mergeto.mergeContact(acontact);
-					System.out.println("deleteing" + acontact);
-					MyContacts.selbox.remove(acontact);
-                    acontact.deleteContact();
-				}
-                System.out.println( mergeto.toString());
-                mergeto.getAttributes().printList("++");
-                mergeto.updateContact();
+					for (mcContact acontact : mergefromlist)
+					{
+						target.mergeContact(acontact);
+						System.out.println("deleteing" + acontact);
+						MyContacts.selbox.remove(acontact);
+						acontact.deleteContact();
+					}
+					System.out.println( target.toString());
+					target.getAttributes().printList("++");
+					target.updateContact();
+				});
 			}
 			System.out.println("merging");
 		} else

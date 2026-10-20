@@ -62,7 +62,6 @@ public class deleteContactPanel extends jswVerticalPanel implements
 		
 		if (action.equals("DELETESEL"))
 		{
-			int delcount = 0;
 			deletelist = new Vector<mcContact>();
 			//mcContact mergeto = null;
 			int row = 0;
@@ -71,22 +70,19 @@ public class deleteContactPanel extends jswVerticalPanel implements
 				if (checkboxlist[row].isSelected())
 				{
 					deletelist.add(acontact);
-					acontact.deleteContact();
-					System.out.println("deleting"+acontact);
-					delcount++;
 				}
 				row++;
 			}
-			
-			System.out.println("deleted "+delcount);
-			for(mcContact dcontact : deletelist)
+			if (deleteContacts(deletelist))
 			{
-				deleteablelist.remove(dcontact);
+				for(mcContact dcontact : deletelist)
+				{
+					deleteablelist.remove(dcontact);
+				}
 			}
 			refresh();
 		} else if (action.equals("DELETEUNSEL"))
 		{
-			int delcount = 0;
 			deletelist = new Vector<mcContact>();
 			//mcContact mergeto = null;
 			int row = 0;
@@ -95,17 +91,15 @@ public class deleteContactPanel extends jswVerticalPanel implements
 				if (!checkboxlist[row].isSelected())
 				{
 					deletelist.add(acontact);
-					acontact.deleteContact();
-					System.out.println("deleting"+acontact);
-					delcount++;
 				}
 				row++;
 			}
-			
-			System.out.println("deleted "+delcount);
-			for(mcContact dcontact : deletelist)
+			if (deleteContacts(deletelist))
 			{
-				deleteablelist.remove(dcontact);
+				for(mcContact dcontact : deletelist)
+				{
+					deleteablelist.remove(dcontact);
+				}
 			}
 			refresh();
 		} else
@@ -113,6 +107,20 @@ public class deleteContactPanel extends jswVerticalPanel implements
 					+ " unrecognised ");
 
 		MyContacts.topgui.getContentPane().validate();
+	}
+
+	// delete all or none of the contacts
+	private boolean deleteContacts(Vector<mcContact> contacts)
+	{
+		return MyContacts.dbTransaction("Deleting contacts", () ->
+		{
+			for (mcContact acontact : contacts)
+			{
+				acontact.deleteContact();
+				System.out.println("deleting" + acontact);
+			}
+			System.out.println("deleted " + contacts.size());
+		});
 	}
 
 	
