@@ -54,6 +54,12 @@ class ContactStoreTest
 	}
 
 	@Test
+	void namesKeepTheirApostrophes()
+	{
+		assertEquals("Bob O'Brien", store.find(2).orElseThrow().name());
+	}
+
+	@Test
 	void missingFieldsAreNull()
 	{
 		ContactCard bob = store.find(2).orElseThrow();

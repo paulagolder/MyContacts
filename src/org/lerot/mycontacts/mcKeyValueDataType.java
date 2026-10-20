@@ -59,7 +59,7 @@ public abstract class mcKeyValueDataType extends mcDataType
 		{
 			String fieldname = akey;
 			String newfieldvalue = valuelist.get(f);
-			newstr += fieldname + ":\"" + newfieldvalue + "\"" + ",";
+			newstr += fieldname + ":" + mcUtilities.quoteValue(newfieldvalue) + ",";
 			f++;
 		}
 		StringBuilder b = new StringBuilder(newstr);
@@ -112,7 +112,7 @@ public abstract class mcKeyValueDataType extends mcDataType
 			if (avalue != null && !avalue.isEmpty()  && !avalue.trim().isEmpty())
 			{
 				String akey = entry.getKey().getKey().toLowerCase();
-				valuestring = valuestring + sep + akey + "=\"" + avalue+ "\" ";
+				valuestring = valuestring + sep + akey + "=" + mcUtilities.quoteValue(avalue) + " ";
 				sep = ", ";
 			}
 
@@ -133,7 +133,7 @@ public abstract class mcKeyValueDataType extends mcDataType
 			if (avalue != null && !avalue.isEmpty())
 			{
 				String akey = entry.getKey().toLowerCase();
-				valuestring = valuestring + sep + akey + "=\"" + avalue + "\" ";
+				valuestring = valuestring + sep + akey + "=" + mcUtilities.quoteValue(avalue) + " ";
 				sep = ", ";
 			}
 
@@ -413,17 +413,21 @@ public abstract class mcKeyValueDataType extends mcDataType
 		int l = text.length();
 		int i = 0;
 		String token = "";
-		char sep =';';
-		if(!text.contains(";")) sep =',';
+		char sep = separator(text);
 		int count = 0;
 		boolean instring = false;
-		char endquote = '"'; // problem here single also
+		char endquote = '"';
 		while (i < l)
 		{
 			char c = text.charAt(i);
 			if (instring)
 			{
-				if (c == endquote) instring = false;
+				if (c == '\\' && i + 1 < l)
+				{
+					// an escaped character inside quotes: \' \" \\
+					i++;
+					token = token + text.charAt(i);
+				} else if (c == endquote) instring = false;
 				else
 					token = token + c;
 			} else
@@ -459,6 +463,23 @@ public abstract class mcKeyValueDataType extends mcDataType
 			count = count + 1;
 		}
 		return outarray;
+	}
+
+	// fields are separated by ';' if there is one outside quoted values, else ','
+	private static char separator(String text)
+	{
+		char quote = 0;
+		for (int i = 0; i < text.length(); i++)
+		{
+			char c = text.charAt(i);
+			if (quote != 0)
+			{
+				if (c == '\\') i++;
+				else if (c == quote) quote = 0;
+			} else if (c == '\'' || c == '"') quote = c;
+			else if (c == ';') return ';';
+		}
+		return ',';
 	}
 
 	private static String[] parseToken(String token, int r)
@@ -497,12 +518,8 @@ public abstract class mcKeyValueDataType extends mcDataType
 		{
 			parsed[0] = (new Integer(r)).toString();
 		}
-		int l = parsed[1].length();
-		if (l > 2)
-		{
-			if (parsed[1].startsWith("'") || parsed[1].startsWith("\""))
-				parsed[1] = parsed[1].substring(1, l - 1);
-		}
+		// quotes were already taken off while reading the token; any left
+		// (escaped) are part of the value
 		return parsed;
 	}
 
@@ -612,12 +629,12 @@ public abstract class mcKeyValueDataType extends mcDataType
 							if (darry.get(lsep) != null && !darry.get(lsep).isEmpty()
 									&& !darry.get(lsep).equalsIgnoreCase("null"))
 							{
-								String tvalue = darry.get(lsep).toLowerCase() ;
+								String tvalue = darry.get(lsep);
 								switch (wordcap)
 								{
-								
+
 								case 1:
-									tvalue = WordUtils.capitalize(tvalue);
+									tvalue = capitalise(tvalue);
 									break;
 								case 2:
 									tvalue = tvalue.toUpperCase();
@@ -639,6 +656,24 @@ public abstract class mcKeyValueDataType extends mcDataType
 				}
 				output = output.trim();
 				return output;		
+	}
+
+	/*
+	 * Capitalise a name as written in a capitalised format field ("Sn"),
+	 * word by word: a word typed all in lower or upper case gets a capital at
+	 * its start and after a hyphen or apostrophe (o'brien -> O'Brien,
+	 * SMITH-JONES -> Smith-Jones); a word already in mixed case (McDonald,
+	 * O'Brien) is kept as typed.
+	 */
+	static String capitalise(String value)
+	{
+		StringBuilder out = new StringBuilder();
+		for (String word : value.split("(?<= )|(?= )"))
+		{
+			boolean mixed = !word.equals(word.toLowerCase()) && !word.equals(word.toUpperCase());
+			out.append(mixed ? word : WordUtils.capitalize(word.toLowerCase(), '-', '\''));
+		}
+		return out.toString();
 	}
 
 	private int detectCase(String sep)

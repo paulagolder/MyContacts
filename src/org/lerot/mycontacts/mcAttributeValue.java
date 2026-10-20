@@ -173,11 +173,7 @@ public class mcAttributeValue
 					Element fld = (Element) nl.item(i);
 					String key = fld.getAttribute("key");
 					String value = fld.getAttribute("value");
-					if (value.contains("'"))
-					{
-						outline = outline + key + ":\"" + value + "\" , ";
-					} else
-						outline = outline + key + ":\'" + value + "\' , ";
+					outline = outline + key + ":" + mcUtilities.quoteValue(value) + " , ";
 				}
 				outline += " }";
 				setValue(outline,updated);

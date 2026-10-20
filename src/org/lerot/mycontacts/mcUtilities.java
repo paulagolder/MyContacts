@@ -242,18 +242,9 @@ public class mcUtilities
 						outarray.put(Integer.toString(count), token);
 					} else
 					{
+						// quotes were already taken off while reading the token
 						String key = token.substring(0, k).trim();
 						String value = token.substring(k + 1).trim();
-						if (value != null && value.length() > 0)
-						{
-							if (value.charAt(0) == '\''
-									|| value.charAt(0) == '\"')
-								value = value.substring(1);
-							int tl = value.length();
-							if (value.charAt(tl - 1) == '\''
-									|| value.charAt(tl - 1) == '\"')
-								value = value.substring(tl - 1);
-						}
 						outarray.put(key, value);
 					}
 					token = "";
@@ -270,7 +261,12 @@ public class mcUtilities
 				}
 			} else
 			{
-				if (c == terminator.get(depth))
+				if (c == '\\' && i + 1 < l)
+				{
+					// an escaped character inside quotes: \' \" \\
+					i++;
+					token = token + csv_string.charAt(i);
+				} else if (c == terminator.get(depth))
 				{
 					depth = depth - 1;
 				}
@@ -293,16 +289,8 @@ public class mcUtilities
 			{
 				String key = token.substring(0, k).trim();
 				String value = token.substring(k + 1).trim();
-				if (value != null && value.length() != 0)
-				{
-					if (value.charAt(0) == '\'' || value.charAt(0) == '\"')
-						value = value.substring(1);
-					int tl = value.length();
-					if (value.charAt(tl - 1) == '\''
-							|| value.charAt(tl - 1) == '\"')
-						value = value.substring(tl - 1);
+				if (value.length() != 0)
 					outarray.put(key, value);
-				}
 			}
 		}
 		return outarray;
@@ -686,6 +674,22 @@ public class mcUtilities
 		return tidyvalue.trim();
 	}
 
+	/*
+	 * A value quoted for the { key:'value', ... } format of names, addresses
+	 * and dates: in ' quotes, or in " quotes if it contains an apostrophe; if
+	 * it has both kinds of quote (or a backslash), in ' quotes with \' and \\
+	 * escaped. Read back by parseArray / parse_csv and parseText.
+	 */
+	public static String quoteValue(String value)
+	{
+		if (value.indexOf('\\') < 0)
+		{
+			if (value.indexOf('\'') < 0) return "'" + value + "'";
+			if (value.indexOf('"') < 0) return "\"" + value + "\"";
+		}
+		return "'" + value.replace("\\", "\\\\").replace("'", "\\'") + "'";
+	}
+
 	public static String keyvaluesmaptoArrayString(Map<String, String> addmap, String sep)
 	{
 		String out = "{";
@@ -695,7 +699,7 @@ public class mcUtilities
 			String value = line.getValue();
 			if (value != null && !value.isEmpty())
 			{
-				out = out + key + sep + "'" + value + "', ";
+				out = out + key + sep + quoteValue(value) + ", ";
 			}
 		}
 		out += "}";

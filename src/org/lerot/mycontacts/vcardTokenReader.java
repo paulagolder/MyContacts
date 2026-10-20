@@ -187,7 +187,7 @@ public class vcardTokenReader
 			if (atoken != null && !atoken.trim().isEmpty())
 			{
 				if (!onlytoken.isEmpty()) out = out + ", ";
-				out = out + fieldlist[k] + ": \"" + atoken.trim() + "\"";
+				out = out + fieldlist[k] + ": " + mcUtilities.quoteValue(atoken.trim());
 				onlytoken = atoken;
 				j++;
 			}
