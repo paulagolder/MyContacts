@@ -57,7 +57,7 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.21.0")    // StringUtils
     implementation("org.apache.commons:commons-text:1.15.0")     // XML escaping, WordUtils
     implementation("commons-codec:commons-codec:1.23.0")       // vCard decoding
-    implementation("javax.mail:mail:1.4.7")                     // dropped emails
+    implementation("com.sun.mail:javax.mail:1.6.2")            // dropped emails
     implementation("com.itextpdf:itextpdf:5.5.3")               // PDF labels
     implementation("org.odftoolkit:simple-odf:0.6.6")           // letters (.odt)
     implementation("com.googlecode.ez-vcard:ez-vcard:0.12.1")   // vCard import/export
