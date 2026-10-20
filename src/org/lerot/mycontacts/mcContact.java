@@ -1240,7 +1240,7 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
         if (vcard.getEmails().size() > 0)
         {
             mcAttribute att = createAttribute("email", "vcard");
-            att.getAttributevalue().setValue(vcard.getEmails().get(0).toString(), "now");
+            att.getAttributevalue().setValue(vcard.getEmails().get(0).getValue(), "now");
         }
         if (vcard.getStructuredName() != null)
         {
@@ -1253,7 +1253,7 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
             mcAttribute att = createAttribute("name", "vcard");
             att.getAttributevalue().setValue(value, "now");
         }
-        if (vcard.getAddresses() != null)
+        if (!vcard.getAddresses().isEmpty())
         {
             ezvcard.property.Address ad = vcard.getAddresses().get(0);
             String value = "{";

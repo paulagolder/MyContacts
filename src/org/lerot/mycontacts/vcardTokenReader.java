@@ -91,7 +91,9 @@ public class vcardTokenReader
 				if (paramlist.containsKey("ENCODING"))
 				{
 					String encoding = paramlist.get("ENCODING");
-					if (encoding.equalsIgnoreCase("QUOTEDPRINTABLE"))
+					// vCards write it QUOTED-PRINTABLE; also accept the old spelling
+					if (encoding.equalsIgnoreCase("QUOTED-PRINTABLE")
+							|| encoding.equalsIgnoreCase("QUOTEDPRINTABLE"))
 					{
 						atoken.setEncoding("qp");
 						while (invalue.endsWith("="))
