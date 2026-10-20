@@ -62,6 +62,8 @@ dependencies {
     implementation("org.odftoolkit:simple-odf:0.9.0")           // letters (.odt)
     implementation("com.googlecode.ez-vcard:ez-vcard:0.12.2")   // vCard import/export
     implementation("com.formdev:flatlaf:3.7.2")                 // look and feel (used by mywidgets)
+    // odfdom logs through SLF4J; discard its messages (and the startup notice)
+    runtimeOnly("org.slf4j:slf4j-nop:1.7.36")
 
     // JUnit, for the tests only; it is not put in MyContacts.jar
     testImplementation(platform("org.junit:junit-bom:6.1.3"))
