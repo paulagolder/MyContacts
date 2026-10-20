@@ -59,7 +59,7 @@ dependencies {
     implementation("commons-codec:commons-codec:1.23.0")       // vCard decoding
     implementation("com.sun.mail:javax.mail:1.6.2")            // dropped emails
     implementation("com.itextpdf:itextpdf:5.5.13.6")           // PDF labels
-    implementation("org.odftoolkit:simple-odf:0.6.6")           // letters (.odt)
+    implementation("org.odftoolkit:simple-odf:0.9.0")           // letters (.odt)
     implementation("com.googlecode.ez-vcard:ez-vcard:0.12.2")   // vCard import/export
     implementation("com.formdev:flatlaf:3.7.2")                 // look and feel (used by mywidgets)
 
