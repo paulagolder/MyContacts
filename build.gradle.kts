@@ -54,8 +54,8 @@ dependencies {
     implementation("org.xerial:sqlite-jdbc:3.53.4.0")          // database driver
     implementation("org.dom4j:dom4j:2.2.0")                     // label/address templates
     implementation("jaxen:jaxen:2.0.6")                         // XPath for dom4j
-    implementation("org.apache.commons:commons-lang3:3.3.2")    // text escaping
-    implementation("commons-codec:commons-codec:1.10")          // vCard decoding
+    implementation("org.apache.commons:commons-lang3:3.21.0")    // text escaping
+    implementation("commons-codec:commons-codec:1.23.0")       // vCard decoding
     implementation("javax.mail:mail:1.4.7")                     // dropped emails
     implementation("com.itextpdf:itextpdf:5.5.3")               // PDF labels
     implementation("org.odftoolkit:simple-odf:0.6.6")           // letters (.odt)
@@ -79,6 +79,8 @@ tasks.test {
 
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
+    // list each use of a deprecated (outdated) method, not just a summary
+    options.compilerArgs.add("-Xlint:deprecation")
 }
 
 application {
