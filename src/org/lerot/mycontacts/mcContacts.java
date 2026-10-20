@@ -55,7 +55,7 @@ public class mcContacts extends mcDataObject
 		try
 		{
 			getConnection();
-			st = con.prepareStatement(query);
+			st = conn().prepareStatement(query);
 			ResultSet resset = st.executeQuery();
 
 			if (resset.next())
@@ -68,7 +68,7 @@ public class mcContacts extends mcDataObject
 			return ncid;
 		} catch (SQLException e)
 		{
-			e.printStackTrace();
+			mcDataObject.sqlError(e);
 		}
 		return -1;
 	}
@@ -1044,7 +1044,7 @@ public class mcContacts extends mcDataObject
 		{
 			getConnection();
 			String qterm =  "%" + searchterm + "%";
-			st = con.prepareStatement(query);
+			st = conn().prepareStatement(query);
 			st.setString(1,qterm );
 			st.setString(2, "%photo%");
 			st.setString(3, "%tag%");
@@ -1059,7 +1059,7 @@ public class mcContacts extends mcDataObject
 			return searchresults;
 		} catch (SQLException e)
 		{
-			e.printStackTrace();
+			mcDataObject.sqlError(e);
 		}
 		return searchresults;
 	}
@@ -1074,7 +1074,7 @@ public class mcContacts extends mcDataObject
 		try
 		{
 			getConnection();
-			st = con.prepareStatement(query);
+			st = conn().prepareStatement(query);
 			st.setString(1, "%" + searchterm + "%");
 			st.setString(2, "tags");
 			ResultSet resset = st.executeQuery();
@@ -1093,7 +1093,7 @@ public class mcContacts extends mcDataObject
 			return searchresults;
 		} catch (SQLException e)
 		{
-			e.printStackTrace();
+			mcDataObject.sqlError(e);
 		}
 
 		return searchresults;
@@ -1107,7 +1107,7 @@ public class mcContacts extends mcDataObject
 		try
 		{
 			getConnection();
-			st = con.prepareStatement(query);
+			st = conn().prepareStatement(query);
 			st.setString(1, "%" + searchterm + "%");
 			st.setString(2, "%tag%");
 			ResultSet resset = st.executeQuery();
@@ -1122,7 +1122,7 @@ public class mcContacts extends mcDataObject
 		} catch (SQLException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			mcDataObject.sqlError(e);
 		}
 		return searchresults;
 	}

@@ -25,14 +25,14 @@ public class mcDataTypes extends mcDataObject
 
 	public static  void loadTypes()
 	{
-		con = datasource.getConnection();
+		getConnection();
 		typelist = new HashMap<String, mcDataType>();
 		String datatype = "+";
 		String query = "select * from dataType order by key ";
 		PreparedStatement st;
 		try
 		{
-			st = con.prepareStatement(query);
+			st = conn().prepareStatement(query);
 			ResultSet resset = st.executeQuery();
 			while (resset.next())
 			{
@@ -53,7 +53,7 @@ public class mcDataTypes extends mcDataObject
 			vectoroftypes.add(atype);
 		}
 		System.out.println("loaded datatypes " +vectoroftypes.size());
-		datasource.disconnect();
+		disconnect();
 	}
 
 }

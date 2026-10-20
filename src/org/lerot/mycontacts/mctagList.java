@@ -26,8 +26,8 @@ public class mctagList extends mcDataObject
 		int k = 1;
 		try
 		{
-			con =  datasource.getConnection();
-			st = con.prepareStatement(query);
+			getConnection();
+			st = conn().prepareStatement(query);
 			ResultSet resset = st.executeQuery();
 			while (resset.next())
 			{
@@ -51,7 +51,7 @@ public class mctagList extends mcDataObject
 			}
 			st.close();
 			getTaglist().putAll(ustaglist);
-			datasource.disconnect();
+			disconnect();
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -65,8 +65,8 @@ public class mctagList extends mcDataObject
 		int k = 1;
 		try
 		{
-			con = datasource.getConnection();
-			st = con.prepareStatement(query);
+			getConnection();
+			st = conn().prepareStatement(query);
 			ResultSet resset = st.executeQuery();
 		
 			Vector<mcAttribute> attarr = new Vector<mcAttribute>();
@@ -84,7 +84,7 @@ public class mctagList extends mcDataObject
 				}
 			}
 			st.close();
-			datasource.disconnect();
+			disconnect();
 			k=0;
 			for (mcAttribute tatt : attarr)
 			{					
@@ -111,18 +111,18 @@ public class mctagList extends mcDataObject
 		PreparedStatement st;
 		try
 		{
-			con =  datasource.getConnection();
-			st = con.prepareStatement(query);
+			getConnection();
+			st = conn().prepareStatement(query);
 			st.setString(1,  mergefrom );
 			st.setString(2,  mergeto );
 			st.setString(3, attkey + "%");
 			System.out.println("After : " + st.toString());
 			st.executeUpdate();
 			st.close();
-			datasource.disconnect();
+			disconnect();
 		} catch (SQLException e)
 		{
-			e.printStackTrace();
+			mcDataObject.sqlError(e);
 		}
 	}
 	
@@ -132,18 +132,18 @@ public class mctagList extends mcDataObject
 		PreparedStatement st;
 		try
 		{
-			con =  datasource.getConnection();
-			st = con.prepareStatement(query);
+			getConnection();
+			st = conn().prepareStatement(query);
 			st.setString(1, newtag );
 			st.setString(2, attkey + "%");
 			st.setString(3, "%"+oldtag + ",%");
 			//System.out.println("After : " + st.toString());
 			st.executeUpdate();
 			st.close();
-			datasource.disconnect();
+			disconnect();
 		} catch (SQLException e)
 		{
-			e.printStackTrace();
+			mcDataObject.sqlError(e);
 		}
 	}
 
@@ -153,18 +153,18 @@ public class mctagList extends mcDataObject
 		PreparedStatement st;
 		try
 		{
-			con =  datasource.getConnection();
-			st = con.prepareStatement(query);
+			getConnection();
+			st = conn().prepareStatement(query);
 			st.setString(1,  todelete );
 			st.setString(2, attkey);
 
 			st.executeUpdate();
 
 			st.close();
-			datasource.disconnect();
+			disconnect();
 		} catch (SQLException e)
 		{
-			e.printStackTrace();
+			mcDataObject.sqlError(e);
 		}
 
 	}

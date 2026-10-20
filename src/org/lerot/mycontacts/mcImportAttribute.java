@@ -70,14 +70,14 @@ public class mcImportAttribute extends mcDataObject
 			PreparedStatement st;
 			String query = " delete from importDataTable "
 					+ " where ROWNUMBER = ? and root = ?  and  qualifier = ?";
-			st = con.prepareStatement(query);
+			st = conn().prepareStatement(query);
 			st.setLong(1, rownumber);
 			st.setString(2, aroot);
 			st.setString(3, aqual);
 			st.close();
 		} catch (SQLException e)
 		{
-			e.printStackTrace();
+			mcDataObject.sqlError(e);
 
 		}
 	}
@@ -125,7 +125,7 @@ public class mcImportAttribute extends mcDataObject
 			PreparedStatement st;
 			String query = " insert into importDataTable ( ROWNUMBER, root, qualifier,value, importstatus) "
 					+ " values (?,?,?,?,?)";
-			st = con.prepareStatement(query);
+			st = conn().prepareStatement(query);
 			st.setInt(1, contactnumber);
 			st.setString(2, aroot.trim());
 			st.setString(3, aqual.trim());
@@ -144,7 +144,7 @@ public class mcImportAttribute extends mcDataObject
 			// + avalue);
 		} catch (SQLException e2)
 		{
-			e2.printStackTrace();
+			mcDataObject.sqlError(e2);
 		}
 
 	}
@@ -216,7 +216,7 @@ public class mcImportAttribute extends mcDataObject
 			PreparedStatement st;
 			String query = " update  importDataTable set value = ? , importstatus = ? "
 					+ " where ROWNUMBER = ? and root = ? and qualifier =  ";
-			st = con.prepareStatement(query);
+			st = conn().prepareStatement(query);
 
 			st.setString(1, avalue);
 			st.setString(2, importstatus);
@@ -234,7 +234,7 @@ public class mcImportAttribute extends mcDataObject
 				// + avalue);
 		} catch (SQLException e)
 		{
-			e.printStackTrace();
+			mcDataObject.sqlError(e);
 
 		}
 

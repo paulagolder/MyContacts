@@ -11,187 +11,133 @@ import java.util.Map;
 public class mcDataObject
 {
 	static mcDataSource datasource;
-	protected static  Connection con = null;
 	public static String errorMessage = "";
 
 	public mcDataObject()
 	{
-       datasource = MyContacts.topgui.currentcon;
+       ds();
 	}
-	
-	public  void setConnection(mcDataSource source)
+
+	// the current database; follows a switch made in dbEditPanel
+	static mcDataSource ds()
 	{
-		con = source.con;
+		if (MyContacts.topgui != null && MyContacts.topgui.currentcon != null)
+			datasource = MyContacts.topgui.currentcon;
+		return datasource;
 	}
-	
-	
+
+	// the session connection, opened on first use
+	protected static Connection conn() throws SQLException
+	{
+		Connection c = ds().getConnection();
+		if (c == null) throw new SQLException(ds().getErrorMessage());
+		return c;
+	}
+
 	public static void getConnection()
 	{
-		con = datasource.getConnection();
+		ds().connect();
 	}
-	
+
 	public static  void disconnect()
 	{
-		try
-		{
-			con.close();
-		} catch (Exception e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
-	
+
+	// report an SQL failure; inside a transaction this forces a rollback
+	protected static void sqlError(SQLException e, String sql)
+	{
+		errorMessage = e.getClass().getName() + ": " + e.getMessage();
+		if (sql != null) errorMessage += " [" + sql + "]";
+		System.err.println(errorMessage);
+		ds().markFailed();
+	}
+
+	protected static void sqlError(SQLException e)
+	{
+		sqlError(e, null);
+	}
+
 	public void doDelete(String table, String sqlstr, Object... params)
 	{
 		String sql = "DELETE FROM " + table + " WHERE " + sqlstr;
-		PreparedStatement preparedStatement = null;
-		try
+		try (PreparedStatement preparedStatement = conn().prepareStatement(sql))
 		{
-			 getConnection();
-			preparedStatement = con.prepareStatement(sql);
 			for (int i = 0; i < params.length; i++)
 				preparedStatement.setObject(i + 1, params[i]);
 			preparedStatement.execute();
-			preparedStatement.close();
-			disconnect();
-
 		} catch (SQLException e)
 		{
-			errorMessage = e.getClass().getName() + ": " + e.getMessage();
-			System.err.println(sql);
-			System.err.println(errorMessage);
+			sqlError(e, sql);
 		}
 	}
-
-	
 
 	public void doExecute(String sqlstr)
 	{
-		PreparedStatement preparedStatement = null;
-		try
+		try (PreparedStatement preparedStatement = conn().prepareStatement(sqlstr))
 		{
-			getConnection();
-			preparedStatement = con.prepareStatement(sqlstr);
 			preparedStatement.execute();
-			preparedStatement.close();
-			disconnect();
-
 		} catch (SQLException e)
 		{
-			errorMessage = e.getClass().getName() + ": " + e.getMessage();
-			System.err.println(sqlstr);
-			System.err.println(errorMessage);
+			sqlError(e, sqlstr);
 		}
 	}
 
-	
-	
 	public static ArrayList<Map<String, String>> doQuery(String sqlstr, Object... params)
 	{
 		ArrayList<Map<String, String>> Rowlist = new ArrayList<Map<String, String>>();
-		ResultSetMetaData rsmd = null;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		try
+		try (PreparedStatement stmt = conn().prepareStatement(sqlstr))
 		{
-			con =datasource.getConnection();
-			if (con == null)
-			{
-				errorMessage = datasource.getErrorMessage();
-				System.err.println(errorMessage + " [" + sqlstr + "]");
-				return Rowlist;
-			}
-			stmt = con.prepareStatement(sqlstr);
 			for (int i = 0; i < params.length; i++)
 				stmt.setObject(i + 1, params[i]);
-			rs = stmt.executeQuery();
-			rsmd = rs.getMetaData();
-			int columnCount = rsmd.getColumnCount();
-			while (rs.next())
+			try (ResultSet rs = stmt.executeQuery())
 			{
-				Map<String, String> arow = new HashMap<String, String>();
-				// The column count starts from 1
-				for (int i = 1; i < columnCount + 1; i++)
+				ResultSetMetaData rsmd = rs.getMetaData();
+				int columnCount = rsmd.getColumnCount();
+				while (rs.next())
 				{
-					String name = rsmd.getColumnName(i);
-					String value = rs.getString(i);
-					if (name != null) arow.put(name, value);
+					Map<String, String> arow = new HashMap<String, String>();
+					// The column count starts from 1
+					for (int i = 1; i < columnCount + 1; i++)
+					{
+						String name = rsmd.getColumnName(i);
+						String value = rs.getString(i);
+						if (name != null) arow.put(name, value);
+					}
+					Rowlist.add(arow);
 				}
-				Rowlist.add(arow);
 			}
-			rs.close();
-			stmt.close();
 		} catch (SQLException e)
 		{
-			errorMessage = e.getClass().getName() + ": " + e.getMessage();
-			System.err.println(errorMessage + " [" + sqlstr + "]");
-		} finally
-		{
-			if (con != null) datasource.disconnect();
+			sqlError(e, sqlstr);
 		}
 		return Rowlist;
-
 	}
 
 	public void doSql(String sqlstr)
 	{
-		String sql = sqlstr;
-		PreparedStatement preparedStatement = null;
-		try
-		{
-			preparedStatement = con.prepareStatement(sql);
-			preparedStatement.execute();
-			preparedStatement.close();
-
-		} catch (SQLException e)
-		{
-			errorMessage = e.getClass().getName() + ": " + e.getMessage();
-			System.err.println(errorMessage);
-		}
-
+		doExecute(sqlstr);
 	}
 
 	public void doUpdate(String table, String sqlstr)
 	{
-		String sql = "UPDATE  " + table + " SET " + sqlstr;
-		PreparedStatement preparedStatement = null;
-		try
-		{
-			preparedStatement = con.prepareStatement(sql);
-			preparedStatement.execute();
-			preparedStatement.close();
-
-		} catch (SQLException e)
-		{
-			errorMessage = e.getClass().getName() + ": " + e.getMessage();
-			errorMessage += " [" + sql + "]";
-			System.err.println(errorMessage);
-		}
+		doExecute("UPDATE  " + table + " SET " + sqlstr);
 	}
-	
-	
 
 	public int doInsert(String table, String sqlstr)
 	{
 		int newid = -1;
 		String sql = "INSERT INTO " + table + sqlstr;
-		PreparedStatement preparedStatement = null;
-		try
+		try (PreparedStatement preparedStatement = conn().prepareStatement(sql))
 		{
-			preparedStatement = con.prepareStatement(sql);
 			preparedStatement.execute();
 			ResultSet resultSet = preparedStatement.getGeneratedKeys();
 			if (resultSet != null && resultSet.next())
 			{
 				newid = resultSet.getInt(1);
 			}
-			preparedStatement.close();
 		} catch (SQLException e)
 		{
-			errorMessage = e.getClass().getName() + ": " + e.getMessage();
-			System.err.println(sql);
-			System.err.println(errorMessage);
+			sqlError(e, sql);
 		}
 		return newid;
 	}

@@ -664,13 +664,13 @@ public class mcImportContact extends mcDataObject
 		{
 			PreparedStatement st;
 			String query = " delete from importDataTable where  ROWNUMBER = ? ";
-			st = con.prepareStatement(query);
+			st = conn().prepareStatement(query);
 			st.setInt(1, rownumber);
 			int rescount = st.executeUpdate();
 			st.close();
 		} catch (SQLException e2)
 		{
-			e2.printStackTrace();
+			mcDataObject.sqlError(e2);
 		}
 	}
 

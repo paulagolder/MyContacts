@@ -12,6 +12,8 @@ public class mcDataSource
 	String dbname="";
 	private String errorMessage;
 	String path="";
+	private int txdepth = 0;
+	private boolean txfailed = false;
 
 	public mcDataSource(String apath)
 	{
@@ -24,22 +26,122 @@ public class mcDataSource
 		 connect();
 		 return con;
 	}
-	
-	
+
+	// The connection stays open for the session; call close() when
+	// switching database or exiting.
 	public void disconnect()
 	{
-	 try
-	{
-		con.close();
-	} catch (SQLException e)
-	{
-		// TODO Auto-generated catch block
-		e.printStackTrace();
 	}
+
+	public void close()
+	{
+		try
+		{
+			if (con != null && !con.isClosed()) con.close();
+		} catch (SQLException e)
+		{
+			System.err.println("Error closing " + path + " : " + e.getMessage());
+		}
+		con = null;
 	}
-	
+
+	/*
+	 * Run work as a single transaction: everything is committed if it
+	 * succeeds, or rolled back if any SQL error is reported (via markFailed)
+	 * or an exception is thrown. Nested calls join the outer transaction.
+	 * Returns true if the work was committed (or, when nested, has not
+	 * failed so far).
+	 */
+	public boolean transaction(Runnable work)
+	{
+		connect();
+		if (con == null)
+		{
+			System.err.println("No database connection: " + errorMessage);
+			return false;
+		}
+		boolean outer = txdepth == 0;
+		try
+		{
+			if (outer)
+			{
+				con.setAutoCommit(false);
+				txfailed = false;
+			}
+		} catch (SQLException e)
+		{
+			System.err.println("Cannot start transaction: " + e.getMessage());
+			return false;
+		}
+		txdepth++;
+		try
+		{
+			work.run();
+		} catch (RuntimeException e)
+		{
+			txfailed = true;
+			System.err.println("Transaction aborted: " + e);
+			e.printStackTrace();
+		} finally
+		{
+			txdepth--;
+		}
+		if (!outer) return !txfailed;
+		boolean committed = false;
+		try
+		{
+			if (txfailed)
+			{
+				con.rollback();
+				System.err.println("Transaction rolled back");
+			} else
+			{
+				con.commit();
+				committed = true;
+			}
+		} catch (SQLException e)
+		{
+			System.err.println("Transaction failed to complete: " + e.getMessage());
+			try
+			{
+				con.rollback();
+			} catch (SQLException e2)
+			{
+				// nothing more can be done
+			}
+		} finally
+		{
+			try
+			{
+				con.setAutoCommit(true);
+			} catch (SQLException e)
+			{
+				System.err.println("Cannot restore autocommit: " + e.getMessage());
+			}
+		}
+		return committed;
+	}
+
+	// record an SQL failure so the current transaction (if any) rolls back
+	public void markFailed()
+	{
+		if (txdepth > 0) txfailed = true;
+	}
+
+	public boolean inTransaction()
+	{
+		return txdepth > 0;
+	}
+
 	public void connect()
 	{
+		try
+		{
+			if (con != null && !con.isClosed()) return;
+		} catch (SQLException e)
+		{
+			con = null;
+		}
 		String connectstring = "";
 		if (checkFileCanRead(path))
 		{
@@ -77,8 +179,9 @@ public class mcDataSource
 		PreparedStatement preparedStatement = null;
 		checks.put("dbname", dbname);
 		try
-		{ 
+		{
 			connect();
+			if (con == null) throw new SQLException(errorMessage);
 			preparedStatement = con
 					.prepareStatement(" select value as val  from parameters where key='Title'; ");
 			ResultSet rs = preparedStatement.executeQuery();
@@ -179,6 +282,7 @@ public class mcDataSource
 		try
 		{
 			PreparedStatement st;
+			connect();
 			st = con.prepareStatement(" insert into  labelMappings (direction,foriegnLabel, localLabel, mapping) "
 					+ " values(?, ?,?,?) ;");
 			st.setString(1, amapping.direction);
@@ -189,10 +293,12 @@ public class mcDataSource
 			st.close();
 		} catch (SQLException e)
 		{
-			e.printStackTrace();
+			errorMessage = e.getClass().getName() + ": " + e.getMessage();
+			System.err.println(errorMessage);
+			markFailed();
 		}
 	}
-	
+
 	public mcMappings createMappings(String direction,String name )
 	{
 		mcMappings newmapping = new mcMappings(name,direction);
@@ -254,9 +360,7 @@ public class mcDataSource
 		{
 			errorMessage = e.getClass().getName() + ": " + e.getMessage();
 			System.err.println(errorMessage + " [" + sqlstr + "]");
-		} finally
-		{
-			if (con != null) disconnect();
+			markFailed();
 		}
 		return Rowlist;
 

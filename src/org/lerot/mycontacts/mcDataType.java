@@ -192,7 +192,7 @@ public abstract class mcDataType extends mcDataObject
         } catch (SQLException e)
         {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            mcDataObject.sqlError(e);
         }
     }
 

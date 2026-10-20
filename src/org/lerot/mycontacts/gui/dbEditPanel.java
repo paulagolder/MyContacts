@@ -108,6 +108,7 @@ public class dbEditPanel extends jswVerticalPanel implements ActionListener
 					selecteddb = adb;
 					mcDataSource seldb = new mcDataSource(selecteddb);
 					Map<String, String> mychecks = seldb.checkmcdb();
+					seldb.close();
 					if (mychecks.get("Valid").equalsIgnoreCase("yes"))
 					{
 						System.out.println("selected db  :"
@@ -152,6 +153,7 @@ public class dbEditPanel extends jswVerticalPanel implements ActionListener
 		} else if (action.equalsIgnoreCase("selectdb"))
 		{
 
+			MyContacts.topgui.currentcon.close();
 			MyContacts.topgui.currentcon = new mcDataSource(selecteddb);
 			MyContacts.topgui.dbsource= selecteddb;
 			//(new mcDataObject()).setConnection(MyContacts.topgui.currentcon);
@@ -214,6 +216,7 @@ public class dbEditPanel extends jswVerticalPanel implements ActionListener
 				jswLabel fpath = new jswLabel(afile.getPath());
 				mcDataSource testdb = new mcDataSource(adbpath);
 				Map<String, String> mychecks = testdb.checkmcdb();
+				testdb.close();
 				resulttable.addCell(fname, row, 0);
 				resulttable.addCell(fpath, row, 1);
 				resulttable.addCell(mychecks.get("Valid"), row, 2);

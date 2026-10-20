@@ -26,8 +26,8 @@ public class mcAttributes extends mcDataObject
 
         try
         {
-            con = datasource.getConnection();
-            st = con.prepareStatement(query);
+            getConnection();
+            st = conn().prepareStatement(query);
             ResultSet resset = st.executeQuery();
             while (resset.next())
             {
@@ -50,7 +50,7 @@ public class mcAttributes extends mcDataObject
             System.out.println(
                     " error in get Attributes2 " + attkey + " :" + query);
         }
-        datasource.disconnect();
+        disconnect();
         return atlist;
 
     }
@@ -192,7 +192,7 @@ public class mcAttributes extends mcDataObject
         try
         {
             getConnection();
-            st = con.prepareStatement(query);
+            st = conn().prepareStatement(query);
             st.setString(1, root);
             st.setString(2, tid);
             ResultSet resset = st.executeQuery();

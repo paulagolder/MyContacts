@@ -111,7 +111,7 @@ public class mcAttribute extends mcDataObject
         try
         {
             getConnection();
-            st = con.prepareStatement(query);
+            st = conn().prepareStatement(query);
             st.setInt(1, acid);
             st.setString(2, aroot);
             st.setString(3, aqual);
@@ -121,7 +121,7 @@ public class mcAttribute extends mcDataObject
 
         } catch (SQLException e)
         {
-            e.printStackTrace();
+            mcDataObject.sqlError(e);
         }
         System.out.println(" attribute deleted ");
     }
@@ -141,7 +141,7 @@ public class mcAttribute extends mcDataObject
         try
         {
             getConnection();
-            st = con.prepareStatement(query);
+            st = conn().prepareStatement(query);
             st.setInt(1, cid);
             st.setString(2, getRoot());
             st.setString(3, getQualifier());
@@ -150,7 +150,7 @@ public class mcAttribute extends mcDataObject
             disconnect();
         } catch (SQLException e)
         {
-            e.printStackTrace();
+            mcDataObject.sqlError(e);
         }
         System.out.println(" attribute deleted ");
     }
@@ -162,7 +162,7 @@ public class mcAttribute extends mcDataObject
         try
         {
             getConnection();
-            st = con.prepareStatement(query);
+            st = conn().prepareStatement(query);
             st.setInt(1, cid);
             st.setString(2, getRoot());
             st.setString(3, getQualifier());
@@ -173,7 +173,7 @@ public class mcAttribute extends mcDataObject
             disconnect();
         } catch (SQLException e)
         {
-            e.printStackTrace();
+            mcDataObject.sqlError(e);
         }
     }
 
@@ -198,8 +198,8 @@ public class mcAttribute extends mcDataObject
         String query = "update attributeValues set 'value' = ? , 'update_dt'= ? where cid= ? and root=?  and qualifier= ? ";
         try
         {
-            con = datasource.getConnection();
-            st = con.prepareStatement(query);
+            getConnection();
+            st = conn().prepareStatement(query);
             st.setString(1, getValue());
             st.setString(2, getDateTime());
             st.setInt(3, cid);
@@ -207,10 +207,10 @@ public class mcAttribute extends mcDataObject
             st.setString(5, getQualifier());
             st.executeUpdate();
             st.close();
-            datasource.disconnect();
+            disconnect();
         } catch (SQLException e)
         {
-            e.printStackTrace();
+            mcDataObject.sqlError(e);
         }
 
     }
@@ -224,7 +224,7 @@ public class mcAttribute extends mcDataObject
                     + " SET   value = ? , update_dt = ? "
                     + " WHERE   cid = ?  and root = ? and qualifier = ?  ";
             getConnection();
-            st = con.prepareStatement(query);
+            st = conn().prepareStatement(query);
             st.setString(1, getValue());
             String update = getAttributevalue().getUpdate();
             if (update == null || update.isEmpty())
@@ -246,7 +246,7 @@ public class mcAttribute extends mcDataObject
 
         } catch (SQLException e)
         {
-            e.printStackTrace();
+            mcDataObject.sqlError(e);
         }
     }
 
@@ -706,7 +706,7 @@ public class mcAttribute extends mcDataObject
                 String query = " UPDATE attributeValues "
                         + " SET   qualifier= ?   "
                         + " WHERE   cid = ?  and root= ? and qualifier= ? ";
-                st = con.prepareStatement(query);
+                st = conn().prepareStatement(query);
                 st.setString(1, newqualifier);
                 st.setInt(2, cid);
                 st.setString(3, rt);
@@ -716,7 +716,7 @@ public class mcAttribute extends mcDataObject
                 disconnect();
             } catch (SQLException e)
             {
-                e.printStackTrace();
+                mcDataObject.sqlError(e);
             }
         }
         setQualifier(newqualifier);

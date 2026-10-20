@@ -574,7 +574,7 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
         try
         {
             getConnection();
-            st = con.prepareStatement(query);
+            st = conn().prepareStatement(query);
             st.setInt(1, nid);
             st.setString(2, "tid");
             st.setString(3, "");
@@ -583,7 +583,7 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
             st.close();
             String query2 = "insert into attributeValues(cid, root,qualifier,value )  values(?,?,?,?)";
 
-            st = con.prepareStatement(query2);
+            st = conn().prepareStatement(query2);
             st.setInt(1, nid);
             st.setString(2, "tags");
             st.setString(3, "");
@@ -593,7 +593,7 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
             st.close();
             String query3 = "insert into attributeValues(cid, root,qualifier,value )  values(?, ?,?,?)";
 
-            st = con.prepareStatement(query3);
+            st = conn().prepareStatement(query3);
             st.setInt(1, nid);
             st.setString(2, "name");
             st.setString(3, "");
@@ -606,7 +606,7 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
 
         } catch (SQLException e)
         {
-            e.printStackTrace();
+            mcDataObject.sqlError(e);
         }
         return -1;
     }
@@ -1120,7 +1120,7 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
         try
         {
             getConnection();
-            st = con.prepareStatement(query);
+            st = conn().prepareStatement(query);
             st.setString(1, newtype);
             st.setInt(2, getCID());
             st.executeUpdate();
@@ -1128,7 +1128,7 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
             disconnect();
         } catch (SQLException e)
         {
-            e.printStackTrace();
+            mcDataObject.sqlError(e);
         }
     }
 
@@ -1206,7 +1206,7 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
         try
         {
             getConnection();
-            st = con.prepareStatement(query);
+            st = conn().prepareStatement(query);
             st.setString(1, newtid);
             st.setInt(2, getCID());
             st.executeUpdate();
@@ -1214,7 +1214,7 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
             disconnect();
         } catch (SQLException e)
         {
-            e.printStackTrace();
+            mcDataObject.sqlError(e);
         }
     }
 
@@ -1229,7 +1229,7 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
         {
             System.out.println("query =" + query + " " + tag + " " + getCID());
             getConnection();
-            st = con.prepareStatement(query);
+            st = conn().prepareStatement(query);
             st.setString(1, tag);
             st.setInt(2, getCID());
             st.executeUpdate();
@@ -1237,7 +1237,7 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
             disconnect();
         } catch (SQLException e)
         {
-            e.printStackTrace();
+            mcDataObject.sqlError(e);
         }
 
     }

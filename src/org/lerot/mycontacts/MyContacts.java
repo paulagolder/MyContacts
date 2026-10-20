@@ -140,6 +140,7 @@ public class MyContacts extends JFrame implements ActionListener
             @Override
             public void windowClosing(WindowEvent e)
             {
+                currentcon.close();
                 System.exit(0);
             }
         });
