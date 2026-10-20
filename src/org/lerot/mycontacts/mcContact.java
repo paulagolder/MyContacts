@@ -564,51 +564,40 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
         newatt.dbinsertAttribute();
     }
 
+    /*
+     * Save this contact as a new contact and return its id (-1 on failure).
+     * Keeps an id already reserved for this contact (e.g. by the import
+     * constructors) unless that id is already in use; otherwise reserves a
+     * new one. The contact's own id is set to the one used.
+     */
     public int insertNewContact()
     {
-        int nid = (new mcContacts()).getNewID();
-        // int nid = getID();
-        PreparedStatement st;
-        String query = "insert into attributeValues(cid, root,qualifier,value )  values(?, ?,?,?)";
-
-        try
+        int[] nid = { getCID() };
+        boolean saved = ds().transaction(() ->
         {
-            getConnection();
-            st = conn().prepareStatement(query);
-            st.setInt(1, nid);
-            st.setString(2, "tid");
-            st.setString(3, "");
-            st.setString(4, getTID());
-            st.executeUpdate();
-            st.close();
-            String query2 = "insert into attributeValues(cid, root,qualifier,value )  values(?,?,?,?)";
-
-            st = conn().prepareStatement(query2);
-            st.setInt(1, nid);
-            st.setString(2, "tags");
-            st.setString(3, "");
-            st.setString(4, "newcontact");
-            st.executeUpdate();
-
-            st.close();
-            String query3 = "insert into attributeValues(cid, root,qualifier,value )  values(?, ?,?,?)";
-
-            st = conn().prepareStatement(query3);
-            st.setInt(1, nid);
-            st.setString(2, "name");
-            st.setString(3, "");
-            st.setString(4, getTID());
-            st.executeUpdate();
-
-            st.close();
-            disconnect();
-            return nid;
-
-        } catch (SQLException e)
-        {
-            mcDataObject.sqlError(e);
-        }
-        return -1;
+            if (nid[0] <= 0 || !doQuery("select 1 from attributeValues where cid = ? limit 1",
+                    nid[0]).isEmpty())
+                nid[0] = (new mcContacts()).getNewID();
+            String query = "insert into attributeValues(cid, root,qualifier,value )  values(?, ?,?,?)";
+            String[][] rows = { { "tid", getTID() }, { "tags", "newcontact" }, { "name", getTID() } };
+            try (PreparedStatement st = conn().prepareStatement(query))
+            {
+                for (String[] row : rows)
+                {
+                    st.setInt(1, nid[0]);
+                    st.setString(2, row[0]);
+                    st.setString(3, "");
+                    st.setString(4, row[1]);
+                    st.executeUpdate();
+                }
+            } catch (SQLException e)
+            {
+                mcDataObject.sqlError(e);
+            }
+        });
+        if (!saved) return -1;
+        setCID(nid[0]);
+        return nid[0];
     }
 
     public boolean isList()

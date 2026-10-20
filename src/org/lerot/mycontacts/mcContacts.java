@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -47,30 +48,41 @@ public class mcContacts extends mcDataObject
 		return newcontact;
 	}
 
+	/*
+	 * Reserve a new contact id. Ids come from the contactIds table, so they
+	 * are unique and never reused, even after the newest contact is deleted
+	 * (a reused id would inherit the deleted contact's correspondence
+	 * folder). The table is created on first use and kept ahead of any ids
+	 * already in attributeValues.
+	 */
 	public  int getNewID()
 	{
-		PreparedStatement st;
-		String query = "SELECT max(cid) as ncid  FROM attributeValues";
-		int ncid = -1;
-		try
+		int[] ncid = { -1 };
+		ds().transaction(() ->
 		{
-			getConnection();
-			st = conn().prepareStatement(query);
-			ResultSet resset = st.executeQuery();
-
-			if (resset.next())
+			try (Statement st = conn().createStatement())
 			{
-				ncid = resset.getInt("ncid") + 1;
-
+				st.executeUpdate("create table if not exists contactIds "
+						+ "(cid INTEGER PRIMARY KEY AUTOINCREMENT)");
+				st.executeUpdate("insert into contactIds(cid) select m from "
+						+ "(select max(cid) as m from attributeValues) "
+						+ "where m > (select coalesce(max(cid), 0) from contactIds)");
+				st.executeUpdate("insert into contactIds default values");
+				try (ResultSet rs = st.executeQuery("select last_insert_rowid()"))
+				{
+					if (rs.next()) ncid[0] = rs.getInt(1);
+				}
+			} catch (SQLException e)
+			{
+				mcDataObject.sqlError(e);
+				ncid[0] = -1;
 			}
-			st.close();
-			disconnect();
-			return ncid;
-		} catch (SQLException e)
-		{
-			mcDataObject.sqlError(e);
-		}
-		return -1;
+		});
+		// never hand out an unusable id: contact rows would be saved under it
+		if (ncid[0] <= 0)
+			throw new IllegalStateException("Cannot allocate a new contact id: "
+					+ errorMessage);
+		return ncid[0];
 	}
 
 	public static boolean updateContactfromVcardImport(String imptid, mcImportContact impcontact)
