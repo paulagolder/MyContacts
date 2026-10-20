@@ -15,10 +15,18 @@ public class mcDataSource
 	private int txdepth = 0;
 	private boolean txfailed = false;
 
+	// a read-only connection can never change the database (myContactsLite)
+	private final boolean readonly;
+
 	public mcDataSource(String apath)
 	{
-		path= apath;
-		
+		this(apath, false);
+	}
+
+	public mcDataSource(String apath, boolean readonly)
+	{
+		path = apath;
+		this.readonly = readonly;
 	}
 	
 	public Connection getConnection()
@@ -151,7 +159,13 @@ public class mcDataSource
 				File dbfile = new File(path);
 				dbname = dbfile.getName();
 				connectstring = "jdbc:sqlite:"	+ path;
-				con = DriverManager.getConnection(connectstring);
+				if (readonly)
+				{
+					org.sqlite.SQLiteConfig config = new org.sqlite.SQLiteConfig();
+					config.setReadOnly(true);
+					con = DriverManager.getConnection(connectstring, config.toProperties());
+				} else
+					con = DriverManager.getConnection(connectstring);
 				if(con!=null)
 				{
 				  //System.out.println("Can connect to " + connectstring);

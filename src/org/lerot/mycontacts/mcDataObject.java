@@ -18,6 +18,12 @@ public class mcDataObject
        ds();
 	}
 
+	// for programs without the main window (myContactsLite, tests): use this database
+	public static void useDataSource(mcDataSource source)
+	{
+		datasource = source;
+	}
+
 	// the current database; follows a switch made in dbEditPanel
 	static mcDataSource ds()
 	{

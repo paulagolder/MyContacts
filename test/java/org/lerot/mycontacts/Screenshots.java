@@ -60,7 +60,7 @@ public class Screenshots
 	}
 
 	// a home folder with the test database and settings
-	static Path makeHome(Path home) throws Exception
+	public static Path makeHome(Path home) throws Exception
 	{
 		if (Files.exists(home))
 			try (var files = Files.walk(home))

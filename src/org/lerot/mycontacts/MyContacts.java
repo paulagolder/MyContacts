@@ -97,14 +97,13 @@ public class MyContacts extends JFrame implements ActionListener
         osversion = System.getProperty("os.version");
         os = System.getProperty("os.name");
         String home = userhome.replace('\\', '/');
+        dotcontacts = mcSettings.folder();
         if (os.startsWith("Windows"))
         {
-            dotcontacts = home + "/.mccontacts/";
             letterfolder = home + "/Documents/correspondance";
             docsfolder = home + "/Documents/correspondance";
         } else
         {
-            dotcontacts = home + "/.mccontacts/";
             desktop = home + "/Desktop/";
             letterfolder = desktop + "Labels and Letters/";
             docsfolder = home + "/Documents/correspondance";
@@ -221,6 +220,30 @@ public class MyContacts extends JFrame implements ActionListener
         int x = (int) ((dimension.getWidth() - mframe.getWidth()) / 2);
         int y = (int) ((dimension.getHeight() - mframe.getHeight()) / 2);
         mframe.setLocation(x, y);
+        // started from myContactsLite: MyContacts --edit <contact id>
+        for (int i = 0; i + 1 < args.length; i++)
+            if (args[i].equals("--edit"))
+            {
+                int cid = Integer.parseInt(args[i + 1]);
+                SwingUtilities.invokeLater(() -> topgui.editContact(cid));
+            }
+    }
+
+    // show a contact in the Edit view
+    public void editContact(int cid)
+    {
+        mcContact contact = selbox.getAllcontactlist().FindbyID(cid);
+        if (contact == null)
+        {
+            System.err.println("No contact " + cid + " to edit");
+            return;
+        }
+        selbox.setSelcontact(contact);
+        selbox.update2();
+        mode = "EDIT";
+        buttonset.setButtonSelection("Edit");
+        refreshView();
+        toFront();
     }
 
     // Run database work from the GUI as one transaction. If it fails nothing

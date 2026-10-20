@@ -3,6 +3,7 @@
 // Everyday commands (run from the project folder):
 //   ./gradlew test      run the automated tests (test/java)
 //   ./gradlew run       compile and start the app
+//   ./gradlew runLite   start myContactsLite, the small "Contacts" viewer
 //   ./gradlew build     compile and build the single runnable jar
 //   ./gradlew deploy    build it and copy it to ~/applications/MyContacts.jar
 //   ./gradlew dependencies --configuration runtimeClasspath
@@ -31,7 +32,8 @@ repositories {
 sourceSets {
     main {
         java.setSrcDirs(listOf("src"))
-        resources.setSrcDirs(emptyList<String>())
+        // icons etc., put in the jar alongside the classes
+        resources.setSrcDirs(listOf("resources"))
     }
     // automated tests (./gradlew test) and the files they use
     test {
@@ -57,6 +59,9 @@ dependencies {
     implementation("com.itextpdf:itextpdf:5.5.13.6")           // PDF labels
     implementation("org.odftoolkit:simple-odf:0.9.0")           // letters (.odt)
     implementation("com.googlecode.ez-vcard:ez-vcard:0.12.2")   // vCard import/export
+    implementation("com.formdev:flatlaf:3.7.2")                 // myContactsLite's look
+    implementation("com.formdev:flatlaf-extras:3.7.2")          // its SVG icons
+    implementation("com.miglayout:miglayout-swing:11.5.1")      // its layouts
     // odfdom logs through SLF4J; discard its messages (and the startup notice)
     runtimeOnly("org.slf4j:slf4j-nop:1.7.36")
 
@@ -83,6 +88,14 @@ tasks.withType<JavaCompile>().configureEach {
 
 application {
     mainClass = "org.lerot.mycontacts.MyContacts"
+}
+
+// ./gradlew runLite starts myContactsLite, the small read-only "Contacts" viewer
+tasks.register<JavaExec>("runLite") {
+    group = "application"
+    description = "Runs myContactsLite"
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "org.lerot.mycontacts.lite.MyContactsLite"
 }
 
 // Build one self-contained jar (the app plus every library unpacked into
@@ -119,10 +132,22 @@ tasks.register<JavaExec>("screenshots") {
         screenshotsDir.get().dir("home").asFile.path)
 }
 
+// myContactsLite's screens, added to the same folder as lite-*.png
+tasks.register<JavaExec>("liteScreenshots") {
+    group = "verification"
+    description = "Saves PNGs of myContactsLite to build/screenshots/current"
+    mustRunAfter("screenshots")
+    classpath = sourceSets.test.get().runtimeClasspath
+    mainClass = "org.lerot.mycontacts.lite.LiteScreenshots"
+    args(screenshotsDir.get().dir("current").asFile.path,
+        screenshotsDir.get().dir("home-lite").asFile.path)
+}
+tasks.named("screenshots") { finalizedBy("liteScreenshots") }
+
 tasks.register<JavaExec>("compareScreenshots") {
     group = "verification"
     description = "Compares the current screenshots with screenshots/baseline"
-    dependsOn("screenshots")
+    dependsOn("screenshots", "liteScreenshots")
     classpath = sourceSets.test.get().runtimeClasspath
     mainClass = "org.lerot.mycontacts.ScreenshotCompare"
     args(file("screenshots/baseline").path,
