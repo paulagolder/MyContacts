@@ -7,10 +7,11 @@ import java.util.stream.Stream;
 /*
  * What myContactsLite shows of one contact: the plain (unqualified) name,
  * address, phone, mobile, email and birthday, ready to display. Any of the
- * fields may be null.
+ * fields may be null. If the contact has no address of its own, address is
+ * that of a group it belongs to, and addressFrom names the group.
  */
-public record ContactCard(int id, String listName, String name, String address, String phone,
-		String mobile, String email, String birthday)
+public record ContactCard(int id, String listName, String name, String address, String addressFrom,
+		String phone, String mobile, String email, String birthday)
 {
 	// all the text of the card, lower case, for searching
 	public String searchText()

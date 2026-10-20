@@ -226,7 +226,9 @@ public class MyContactsLite extends JFrame
 		showing = card;
 		tiles.removeAll();
 		tiles.add(textTile(card.name(), "h3"));
-		addTile(card.address());
+		if (card.address() != null)
+			tiles.add(card.addressFrom() == null ? textTile(card.address(), null)
+					: noted(textTile(card.address(), null), "from " + card.addressFrom()));
 		addTile(card.phone());
 		addTile(card.mobile());
 		if (card.email() != null) tiles.add(emailTile(card.email()));
@@ -283,6 +285,16 @@ public class MyContactsLite extends JFrame
 		area.setBorder(BorderFactory.createEmptyBorder());
 		if (styleClass != null) area.putClientProperty("FlatLaf.styleClass", styleClass);
 		return new Tile(area);
+	}
+
+	// a small muted note under a tile's text, outside the selectable text
+	private static Tile noted(Tile tile, String note)
+	{
+		JLabel label = new JLabel(note);
+		label.putClientProperty("FlatLaf.styleClass", "small");
+		label.setForeground(MUTED);
+		tile.add(label, "newline, gaptop 4");
+		return tile;
 	}
 
 	// the address in link colour: a click opens the mail program, a drag

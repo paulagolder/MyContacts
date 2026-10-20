@@ -64,15 +64,28 @@ class ContactStoreTest
 	{
 		ContactCard bob = store.find(2).orElseThrow();
 		assertNull(bob.email());
-		assertNull(bob.address());
 		assertNull(bob.birthday());
+		assertNull(store.find(1).orElseThrow().addressFrom(), "Alice has her own address");
+	}
+
+	@Test
+	void aMemberWithoutAnAddressShowsTheirGroupsAddress()
+	{
+		// Bob: memberof Alice; Carol: listed by Alice with hasmember
+		for (int id : new int[] { 2, 3 })
+		{
+			ContactCard member = store.find(id).orElseThrow();
+			assertEquals(store.find(1).orElseThrow().address(), member.address());
+			assertEquals("Alice Smith", member.addressFrom());
+		}
+		assertEquals(3, store.search("high street").size());
 	}
 
 	@Test
 	void searchMatchesEveryWordAnywhereOnTheCard()
 	{
 		assertEquals(1, store.search("alice").size());
-		assertEquals(1, store.search("high street").size());
+		assertEquals(3, store.search("testtown").size()); // Bob and Carol share Alice's address
 		assertEquals(1, store.search("7700").size());
 		assertEquals(0, store.search("alice jones").size());
 		assertEquals(3, store.search("  ").size());
