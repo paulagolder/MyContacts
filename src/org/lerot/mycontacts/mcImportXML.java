@@ -37,6 +37,9 @@ public class mcImportXML extends mcImports
 	{
 		System.out.println(" import xml "+ importfilename);
 		message = inmessage;
+		newobjects = 0;
+		changedobjects = 0;
+		failedobjects = 0;
 		if (message != null)
 			message.setText(" importing xml " + importfilename);
 		mappings = MyContacts.topgui.currentcon.createMappings("import", "XML");
@@ -69,7 +72,12 @@ public class mcImportXML extends mcImports
 					mcContact existingcontact = MyContacts.selbox.getAllcontactlist().FindbyTID(importedcontact.getTID());
 					if (existingcontact == null)
 					{
-						System.out.println(" make new  contact :" + importedcontact);
+						System.out.println((test ? " would make new contact :" : " make new  contact :") + importedcontact);
+						if (test)
+						{
+							newobjects++; // test run: count it but save nothing
+							continue;
+						}
 						// each contact is saved completely or not at all
 						boolean saved = MyContacts.topgui.currentcon.transaction(() ->
 						{
@@ -106,13 +114,16 @@ public class mcImportXML extends mcImports
 								 } else
 									 failedobjects++;
 								 }
-							}
+							} else
+								changedobjects++; // test run: differs, may need updating
 							k++;
 						}
 					}
 				}
 				System.out
-						.println(" imported: " + newobjects+ " Contacts  and updated :"+changedobjects
+						.println(test ? " TEST ONLY, nothing saved. New contacts: " + newobjects
+								+ ", existing contacts that differ: " + changedobjects
+								: " imported: " + newobjects+ " Contacts  and updated :"+changedobjects
 								+ (failedobjects > 0 ? "  FAILED: " + failedobjects : ""));
 			}
 
@@ -129,7 +140,9 @@ public class mcImportXML extends mcImports
 
 		if (message != null)
 		{
-			message.setText("loaded  " + " contacts " + getCurrentposition()
+			message.setText((test ? "test only, nothing saved: " + newobjects + " new, "
+					+ changedobjects + " existing contacts differ"
+					: "loaded  " + " contacts " + getCurrentposition())
 					+ (failedobjects > 0 ? "  (" + failedobjects + " failed, see console)" : ""));
 			message.repaint();
 		}

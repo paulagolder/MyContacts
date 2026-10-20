@@ -74,6 +74,7 @@ public class mcImportAttribute extends mcDataObject
 			st.setLong(1, rownumber);
 			st.setString(2, aroot);
 			st.setString(3, aqual);
+			st.executeUpdate();
 			st.close();
 		} catch (SQLException e)
 		{
@@ -215,7 +216,7 @@ public class mcImportAttribute extends mcDataObject
 		{
 			PreparedStatement st;
 			String query = " update  importDataTable set value = ? , importstatus = ? "
-					+ " where ROWNUMBER = ? and root = ? and qualifier =  ";
+					+ " where ROWNUMBER = ? and root = ? and qualifier = ? ";
 			st = conn().prepareStatement(query);
 
 			st.setString(1, avalue);
