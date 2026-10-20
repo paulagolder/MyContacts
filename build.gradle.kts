@@ -101,6 +101,38 @@ tasks.jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+// Screenshots of every screen, using the made-up test data, for checking
+// layout changes: take them, compare with the accepted baseline, and accept
+// the new ones once they look right.
+val screenshotsDir = layout.buildDirectory.dir("screenshots")
+
+tasks.register<JavaExec>("screenshots") {
+    group = "verification"
+    description = "Saves a PNG of every screen to build/screenshots/current"
+    classpath = sourceSets.test.get().runtimeClasspath
+    mainClass = "org.lerot.mycontacts.Screenshots"
+    args(screenshotsDir.get().dir("current").asFile.path,
+        screenshotsDir.get().dir("home").asFile.path)
+}
+
+tasks.register<JavaExec>("compareScreenshots") {
+    group = "verification"
+    description = "Compares the current screenshots with screenshots/baseline"
+    dependsOn("screenshots")
+    classpath = sourceSets.test.get().runtimeClasspath
+    mainClass = "org.lerot.mycontacts.ScreenshotCompare"
+    args(file("screenshots/baseline").path,
+        screenshotsDir.get().dir("current").asFile.path,
+        screenshotsDir.get().dir("diff").asFile.path)
+}
+
+tasks.register<Sync>("acceptScreenshots") {
+    group = "verification"
+    description = "Makes the current screenshots the new baseline"
+    from(screenshotsDir.map { it.dir("current") })
+    into("screenshots/baseline")
+}
+
 tasks.register<Copy>("deploy") {
     group = "distribution"
     description = "Builds MyContacts.jar and copies it to ~/applications"

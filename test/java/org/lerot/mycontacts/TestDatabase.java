@@ -21,24 +21,29 @@ public class TestDatabase
 	public static mcDataSource create(Path folder) throws IOException, SQLException
 	{
 		Path db = folder.resolve("test.sqlite");
-		String script = new String(TestDatabase.class.getResourceAsStream("/testdb.sql")
-				.readAllBytes(), StandardCharsets.UTF_8);
-		try (Connection c = DriverManager.getConnection("jdbc:sqlite:" + db);
-				Statement st = c.createStatement())
-		{
-			// the old driver runs one statement per call
-			for (String sql : script.split(";\\s*\\n"))
-			{
-				String stmt = sql.replaceAll("(?m)^--.*$", "").trim();
-				if (!stmt.isEmpty()) st.executeUpdate(stmt);
-			}
-		}
+		createFile(db);
 		MyContacts.settingsdir = settingsFolder() + File.separator;
 		mcDataSource ds = new mcDataSource(db.toString());
 		mcDataObject.datasource = ds;
 		mcDataTypes.loadTypes();
 		mcAttributeTypes.loadAttributeTypes();
 		return ds;
+	}
+
+	// write the test database file only
+	public static void createFile(Path db) throws IOException, SQLException
+	{
+		String script = new String(TestDatabase.class.getResourceAsStream("/testdb.sql")
+				.readAllBytes(), StandardCharsets.UTF_8);
+		try (Connection c = DriverManager.getConnection("jdbc:sqlite:" + db);
+				Statement st = c.createStatement())
+		{
+			for (String sql : script.split(";\\s*\\n"))
+			{
+				String stmt = sql.replaceAll("(?m)^--.*$", "").trim();
+				if (!stmt.isEmpty()) st.executeUpdate(stmt);
+			}
+		}
 	}
 
 	// the folder holding the test copies of labelTemplates.xml etc.

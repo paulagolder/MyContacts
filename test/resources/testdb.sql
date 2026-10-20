@@ -380,14 +380,14 @@ CREATE TABLE `user` (
 CREATE VIEW proup AS SELECT  DISTINCT  t1.cid, t1.value as 'tid' , t2.value as 'type' FROM attributeValues as t1  , attributeValues as t2 where t1.cid = t2.cid  and t1.root = 'tid'  and t2.root= 'kind';
 
 -- made-up contacts
-INSERT INTO attributeValues(cid, root, qualifier, value) VALUES (1, 'tid', '', 'Smith  Alice');
-INSERT INTO attributeValues(cid, root, qualifier, value) VALUES (1, 'name', '', '{ fn:''Alice'' , sn:''Smith'' ,  }');
-INSERT INTO attributeValues(cid, root, qualifier, value) VALUES (1, 'tags', '', 'friends;');
-INSERT INTO attributeValues(cid, root, qualifier, value) VALUES (1, 'email', '', 'alice@example.com');
-INSERT INTO attributeValues(cid, root, qualifier, value) VALUES (1, 'address', '', '{ street:''1 High Street'' , city:''Testtown'' , postcode:''TT1 1AA'' ,  }');
-INSERT INTO attributeValues(cid, root, qualifier, value) VALUES (2, 'tid', '', 'O''Brien  Bob');
-INSERT INTO attributeValues(cid, root, qualifier, value) VALUES (2, 'name', '', '{ fn:''Bob'' , sn:''O''''Brien'' ,  }');
-INSERT INTO attributeValues(cid, root, qualifier, value) VALUES (2, 'tags', '', 'family;');
-INSERT INTO attributeValues(cid, root, qualifier, value) VALUES (3, 'tid', '', 'Jones  Carol');
-INSERT INTO attributeValues(cid, root, qualifier, value) VALUES (3, 'name', '', '{ fn:''Carol'' , sn:''Jones'' ,  }');
-INSERT INTO attributeValues(cid, root, qualifier, value) VALUES (3, 'tags', '', 'work;');
+INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'tid', '', 'Smith  Alice', '2026-01-01 12:00:00');
+INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'name', '', '{ fn:''Alice'' , sn:''Smith'' ,  }', '2026-01-01 12:00:00');
+INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'tags', '', 'friends;', '2026-01-01 12:00:00');
+INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'email', '', 'alice@example.com', '2026-01-01 12:00:00');
+INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'address', '', '{ street:''1 High Street'' , city:''Testtown'' , postcode:''TT1 1AA'' ,  }', '2026-01-01 12:00:00');
+INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (2, 'tid', '', 'O''Brien  Bob', '2026-01-01 12:00:00');
+INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (2, 'name', '', '{ fn:''Bob'' , sn:''O''''Brien'' ,  }', '2026-01-01 12:00:00');
+INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (2, 'tags', '', 'family;', '2026-01-01 12:00:00');
+INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (3, 'tid', '', 'Jones  Carol', '2026-01-01 12:00:00');
+INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (3, 'name', '', '{ fn:''Carol'' , sn:''Jones'' ,  }', '2026-01-01 12:00:00');
+INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (3, 'tags', '', 'work;', '2026-01-01 12:00:00');
