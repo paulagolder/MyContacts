@@ -40,16 +40,12 @@ sourceSets {
     }
 }
 
-// mywidgets is not published anywhere yet, so use the jar built from the
-// sibling project. Override the location with
-//   ./gradlew build -PmywidgetsJar=/path/to/mywidgets.jar
-val mywidgetsJar = providers.gradleProperty("mywidgetsJar")
-    .orElse("../../lib/mywidgets.jar")
-
 // Each line is "group:name:version", as listed on https://central.sonatype.com
 // Upgrading a library means changing its version number here.
 dependencies {
-    implementation(files(mywidgetsJar))
+    // built from ../mywidgets (see includeBuild in settings.gradle.kts);
+    // it brings the FlatLaf look and feel with it
+    implementation("org.lerot:mywidgets")
 
     implementation("org.xerial:sqlite-jdbc:3.53.4.0")          // database driver
     implementation("org.dom4j:dom4j:2.2.0")                     // label/address templates
@@ -61,7 +57,6 @@ dependencies {
     implementation("com.itextpdf:itextpdf:5.5.13.6")           // PDF labels
     implementation("org.odftoolkit:simple-odf:0.9.0")           // letters (.odt)
     implementation("com.googlecode.ez-vcard:ez-vcard:0.12.2")   // vCard import/export
-    implementation("com.formdev:flatlaf:3.7.2")                 // look and feel (used by mywidgets)
     // odfdom logs through SLF4J; discard its messages (and the startup notice)
     runtimeOnly("org.slf4j:slf4j-nop:1.7.36")
 
