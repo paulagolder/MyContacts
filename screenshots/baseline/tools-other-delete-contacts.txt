@@ -1,0 +1,33 @@
+JPanel 0,0 1200x900
+  jswVerticalPanel 'bigpanel' 0,0 1200x900
+    jswHorizontalPanel 'HP:' 2,2 1196x36
+      jswPushButtonset 'mode' 871,5 320x26
+        jswPushButton 'Browse' 1,1 74x24
+          JToggleButton 0,0 74x24
+        jswPushButton 'Search' 76,1 70x24
+          JToggleButton 0,0 70x24
+        jswPushButton 'Edit' 147,1 53x24
+          JToggleButton 0,0 53x24
+        jswPushButton 'Tools' 201,1 62x24
+          JToggleButton 0,0 62x24
+        jswPushButton 'Info' 264,1 54x24
+          JToggleButton 0,0 54x24
+    jswVerticalPanel 'mainpanel' 2,38 1196x860
+      ToolsPanel 'toolspanel' 0,0 1196x860
+        jswTabbedPanel 'toolstabpanel' 1,1 1194x858
+          JTabbedPane 1,1 1192x856
+            OtherTabPanel 'othertabpanel' 0,33 1192x823
+              JTabbedPane 1,1 1190x821
+                deleteContactPanel 'deletecongtent' 0,33 1190x788
+                  jswHorizontalPanel 'HP:' 0,0 112x30
+                    jswLabel ' Delete Contacts ' 5,5 102x20
+                      JLabel 1,1 100x18
+                  jswHorizontalPanel 'HP:' 0,30 303x40
+                    jswButton 'DELETE SELECTED' 5,5 136x30
+                      JButton 0,0 136x30
+                    jswButton 'DELETE UNSELECTED' 142,5 156x30
+                      JButton 0,0 156x30
+                  jswTable 'contactsfound' 0,70 4x4
+                  jswHorizontalPanel 'HP:' 0,74 179x30
+                    jswLabel ' Selecting contacts to delete' 5,5 169x20
+                      JLabel 1,1 167x18

@@ -111,7 +111,11 @@ tasks.register<JavaExec>("screenshots") {
     description = "Saves a PNG of every screen to build/screenshots/current"
     classpath = sourceSets.test.get().runtimeClasspath
     mainClass = "org.lerot.mycontacts.Screenshots"
-    args(screenshotsDir.get().dir("current").asFile.path,
+    // ./gradlew screenshots -PjswLayout=legacy uses the old mywidgets layout
+    // code and writes build/screenshots/legacy instead
+    val legacy = providers.gradleProperty("jswLayout").orNull == "legacy"
+    if (legacy) systemProperty("jsw.layout", "legacy")
+    args(screenshotsDir.get().dir(if (legacy) "legacy" else "current").asFile.path,
         screenshotsDir.get().dir("home").asFile.path)
 }
 

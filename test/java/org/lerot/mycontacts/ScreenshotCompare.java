@@ -9,7 +9,7 @@ import java.util.TreeSet;
 /*
  * Compares two folders of screenshots. For each screen it prints the share
  * of pixels that changed and writes a diff image: the baseline faded, with
- * changed pixels in red.
+ * changed pixels in red, and a before-and-after image side by side.
  *
  *   args: baseline-folder current-folder diff-folder
  */
@@ -61,12 +61,29 @@ public class ScreenshotCompare
 			{
 				changed++;
 				ImageIO.write(diff, "png", new File(diffs, name));
+				ImageIO.write(sideBySide(bi, ci), "png",
+						new File(diffs, name.replace(".png", "-before-after.png")));
 			}
 			System.out.printf("  %6.2f%%  %s%s%n", percent, name,
 					bi.getWidth() != ci.getWidth() || bi.getHeight() != ci.getHeight() ? "  (size changed)" : "");
 		}
 		System.out.println(changed == 0 ? "all screens identical"
 				: changed + " screen(s) differ; diff images in " + diffs);
+	}
+
+	// before on the left, after on the right
+	static BufferedImage sideBySide(BufferedImage before, BufferedImage after)
+	{
+		int gap = 12;
+		BufferedImage out = new BufferedImage(before.getWidth() + gap + after.getWidth(),
+				Math.max(before.getHeight(), after.getHeight()), BufferedImage.TYPE_INT_RGB);
+		java.awt.Graphics2D g = out.createGraphics();
+		g.setColor(java.awt.Color.DARK_GRAY);
+		g.fillRect(0, 0, out.getWidth(), out.getHeight());
+		g.drawImage(before, 0, 0, null);
+		g.drawImage(after, before.getWidth() + gap, 0, null);
+		g.dispose();
+		return out;
 	}
 
 	static int pixel(BufferedImage img, int x, int y)

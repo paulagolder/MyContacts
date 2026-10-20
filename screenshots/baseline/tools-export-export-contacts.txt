@@ -1,0 +1,41 @@
+JPanel 0,0 1200x900
+  jswVerticalPanel 'bigpanel' 0,0 1200x900
+    jswHorizontalPanel 'HP:' 2,2 1196x36
+      jswPushButtonset 'mode' 871,5 320x26
+        jswPushButton 'Browse' 1,1 74x24
+          JToggleButton 0,0 74x24
+        jswPushButton 'Search' 76,1 70x24
+          JToggleButton 0,0 70x24
+        jswPushButton 'Edit' 147,1 53x24
+          JToggleButton 0,0 53x24
+        jswPushButton 'Tools' 201,1 62x24
+          JToggleButton 0,0 62x24
+        jswPushButton 'Info' 264,1 54x24
+          JToggleButton 0,0 54x24
+    jswVerticalPanel 'mainpanel' 2,38 1196x860
+      ToolsPanel 'toolspanel' 0,0 1196x860
+        jswTabbedPanel 'toolstabpanel' 1,1 1194x858
+          JTabbedPane 1,1 1192x856
+            ExportTabPanel 'exporttabpanel' 0,33 1192x823
+              JTabbedPane 1,1 1190x821
+                exportPanel 'export' 0,33 1190x788
+                  jswHorizontalPanel 'HP:' 0,0 108x30
+                    jswLabel ' Exporting Data ' 5,5 98x20
+                      JLabel 1,1 96x18
+                  jswHorizontalPanel 'HP:' 0,30 151x30
+                    jswLabel ' ' 5,5 141x20
+                      JLabel 1,1 139x18
+                  jswHorizontalPanel 'HP:' 0,60 317x40
+                    jswButton 'Select' 5,5 72x30
+                      JButton 0,0 72x30
+                    jswTextBox ' ' 78,5 60x30
+                      JTextField 1,1 100x28
+                    jswDropDownBox 'type' 139,5 100x30
+                      JComboBox 0,0 100x30
+                    jswButton 'Save' 240,5 72x30
+                      JButton 0,0 72x30
+                  jswHorizontalPanel 'HP:' 0,100 87x40
+                    jswButton 'Davtest' 6,5 76x30
+                      JButton 0,0 76x30
+                  jswHorizontalPanel 'HP:' 0,140 10x10
+                  jswHorizontalPanel 'HP:' 0,150 10x638

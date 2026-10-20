@@ -1,0 +1,127 @@
+JPanel 0,0 1200x900
+  jswVerticalPanel 'bigpanel' 0,0 1200x900
+    jswHorizontalPanel 'HP:' 2,2 1196x36
+      jswPushButtonset 'mode' 871,5 320x26
+        jswPushButton 'Browse' 1,1 74x24
+          JToggleButton 0,0 74x24
+        jswPushButton 'Search' 76,1 70x24
+          JToggleButton 0,0 70x24
+        jswPushButton 'Edit' 147,1 53x24
+          JToggleButton 0,0 53x24
+        jswPushButton 'Tools' 201,1 62x24
+          JToggleButton 0,0 62x24
+        jswPushButton 'Info' 264,1 54x24
+          JToggleButton 0,0 54x24
+    selectorBox 'selectorbox' 2,38 1196x90
+      jswHorizontalPanel 'HP:' 1,1 1195x40
+        jswLabel 'All Contacts' 5,5 82x30
+          JLabel 1,1 80x28
+        jswDropDownBox 'tagselect' 548,5 100x30
+          JComboBox 0,0 100x30
+        jswLabel 'Browsing:' 1078,5 112x30
+          JLabel 1,1 110x28
+      jswHorizontalPanel 'HP:' 1,40 1195x43
+        jswButton 'Previous' 5,5 82x33
+          JButton 0,1 82x30
+        jswDropDownContactBox 'contactselect' 499,5 111x33
+          JComboBox 5,5 101x23
+        jswButton 'TempTag' 611,5 86x33
+          JButton 0,1 86x30
+        jswButton 'Next' 1118,5 72x33
+          JButton 0,1 72x30
+    jswVerticalPanel 'mainpanel' 2,128 1196x770
+      editPanel 'edit' 0,0 1196x770
+        jswHorizontalPanel 'newcontact' 0,0 1196x30
+          jswButton 'New Contact' 545,0 107x30
+            JButton 0,0 107x30
+        jswHorizontalPanel 'idbox' 0,30 1196x30
+          jswLabel ' ' 0,0 68x30
+            JLabel 1,1 66x28
+          jswLabel 'panel' 69,0 111x30
+            JLabel 1,1 109x28
+          jswLabel ' ' 181,0 2x30
+            JLabel 1,1 0x28
+          jswButton 'EDIT ME' 1044,0 79x30
+            JButton 0,0 79x30
+          jswButton 'VCARD' 1124,0 72x30
+            JButton 0,0 72x30
+        jswTable 'attributes' 0,60 1196x100
+          jswCell 'acell' 2,1 52x32
+            jswLabel 'name' 0,0 51x31
+              JLabel 1,1 49x29
+          jswCell 'acell' 52,1 102x32
+            jswLabel 'type' 0,0 101x31
+              JLabel 1,1 99x29
+          jswCell 'acell' 152,1 957x32
+            jswLabel 'Jones  Carol' 0,0 956x31
+              JLabel 1,1 954x29
+          jswCell 'acell' 1107,1 89x32
+            jswVerticalPanel 'title' 0,0 88x31
+              jswButton 'EDIT ME.' 0,0 88x31
+                JButton 0,0 82x30
+          jswCell 'acell' 1107,1 89x32
+            jswButton 'EDIT ME..' 0,0 85x30
+              JButton 0,0 85x30
+          jswCell 'acell' 2,33 52x32
+            jswLabel 'tags' 0,0 51x31
+              JLabel 1,1 49x29
+          jswCell 'acell' 52,33 102x32
+            jswLabel 'type' 0,0 101x31
+              JLabel 1,1 99x29
+          jswCell 'acell' 152,33 957x32
+            jswLabel 'work; ' 0,0 956x31
+              JLabel 1,1 954x29
+          jswCell 'acell' 1107,33 89x32
+            jswVerticalPanel 'title' 0,0 88x31
+              jswButton 'EDIT ME.' 0,0 88x31
+                JButton 0,0 82x30
+          jswCell 'acell' 1107,33 89x32
+            jswButton 'EDIT ME..' 0,0 85x30
+              JButton 0,0 85x30
+          jswCell 'acell' 2,65 52x32
+            jswLabel 'tid' 0,0 51x31
+              JLabel 1,1 49x29
+          jswCell 'acell' 52,65 102x32
+            jswLabel 'type' 0,0 101x31
+              JLabel 1,1 99x29
+          jswCell 'acell' 152,65 957x32
+            jswLabel 'Jones  Carol' 0,0 956x31
+              JLabel 1,1 954x29
+          jswCell 'acell' 1107,65 89x32
+            jswVerticalPanel 'title' 0,0 88x31
+              jswButton 'EDIT ME.' 0,0 88x31
+                JButton 0,0 82x30
+          jswCell 'acell' 1107,65 89x32
+            jswButton 'EDIT ME..' 0,0 85x30
+              JButton 0,0 85x30
+        jswHorizontalPanel 'HP:' 0,160 1196x50
+          jswDropDownBox 'Select:' 5,5 100x40
+            JComboBox 0,5 100x30
+          jswHorizontalPanel 'HP:' 1005,5 186x40
+            jswButton 'CREATE NEW ATTRIBUTE' 5,5 176x30
+              JButton 0,0 176x30
+        jswVerticalPanel 'LinkTo' 0,210 65x29
+          jswLabel 'ex-Related' 0,0 65x20
+            JLabel 1,1 63x18
+          jswTable 'related' 0,20 4x4
+        jswVerticalPanel 'LinkTo' 0,239 85x29
+          jswLabel 'ex-MemberOf' 0,0 85x20
+            JLabel 1,1 83x18
+          jswTable 'memberof' 0,20 4x4
+        jswHorizontalPanel 'newmember' 0,268 1196x40
+          jswDropDownBox 'null' 0,0 120x40
+            JComboBox 0,5 120x30
+          jswDropDownContactBox 'dropdown' 121,0 300x40
+            JComboBox 5,5 300x30
+          jswTextBox 'attedit' 422,0 60x40
+            JTextField 1,1 100x38
+              jswTextPrompt 7,3 86x32
+          jswHorizontalPanel 'HP:' 1080,0 116x40
+            jswButton 'ADD AS LINK' 5,5 106x30
+              JButton 0,0 106x30
+        jswHorizontalPanel 'HP:' 0,308 1196x40
+          jswDropDownBox 'Select Group' 0,0 100x40
+            JComboBox 0,5 100x30
+          jswHorizontalPanel 'HP:' 1000,0 196x40
+            jswButton 'ADD GROUP AS MEMBERS' 5,5 186x30
+              JButton 0,0 186x30

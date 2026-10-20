@@ -1,0 +1,43 @@
+JPanel 0,0 1200x900
+  jswVerticalPanel 'bigpanel' 0,0 1200x900
+    jswHorizontalPanel 'HP:' 2,2 1196x36
+      jswPushButtonset 'mode' 871,5 320x26
+        jswPushButton 'Browse' 1,1 74x24
+          JToggleButton 0,0 74x24
+        jswPushButton 'Search' 76,1 70x24
+          JToggleButton 0,0 70x24
+        jswPushButton 'Edit' 147,1 53x24
+          JToggleButton 0,0 53x24
+        jswPushButton 'Tools' 201,1 62x24
+          JToggleButton 0,0 62x24
+        jswPushButton 'Info' 264,1 54x24
+          JToggleButton 0,0 54x24
+    jswVerticalPanel 'mainpanel' 2,38 1196x860
+      ToolsPanel 'toolspanel' 0,0 1196x860
+        jswTabbedPanel 'toolstabpanel' 1,1 1194x858
+          JTabbedPane 1,1 1192x856
+            OtherTabPanel 'othertabpanel' 0,33 1192x823
+              JTabbedPane 1,1 1190x821
+                editListPanel 'editlist' 0,33 1190x788
+                  jswHorizontalPanel 'HP:' 0,0 110x30
+                    jswLabel ' Edit Lists (Tags) ' 5,5 100x20
+                      JLabel 1,1 98x18
+                  jswHorizontalPanel 'toolbar' 0,30 1190x30
+                    jswButton 'delete all' 0,0 83x30
+                      JButton 0,0 83x30
+                  jswHorizontalPanel 'progressbar' 0,60 1190x30
+                    jswDropDownBox 'tags' 0,0 1190x30
+                      JComboBox 0,0 100x30
+                  jswScrollPane 'scrollpane' 0,90 1190x698
+                    JScrollPane 1,1 1188x696
+                      JViewport 1,1 1186x694
+                        jswTable 'members' 0,0 1186x694
+                          jswCell 'acell' 2,1 102x32
+                            jswLabel 'Smith  Alice' 0,0 101x31
+                              JLabel 1,1 99x29
+                          jswCell 'acell' 102,1 86x32
+                            jswButton 'REMOVE' 0,0 82x30
+                              JButton 0,0 82x30
+                          jswCell 'acell' 186,1 1000x32
+                            jswButton 'DELETE' 0,0 74x30
+                              JButton 0,0 74x30

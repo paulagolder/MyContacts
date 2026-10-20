@@ -130,7 +130,24 @@ public class Screenshots
 			g.dispose();
 		});
 		ImageIO.write(image[0], "png", new File(out, name + ".png"));
+		// and where every component is, for finding the source of a difference
+		StringBuilder tree = new StringBuilder();
+		SwingUtilities.invokeAndWait(() -> dump(MyContacts.mframe.getContentPane(), "", tree));
+		java.nio.file.Files.writeString(new File(out, name + ".txt").toPath(), tree);
 		System.out.println("captured " + name);
+	}
+
+	static void dump(Component c, String indent, StringBuilder out)
+	{
+		if (!c.isVisible()) return;
+		String name = c instanceof org.lerot.mywidgets.jswPanel p ? " '" + p.getPanelname() + "'" : "";
+		Rectangle r = c.getBounds();
+		out.append(indent).append(c.getClass().getSimpleName()).append(name)
+				.append(" ").append(r.x).append(",").append(r.y).append(" ").append(r.width).append("x")
+				.append(r.height).append("\n");
+		if (c instanceof Container cc && !(c instanceof JComboBox) && !(c instanceof JScrollBar))
+			for (Component child : cc.getComponents())
+				dump(child, indent + "  ", out);
 	}
 
 	// let layout and painting finish

@@ -1,0 +1,69 @@
+JPanel 0,0 1200x900
+  jswVerticalPanel 'bigpanel' 0,0 1200x900
+    jswHorizontalPanel 'HP:' 2,2 1196x36
+      jswPushButtonset 'mode' 871,5 320x26
+        jswPushButton 'Browse' 1,1 74x24
+          JToggleButton 0,0 74x24
+        jswPushButton 'Search' 76,1 70x24
+          JToggleButton 0,0 70x24
+        jswPushButton 'Edit' 147,1 53x24
+          JToggleButton 0,0 53x24
+        jswPushButton 'Tools' 201,1 62x24
+          JToggleButton 0,0 62x24
+        jswPushButton 'Info' 264,1 54x24
+          JToggleButton 0,0 54x24
+    jswVerticalPanel 'mainpanel' 2,38 1196x860
+      ToolsPanel 'toolspanel' 0,0 1196x860
+        jswTabbedPanel 'toolstabpanel' 1,1 1194x858
+          JTabbedPane 1,1 1192x856
+            OtherTabPanel 'othertabpanel' 0,33 1192x823
+              JTabbedPane 1,1 1190x821
+                manageTagsPanel 'managetagspanel' 0,33 1190x788
+                  jswHorizontalPanel 'HP:' 0,0 92x30
+                    jswLabel 'Manage Tags' 5,5 82x20
+                      JLabel 1,1 80x18
+                  jswHorizontalPanel 'HP:' 0,30 147x30
+                    jswLabel ' 3 different tags found ' 5,5 137x20
+                      JLabel 1,1 135x18
+                  jswHorizontalPanel 'HP:' 0,60 413x40
+                    jswButton 'MERGE' 5,5 73x30
+                      JButton 0,0 73x30
+                    jswButton 'DELETE' 79,5 74x30
+                      JButton 0,0 74x30
+                    jswButton 'RENAME' 154,5 82x30
+                      JButton 0,0 82x30
+                    jswButton 'DUPLICATE' 237,5 98x30
+                      JButton 0,0 98x30
+                    jswButton 'NORM' 336,5 72x30
+                      JButton 0,0 72x30
+                  jswScrollPane 'scrollpane' 0,100 1190x688
+                    JScrollPane 0,0 1190x688
+                      JViewport 1,1 1188x686
+                        jswTable 'tags' 0,0 1188x686
+                          jswCell 'acell' 3,2 62x27
+                            jswLabel 'friends' 0,0 61x26
+                              JLabel 1,1 59x24
+                          jswCell 'acell' 63,2 13x27
+                            jswLabel '1' 0,0 12x26
+                              JLabel 1,1 10x24
+                          jswCell 'acell' 74,2 23x27
+                            jswCheckbox '' 0,2 19x19
+                              JCheckBox 1,1 17x17
+                          jswCell 'acell' 3,29 62x27
+                            jswLabel 'family' 0,0 61x26
+                              JLabel 1,1 59x24
+                          jswCell 'acell' 63,29 13x27
+                            jswLabel '1' 0,0 12x26
+                              JLabel 1,1 10x24
+                          jswCell 'acell' 74,29 23x27
+                            jswCheckbox '' 0,2 19x19
+                              JCheckBox 1,1 17x17
+                          jswCell 'acell' 3,56 62x27
+                            jswLabel 'work' 0,0 61x26
+                              JLabel 1,1 59x24
+                          jswCell 'acell' 63,56 13x27
+                            jswLabel '1' 0,0 12x26
+                              JLabel 1,1 10x24
+                          jswCell 'acell' 74,56 23x27
+                            jswCheckbox '' 0,2 19x19
+                              JCheckBox 1,1 17x17

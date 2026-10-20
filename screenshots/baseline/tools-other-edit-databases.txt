@@ -1,0 +1,48 @@
+JPanel 0,0 1200x900
+  jswVerticalPanel 'bigpanel' 0,0 1200x900
+    jswHorizontalPanel 'HP:' 2,2 1196x36
+      jswPushButtonset 'mode' 871,5 320x26
+        jswPushButton 'Browse' 1,1 74x24
+          JToggleButton 0,0 74x24
+        jswPushButton 'Search' 76,1 70x24
+          JToggleButton 0,0 70x24
+        jswPushButton 'Edit' 147,1 53x24
+          JToggleButton 0,0 53x24
+        jswPushButton 'Tools' 201,1 62x24
+          JToggleButton 0,0 62x24
+        jswPushButton 'Info' 264,1 54x24
+          JToggleButton 0,0 54x24
+    jswVerticalPanel 'mainpanel' 2,38 1196x860
+      ToolsPanel 'toolspanel' 0,0 1196x860
+        jswTabbedPanel 'toolstabpanel' 1,1 1194x858
+          JTabbedPane 1,1 1192x856
+            OtherTabPanel 'othertabpanel' 0,33 1192x823
+              JTabbedPane 1,1 1190x821
+                dbEditPanel 'Edit' 0,33 1190x788
+                  jswHorizontalPanel 'HP:' 0,0 156x30
+                    jswLabel ' Edit Contact Databases ' 5,5 146x20
+                      JLabel 1,1 144x18
+                  jswHorizontalPanel 'HP:' 0,30 82x40
+                    jswButton 'refresh' 5,5 72x30
+                      JButton 0,0 72x30
+                  jswTable 'dbfound' 0,70 971x32
+                    jswCell 'acell' 2,1 86x28
+                      jswLabel 'test.sqlite' 0,0 85x27
+                        JLabel 1,1 83x25
+                    jswCell 'acell' 86,1 646x28
+                      jswLabel '/home/paul/Development/GitHubWorkspace/myContacts/build/screenshots/home/.mccontacts/test.sqlite' 0,0 645x27
+                        JLabel 1,1 643x25
+                    jswCell 'acell' 730,1 26x28
+                      jswLabel 'yes' 0,0 25x27
+                        JLabel 1,1 23x25
+                    jswCell 'acell' 754,1 13x28
+                      jswLabel '3' 0,0 12x27
+                        JLabel 1,1 10x25
+                    jswCell 'acell' 765,1 121x28
+                      jswLabel '2026-01-01 12:00:00' 0,0 120x27
+                        JLabel 1,1 118x25
+                    jswCell 'acell' 884,1 87x28
+                      jswHorizontalPanel 'HP:' 0,0 86x27
+                        jswOptionset 'options' 0,0 83x27
+                          jswOption 'select' 1,2 79x24
+                            JRadioButton 0,0 55x20

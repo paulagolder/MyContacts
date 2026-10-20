@@ -1,0 +1,53 @@
+JPanel 0,0 1200x900
+  jswVerticalPanel 'bigpanel' 0,0 1200x900
+    jswHorizontalPanel 'HP:' 2,2 1196x36
+      jswPushButtonset 'mode' 871,5 320x26
+        jswPushButton 'Browse' 1,1 74x24
+          JToggleButton 0,0 74x24
+        jswPushButton 'Search' 76,1 70x24
+          JToggleButton 0,0 70x24
+        jswPushButton 'Edit' 147,1 53x24
+          JToggleButton 0,0 53x24
+        jswPushButton 'Tools' 201,1 62x24
+          JToggleButton 0,0 62x24
+        jswPushButton 'Info' 264,1 54x24
+          JToggleButton 0,0 54x24
+    jswVerticalPanel 'mainpanel' 2,38 1196x860
+      ToolsPanel 'toolspanel' 0,0 1196x860
+        jswTabbedPanel 'toolstabpanel' 1,1 1194x858
+          JTabbedPane 1,1 1192x856
+            ExportTabPanel 'exporttabpanel' 0,33 1192x823
+              JTabbedPane 1,1 1190x821
+                labelprintPanel 'labelprint' 0,33 1190x788
+                  jswHorizontalPanel 'HP:' 0,0 138x30
+                    jswLabel ' Print address Labels ' 5,5 128x20
+                      JLabel 1,1 126x18
+                  jswHorizontalPanel 'fiterbar' 0,30 1190x61
+                    jswOption 'Selected contacts (0)' 10,29 165x22
+                      JRadioButton 0,0 61x20
+                    jswOption 'temptag' 176,29 95x22
+                      JRadioButton 0,0 96x20
+                  jswHorizontalPanel 'HP:' 0,91 343x40
+                    jswButton 'Select' 5,5 72x30
+                      JButton 0,0 72x30
+                    jswTextBox ' ' 78,5 260x30
+                      JTextField 1,1 300x28
+                  jswHorizontalPanel 'HP:' 0,131 258x40
+                    jswDropDownBox 'Select layout' 5,5 100x30
+                      JComboBox 0,0 100x30
+                    jswThumbwheel 'Start Position' 106,5 147x30
+                      JLabel 1,5 81x18
+                      JSpinner 82,1 60x28
+                         38,1 21x13
+                         38,14 21x13
+                        NumberEditor 1,1 37x26
+                          JFormattedTextField 0,0 37x26
+                  jswHorizontalPanel 'HP:' 0,171 93x32
+                    jswCheckbox 'Show UK?' 5,5 83x22
+                      JCheckBox 1,1 81x20
+                  jswHorizontalPanel 'HP:' 0,203 82x40
+                    jswButton 'PRINT' 5,5 72x30
+                      JButton 0,0 72x30
+                  jswHorizontalPanel 'HP:' 0,243 206x30
+                    jswLabel ' Selecting source and output file ' 5,5 196x20
+                      JLabel 1,1 194x18
