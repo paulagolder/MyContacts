@@ -128,6 +128,11 @@ public class selectorBox extends jswVerticalPanel
             selcontact = contactselectbox.getSelectedValue();
             System.out.println(selcontact);
             update2();
+        } else if (action.equals("CONTACTSELECTED"))
+        {
+            // the raw combo box event; the drop-down box also forwards it as
+            // CONTACTSELECTED:<id>, which does the work
+            return;
         } else
             System.out.println("action  " + action + " unrecognised in selectorbox ");
         MyContacts.topgui.refreshView();
@@ -476,6 +481,8 @@ public class selectorBox extends jswVerticalPanel
             } else
                 contactselectbox.setSelected(-1);
         }
+        // keep the selected contact in step with the drop-down
+        selcontact = contactselectbox.getSelectedValue();
         filterbox.clear();
     }
 

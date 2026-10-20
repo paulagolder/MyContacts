@@ -897,10 +897,11 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         {
             idpanel2 = new jswLabel(" ");
             idbox.add("  ", idpanel2);
-            idpanel2.setText(MyContacts.selbox.getSelcontact().getTID());
+            mcContact acontact = MyContacts.selbox.getSelcontact();
+            if (acontact != null) idpanel2.setText(acontact.getTID());
             idpanel3 = new jswLabel(" ");
             idbox.add(idpanel3);
-            idpanel3.setText(MyContacts.selbox.getSelcontact().getTags());
+            if (acontact != null) idpanel3.setText(acontact.getTags());
             jswButton idcancel = new jswButton(this, "CANCEL", "CANCEL");
             idbox.add("RIGHT", idcancel);
         } else
@@ -923,7 +924,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
 
             idpanel3 = new jswLabel(" ");
             idbox.add(" ", idpanel3);
-            idpanel3.setText(MyContacts.selbox.getSelcontact().getTags());
+            if (acontact != null) idpanel3.setText(acontact.getTags());
             jswButton idedit = new jswButton(this, "EDIT ME", "EDITID");
             idbox.add("RIGHT", idedit);
             jswButton imvcard = new jswButton(this, "VCARD", "IMPORTVCARD");

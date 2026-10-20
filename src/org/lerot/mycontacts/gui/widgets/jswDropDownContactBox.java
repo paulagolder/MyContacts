@@ -289,6 +289,7 @@ public class jswDropDownContactBox extends jswPanel implements ActionListener
 
       //  HashMap<String,String> am = jswPanel.createActionMap(this, evt) ;
       //  am.put("selected",getSelectedValue().getIDstr());
+        if (getSelectedValue() == null) return; // list emptied or cleared
         Long t = System.currentTimeMillis() / 10000;
         int uniqueId = t.intValue();
         ActionEvent event = new ActionEvent(this, uniqueId, evt.getActionCommand()+":"+getSelectedValue().getIDstr());
