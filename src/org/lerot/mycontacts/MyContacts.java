@@ -51,6 +51,8 @@ public class MyContacts extends JFrame implements ActionListener
     public static mcDataTypes alldatatypes;
     public static mcAttributeTypes myattributetypes;
     public static String version = "_20251205";
+    // settings folder (~/.mccontacts/), read by non-GUI code; tests point it elsewhere
+    public static String settingsdir;
     private final Dimension defdimension;
     public mcDataSource currentcon;
     public browsePanel abrowsepanel;
@@ -122,6 +124,7 @@ public class MyContacts extends JFrame implements ActionListener
         System.out.println("user :" + user);
         System.out.println("user directory :" + userdir);
         System.out.println("operating system :" + os + "(" + osversion + ")");
+        settingsdir = dotcontacts;
         propsfile = dotcontacts + "properties.xml";
         props = readProperties(propsfile);
         dbsource = props.getProperty("database", "mcdb.sqlite");

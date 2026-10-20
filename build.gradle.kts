@@ -1,6 +1,7 @@
 // Build description for MyContacts.
 //
 // Everyday commands (run from the project folder):
+//   ./gradlew test      run the automated tests (test/java)
 //   ./gradlew run       compile and start the app
 //   ./gradlew build     compile and build the single runnable jar
 //   ./gradlew deploy    build it and copy it to ~/applications/MyContacts.jar
@@ -32,6 +33,11 @@ sourceSets {
         java.setSrcDirs(listOf("src"))
         resources.setSrcDirs(emptyList<String>())
     }
+    // automated tests (./gradlew test) and the files they use
+    test {
+        java.setSrcDirs(listOf("test/java"))
+        resources.setSrcDirs(listOf("test/resources"))
+    }
 }
 
 // mywidgets is not published anywhere yet, so use the jar built from the
@@ -55,6 +61,20 @@ dependencies {
     implementation("org.odftoolkit:simple-odf:0.6.6")           // letters (.odt)
     implementation("com.googlecode.ez-vcard:ez-vcard:0.12.1")   // vCard import/export
     implementation("com.formdev:flatlaf:3.7.2")                 // look and feel (used by mywidgets)
+
+    // JUnit, for the tests only; it is not put in MyContacts.jar
+    testImplementation(platform("org.junit:junit-bom:6.1.3"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+tasks.test {
+    useJUnitPlatform()
+    // show each test's result, and the output of failing tests
+    testLogging {
+        events("passed", "skipped", "failed")
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
 }
 
 tasks.withType<JavaCompile>().configureEach {

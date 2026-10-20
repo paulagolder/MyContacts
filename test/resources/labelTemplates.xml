@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<labels>
+    <label key="3by7" >
+        <parameter key = "rotate" value = "false" />
+        <parameter key = "nrows" value = "7" />
+        <parameter key = "ncols" value = "3" />
+        <parameter key = "leftmargin" value = "10" />
+        <parameter key = "topmargin" value = "30" />
+        <parameter key = "bottommargin" value = "30" />
+        <parameter key = "rightmargin" value = "10" />
+        <parameter key = "toppadding" value = "10" />
+        <parameter key = "leftpadding" value = "10" />
+        <parameter key = "rightpadding" value = "5" />
+        <parameter key = "bottompadding" value = "5" />
+        <parameter key = "font" value = "smallNormal" />
+   </label>
+   <label key="2by4" >
+        <parameter key = "rotate" value = "false" />
+        <parameter key = "nrows" value = "4" />
+        <parameter key = "ncols" value = "2" />
+        <parameter key = "leftmargin" value = "5" />
+        <parameter key = "topmargin" value = "25" />
+        <parameter key = "bottommargin" value = "25" />
+        <parameter key = "rightmargin" value = "5" />
+        <parameter key = "toppadding" value = "60" />
+        <parameter key = "leftpadding" value = "40" />
+        <parameter key = "rightpadding" value = "10" />
+        <parameter key = "bottompadding" value = "10" />
+        <parameter key = "font" value = "largeBold" />
+   </label>
+   <label key="3by3" >
+        <parameter key = "rotate" value = "true" />
+        <parameter key = "nrows" value = "3" />
+        <parameter key = "ncols" value = "3" />
+        <parameter key = "leftmargin" value = "5" />
+        <parameter key = "topmargin" value = "25" />
+        <parameter key = "bottommargin" value = "25" />
+        <parameter key = "rightmargin" value = "5" />
+        <parameter key = "toppadding" value = "60" />
+        <parameter key = "leftpadding" value = "40" />
+        <parameter key = "rightpadding" value = "10" />
+        <parameter key = "bottompadding" value = "10" />
+        <parameter key = "font" value = "largeBold" />
+   </label>
+   <label key="1by1" >
+        <parameter key = "rotate" value = "true" />
+        <parameter key = "nrows" value = "1" />
+        <parameter key = "ncols" value = "1" />
+        <parameter key = "leftmargin" value = "5" />
+        <parameter key = "topmargin" value = "25" />
+        <parameter key = "bottommargin" value = "25" />
+        <parameter key = "rightmargin" value = "5" />
+        <parameter key = "toppadding" value = "300" />
+        <parameter key = "leftpadding" value = "200" />
+        <parameter key = "rightpadding" value = "200" />
+        <parameter key = "bottompadding" value = "200" />
+        <parameter key = "font" value = "largeBold" />
+   </label>
+   <label key="3by7b" >
+        <parameter key = "rotate" value = "false" />
+        <parameter key = "nrows" value = "7" />
+        <parameter key = "ncols" value = "3" />
+        <parameter key = "leftmargin" value = "30" />
+        <parameter key = "topmargin" value = "25" />
+        <parameter key = "bottommargin" value = "10" />
+        <parameter key = "rightmargin" value = "10" />
+        <parameter key = "toppadding" value = "15" />
+        <parameter key = "leftpadding" value = "20" />
+        <parameter key = "rightpadding" value = "5" />
+        <parameter key = "bottompadding" value = "5" />
+        <parameter key = "font" value = "smallNormal" />
+   </label>
+   <label key="3by7c" >
+        <parameter key = "rotate" value = "false" />
+        <parameter key = "nrows" value = "7" />
+        <parameter key = "ncols" value = "3" />
+        <parameter key = "leftmargin" value = "30" />
+        <parameter key = "topmargin" value = "50" />
+        <parameter key = "bottommargin" value = "30" />
+        <parameter key = "rightmargin" value = "10" />
+        <parameter key = "toppadding" value = "15" />
+        <parameter key = "leftpadding" value = "20" />
+        <parameter key = "rightpadding" value = "5" />
+        <parameter key = "bottompadding" value = "5" />
+        <parameter key = "font" value = "smallNormal" />
+   </label>
+   <label key="3by7d" >
+        <parameter key = "rotate" value = "false" />
+        <parameter key = "nrows" value = "7" />
+        <parameter key = "ncols" value = "3" />
+        <parameter key = "leftmargin" value = "30" />
+        <parameter key = "topmargin" value = "50" />
+        <parameter key = "bottommargin" value = "30" />
+        <parameter key = "rightmargin" value = "10" />
+        <parameter key = "toppadding" value = "15" />
+        <parameter key = "leftpadding" value = "15" />
+        <parameter key = "rightpadding" value = "5" />
+        <parameter key = "bottompadding" value = "5" />
+        <parameter key = "font" value = "smallNormal" />
+   </label>
+     <label key="3by8" >
+        <parameter key = "rotate" value = "false" />
+        <parameter key = "nrows" value = "8" />
+        <parameter key = "ncols" value = "3" />
+        <parameter key = "leftmargin" value = "30" />
+        <parameter key = "topmargin" value = "50" />
+        <parameter key = "bottommargin" value = "30" />
+        <parameter key = "rightmargin" value = "10" />
+        <parameter key = "toppadding" value = "15" />
+        <parameter key = "leftpadding" value = "15" />
+        <parameter key = "rightpadding" value = "5" />
+        <parameter key = "bottompadding" value = "5" />
+        <parameter key = "font" value = "smallNormal" />
+   </label>
+</labels>
+

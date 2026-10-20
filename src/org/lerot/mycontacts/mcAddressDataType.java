@@ -344,7 +344,7 @@ public class mcAddressDataType extends mcKeyValueDataType
 			HashMap<String, Vector<String>> addlist = new HashMap<String, Vector<String>>();
 			SAXReader reader = new SAXReader();
 			Document doc = reader
-					.read(MyContacts.topgui.dotcontacts + "/addressTemplates.xml");
+					.read(MyContacts.settingsdir + "/addressTemplates.xml");
 			List<Node> nodes = doc.selectNodes("/addresses/address");
 			for (Node node : nodes)
 			{

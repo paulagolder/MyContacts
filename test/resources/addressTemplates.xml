@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<addresses>
+<address country="UK" >
+<comment>uk address</comment>
+<line key="1">POBOX</line>
+<line key="2">Building</line>
+<line key="3">Street</line>
+<line key="4">Locality</line>
+<line key="5">CITY</line>
+<line key="6">County</line>
+<line key="7">POSTCODE</line>
+<line key="8">Country</line>
+</address>
+<address country="FR" >
+<comment>france address</comment>
+<line key="1">POBOX</line>
+<line key="2">Building</line>
+<line key="3">Street</line>
+<line key="4">Locality</line>
+<line key="5">POSTCODE CITY</line>
+<line key="6">County</line>
+<line key="8">Country</line>
+</address>
+<address country="USA" >
+<comment>france address</comment>
+<line key="1">POBOX</line>
+<line key="2">Building</line>
+<line key="3">Street</line>
+<line key="4">Locality</line>
+<line key="5">CITY POSTCODE COUNTY</line>
+<line key="8">COUNTRY</line>
+</address>
+<address country="DEF" >
+<comment>france address</comment>
+<line key="1">POBOX</line>
+<line key="2">Building</line>
+<line key="3">Street</line>
+<line key="4">Locality</line>
+<line key="5">POSTCODE CITY</line>
+<line key="6">County</line>
+<line key="8">Country</line>
+</address>
+<address country="EUR" >
+<comment>france address</comment>
+<line key="1">POBOX</line>
+<line key="2">Building</line>
+<line key="3">Street</line>
+<line key="4">Locality</line>
+<line key="5">POSTCODE CITY</line>
+<line key="6">County</line>
+<line key="8">Country</line>
+</address>
+</addresses>
+
