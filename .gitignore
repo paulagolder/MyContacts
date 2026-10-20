@@ -30,3 +30,7 @@ bin/
 ### Local files ###
 /Output File
 .idea/claudeCodeEditorTabs.xml
+
+### Gradle ###
+.gradle/
+build/
