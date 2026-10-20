@@ -177,10 +177,10 @@ public class mcDataSource
 	{
 		HashMap<String, String> checks = new HashMap<String, String>();
 		PreparedStatement preparedStatement = null;
-		checks.put("dbname", dbname);
 		try
 		{
 			connect();
+			checks.put("dbname", dbname);
 			if (con == null) throw new SQLException(errorMessage);
 			preparedStatement = con
 					.prepareStatement(" select value as val  from parameters where key='Title'; ");
@@ -192,7 +192,7 @@ public class mcDataSource
 			}
 			preparedStatement.close();
 			preparedStatement = con
-					.prepareStatement(" select count(*) as nc from proup ");
+					.prepareStatement(" select count(distinct cid) as nc from attributeValues where root = 'tid' ");
 			 rs = preparedStatement.executeQuery();
 			while (rs.next())
 			{
