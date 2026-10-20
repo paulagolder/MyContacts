@@ -21,12 +21,6 @@ public record ContactCard(int id, String listName, String name, String address, 
 				.collect(Collectors.joining("\n"));
 	}
 
-	// a second line for the contact list: how to reach them
-	public String reach()
-	{
-		return email != null ? email : mobile != null ? mobile : phone;
-	}
-
 	// true if every word of the query appears somewhere on the card
 	public boolean matches(String query)
 	{

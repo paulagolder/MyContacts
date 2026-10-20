@@ -30,8 +30,11 @@ import java.util.List;
  */
 public class MyContactsLite extends JFrame
 {
-	static final Color PAGE = Color.decode("#F2F2F5");
-	static final Color TILE = Color.WHITE;
+	// a soft warm off-white page, with a slightly darker shade for the
+	// search box, the list panel and the contact's tiles
+	static final Color PAGE = Color.decode("#F4F1EA");
+	static final Color SHADE = Color.decode("#E9E4DA");
+	static final String SHADEHEX = "#E9E4DA";
 	static final Color MUTED = Color.decode("#8A8A8E");
 	static final String ACCENT = "#2F6FDB";
 	static final Color HIGHLIGHT = Color.decode("#DCE6F8");
@@ -59,6 +62,9 @@ public class MyContactsLite extends JFrame
 		FlatLaf.setGlobalExtraDefaults(java.util.Map.of("@accentColor", ACCENT));
 		FlatMacLightLaf.setup();
 		UIManager.put("List.selectionArc", 10);
+		// the title bar in the page colour, so the window is all one colour scheme
+		UIManager.put("TitlePane.background", PAGE);
+		UIManager.put("TitlePane.inactiveBackground", PAGE);
 		UIManager.put("ScrollBar.showButtons", false);
 		UIManager.put("ScrollBar.width", 8);
 		UIManager.put("ScrollBar.thumbArc", 999);
@@ -98,7 +104,8 @@ public class MyContactsLite extends JFrame
 
 	private JPanel listPage()
 	{
-		JPanel page = new JPanel(new MigLayout("insets 4 14 0 14, wrap, fill", "[grow, fill]", "[][]6[]4[grow, fill]"));
+		// the bottom inset keeps the list panel clear of the window's edge
+		JPanel page = new JPanel(new MigLayout("insets 4 14 12 14, wrap, fill", "[grow, fill]", "[][]6[]4[grow, fill]"));
 		page.setBackground(PAGE);
 
 		JLabel heading = new JLabel("Contacts");
@@ -109,6 +116,7 @@ public class MyContactsLite extends JFrame
 		search.putClientProperty("JTextField.leadingIcon", icon("search.svg", 14));
 		search.putClientProperty("JTextField.showClearButton", true);
 		search.putClientProperty("JComponent.roundRect", true);
+		search.putClientProperty("FlatLaf.style", "background: " + SHADEHEX);
 		search.getDocument().addDocumentListener(new DocumentListener()
 		{
 			public void insertUpdate(DocumentEvent e) { filter(); }
@@ -126,7 +134,7 @@ public class MyContactsLite extends JFrame
 
 		list.setCellRenderer(new ContactRenderer());
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setBackground(PAGE);
+		list.setOpaque(false);
 		// the renderer draws the selection itself
 		list.putClientProperty("FlatLaf.style",
 				"selectionBackground: $List.background; selectionInactiveBackground: $List.background");
@@ -142,8 +150,13 @@ public class MyContactsLite extends JFrame
 		bindKey(list, "ENTER", this::openSelected);
 		JScrollPane scroll = new JScrollPane(list);
 		scroll.setBorder(BorderFactory.createEmptyBorder());
-		scroll.getViewport().setBackground(PAGE);
-		page.add(scroll);
+		scroll.setOpaque(false);
+		scroll.getViewport().setOpaque(false);
+		// the list in a rounded panel, outlined like the search box
+		JPanel panel = new RoundedPanel(SHADE, UIManager.getColor("Component.borderColor"), 14);
+		panel.setLayout(new MigLayout("insets 6 4 6 4, fill"));
+		panel.add(scroll, "grow");
+		page.add(panel);
 		return page;
 	}
 
@@ -292,13 +305,28 @@ public class MyContactsLite extends JFrame
 		return tile;
 	}
 
-	static class Tile extends JPanel
+	static class Tile extends RoundedPanel
 	{
 		Tile(JComponent text)
 		{
-			super(new MigLayout("insets 10 14 10 14, fill", "[grow, fill]"));
-			setOpaque(false);
+			super(SHADE, null, 16);
+			setLayout(new MigLayout("insets 10 14 10 14, fill", "[grow, fill]"));
 			add(text, "wmin 0");
+		}
+	}
+
+	// a panel with a rounded background, and optionally a 1px outline
+	static class RoundedPanel extends JPanel
+	{
+		private final Color fill, outline;
+		private final int arc;
+
+		RoundedPanel(Color fill, Color outline, int arc)
+		{
+			this.fill = fill;
+			this.outline = outline;
+			this.arc = arc;
+			setOpaque(false);
 		}
 
 		@Override
@@ -306,8 +334,13 @@ public class MyContactsLite extends JFrame
 		{
 			Graphics2D g2 = (Graphics2D) g.create();
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			g2.setColor(TILE);
-			g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 16, 16));
+			g2.setColor(fill);
+			g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), arc, arc));
+			if (outline != null)
+			{
+				g2.setColor(outline);
+				g2.draw(new RoundRectangle2D.Float(0.5f, 0.5f, getWidth() - 1, getHeight() - 1, arc, arc));
+			}
 			g2.dispose();
 		}
 	}
@@ -328,21 +361,18 @@ public class MyContactsLite extends JFrame
 		public boolean getScrollableTracksViewportHeight() { return false; }
 	}
 
-	// ---- a list row: name, and below it how to reach them ----
+	// ---- a list row: the contact's name on one line ----
 
 	static class ContactRenderer extends JPanel implements ListCellRenderer<ContactCard>
 	{
 		private final JLabel name = new JLabel();
-		private final JLabel reach = new JLabel();
 		private boolean selected;
 
 		ContactRenderer()
 		{
-			super(new MigLayout("insets 5 10 5 10, wrap, gapy 0", "[grow]"));
+			super(new MigLayout("insets 3 10 3 10", "[grow]"));
 			setOpaque(false);
-			reach.putClientProperty("FlatLaf.styleClass", "small");
 			add(name);
-			add(reach);
 		}
 
 		@Override
@@ -350,10 +380,7 @@ public class MyContactsLite extends JFrame
 				int index, boolean selected, boolean focused)
 		{
 			name.setText(card.listName());
-			String r = card.reach();
-			reach.setText(r == null ? " " : r);
 			name.setForeground(list.getForeground());
-			reach.setForeground(MUTED);
 			this.selected = selected;
 			return this;
 		}
