@@ -286,7 +286,7 @@ public class mcPDF
 		try
 		{
 			HashMap<String, Map<String, String>> addlist = new HashMap<String, Map<String, String>>();
-			SAXReader reader = new SAXReader();
+			SAXReader reader = SAXReader.createDefault();
 			org.dom4j.Document doc = reader
 					.read(MyContacts.settingsdir + "/labelTemplates.xml");
 			List<Node> nodes = doc.selectNodes("/labels/label");

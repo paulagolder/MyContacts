@@ -342,7 +342,7 @@ public class mcAddressDataType extends mcKeyValueDataType
 		try
 		{
 			HashMap<String, Vector<String>> addlist = new HashMap<String, Vector<String>>();
-			SAXReader reader = new SAXReader();
+			SAXReader reader = SAXReader.createDefault();
 			Document doc = reader
 					.read(MyContacts.settingsdir + "/addressTemplates.xml");
 			List<Node> nodes = doc.selectNodes("/addresses/address");

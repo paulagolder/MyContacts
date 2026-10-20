@@ -52,8 +52,8 @@ dependencies {
     implementation(files(mywidgetsJar))
 
     implementation("org.xerial:sqlite-jdbc:3.53.4.0")          // database driver
-    implementation("dom4j:dom4j:1.6.1")                         // label/address templates
-    implementation("jaxen:jaxen:1.1.6")                         // XPath for dom4j
+    implementation("org.dom4j:dom4j:2.2.0")                     // label/address templates
+    implementation("jaxen:jaxen:2.0.6")                         // XPath for dom4j
     implementation("org.apache.commons:commons-lang3:3.3.2")    // text escaping
     implementation("commons-codec:commons-codec:1.10")          // vCard decoding
     implementation("javax.mail:mail:1.4.7")                     // dropped emails
