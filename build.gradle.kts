@@ -60,7 +60,7 @@ dependencies {
     implementation("com.sun.mail:javax.mail:1.6.2")            // dropped emails
     implementation("com.itextpdf:itextpdf:5.5.13.6")           // PDF labels
     implementation("org.odftoolkit:simple-odf:0.6.6")           // letters (.odt)
-    implementation("com.googlecode.ez-vcard:ez-vcard:0.12.1")   // vCard import/export
+    implementation("com.googlecode.ez-vcard:ez-vcard:0.12.2")   // vCard import/export
     implementation("com.formdev:flatlaf:3.7.2")                 // look and feel (used by mywidgets)
 
     // JUnit, for the tests only; it is not put in MyContacts.jar
