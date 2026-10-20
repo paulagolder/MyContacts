@@ -158,9 +158,10 @@ public class MyContacts extends JFrame implements ActionListener
         buttonset.addNewButton("Search");
         buttonset.addNewButton("Edit");
         buttonset.addNewButton("Tools");
+        buttonset.addNewButton("Info","INFO");
         buttonset.setButtonSelection("Browse");
         optionBar.add(" RIGHT ", buttonset);
-        optionBar.add(" RIGHT ", new jswButton(this, "Info", "INFO"));
+      //  optionBar.add(" RIGHT ", new jswButton(this, "Info", "INFO"));
         optionBar.setBorder(BorderFactory.createEmptyBorder(2, 8, 2, 8));
         jswTheme.tint(optionBar, jswTheme.NAVAREA);
         bigpanel.add(" FILLW ", optionBar);
@@ -325,7 +326,7 @@ public class MyContacts extends JFrame implements ActionListener
     {
         String action = evt.getActionCommand().toUpperCase();
         System.out.println(" MyContacts action :" + action);
-        if (action.equals("INFO"))
+        if (action.equals("MODE:INFO"))
         {
             showInfo();
             return;
