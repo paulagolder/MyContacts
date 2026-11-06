@@ -1,0 +1,74 @@
+# Builds the MyContacts installers, each with its own Java: a .deb for Linux
+# and an .msi for Windows (jpackage can only build for the system it runs on,
+# so each is built on its own kind of machine).
+#
+#  - "Run workflow" on the repository's Actions page builds them; download
+#    them from the run's page (Artifacts).
+#  - Pushing a version tag also puts them on a release page:
+#        git tag v1.0.0 && git push origin v1.0.0
+name: Package
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write   # to create the release
+
+jobs:
+  package:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      # MyContacts builds mywidgets from the folder beside it
+      - uses: actions/checkout@v4
+        with:
+          path: myContacts
+      - uses: actions/checkout@v4
+        with:
+          repository: paulagolder/mywidgets
+          path: mywidgets
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Version (from the tag, e.g. v1.2.0)
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then v="${GITHUB_REF_NAME#v}"; else v=1.0.0; fi
+          echo "APP_VERSION=$v" >> "$GITHUB_ENV"
+
+      - name: Tests
+        if: runner.os == 'Linux'
+        working-directory: myContacts
+        run: xvfb-run ./gradlew test
+
+      - name: Linux installer
+        if: runner.os == 'Linux'
+        working-directory: myContacts
+        run: ./gradlew packageApp -PappVersion=$APP_VERSION
+
+      # jpackage makes the .msi with the WiX toolset, version 3
+      - name: WiX toolset
+        if: runner.os == 'Windows'
+        run: |
+          choco install wixtoolset --version 3.14.1 -y --no-progress
+          echo "C:\Program Files (x86)\WiX Toolset v3.14\bin" >> $env:GITHUB_PATH
+      - name: Windows installer
+        if: runner.os == 'Windows'
+        working-directory: myContacts
+        run: .\gradlew.bat packageApp "-PappVersion=$env:APP_VERSION"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MyContacts-${{ runner.os }}
+          path: myContacts/build/package/*
+      - name: Release page
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: myContacts/build/package/*

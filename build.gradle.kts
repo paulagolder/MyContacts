@@ -190,3 +190,64 @@ tasks.register<Copy>("deploy") {
     from(tasks.jar)
     into(layout.dir(providers.systemProperty("user.home").map { File(it, "applications") }))
 }
+
+// ./gradlew packageApp builds an installer that brings its own Java, so it
+// runs on a computer without Java: a .deb on Linux, an .msi on Windows
+// (jpackage can only make a package for the system it runs on; the GitHub
+// workflow .github/workflows/package.yml builds both). It goes to
+// build/package. Options:
+//   -PappVersion=1.2.0          the version shown to the system (default 1.0.0)
+//   -PpackageType=app-image     just the runnable folder, no installer, to try
+val appVersion = providers.gradleProperty("appVersion").getOrElse("1.0.0")
+val windows = System.getProperty("os.name").startsWith("Windows")
+
+tasks.register("packageApp") {
+    group = "distribution"
+    description = "Builds an installer with its own Java in build/package"
+    dependsOn(tasks.jar)
+    // local copies: the task must not refer to the build script itself
+    val windows = windows
+    val version = appVersion
+    val jpackage = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(21) }
+        .map { it.metadata.installationPath.file(if (windows) "bin/jpackage.exe" else "bin/jpackage").asFile.path }
+    val type = providers.gradleProperty("packageType").getOrElse(if (windows) "msi" else "deb")
+    val out = layout.buildDirectory.dir("package").get().asFile
+    val input = layout.buildDirectory.dir("package-input").get().asFile
+    val jar = tasks.jar.get().archiveFile.get().asFile
+    val icon = file(if (windows) "packaging/mycontacts.ico" else "packaging/mycontacts.png").path
+    doLast {
+        out.deleteRecursively()
+        input.deleteRecursively()
+        jar.copyTo(File(input, jar.name))
+        val args = mutableListOf(jpackage.get(),
+            "--type", type,
+            "--name", "MyContacts",
+            "--app-version", version,
+            "--vendor", "lerot",
+            "--description", "Contacts, labels and letters",
+            "--input", input.path,
+            "--main-jar", jar.name,
+            "--main-class", "org.lerot.mycontacts.Main",
+            "--dest", out.path,
+            // the parts of Java the app and its libraries use (from jdeps),
+            // plus mail lookups, old vCard character sets and French dates
+            "--add-modules", listOf("java.base", "java.desktop", "java.logging", "java.net.http",
+                "java.prefs", "java.rmi", "java.scripting", "java.security.sasl", "java.sql",
+                "java.xml", "java.xml.crypto", "jdk.unsupported", "jdk.xml.dom", "java.naming",
+                "jdk.charsets", "jdk.localedata", "jdk.zipfs").joinToString(","),
+            "--jlink-options", "--strip-debug --no-man-pages --no-header-files --include-locales=en,fr")
+        args += listOf("--icon", icon)
+        if (type != "app-image") args += if (windows) listOf(
+            "--win-menu", "--win-menu-group", "MyContacts", "--win-shortcut",
+            // installs for the user only, so no administrator is needed
+            "--win-per-user-install", "--win-dir-chooser",
+            // the same for every version, so a new one replaces the old
+            "--win-upgrade-uuid", "e94bf614-b95f-413b-9c5b-cf813d6fa551")
+        else listOf(
+            "--linux-shortcut", "--linux-menu-group", "Office", "--linux-app-category", "office",
+            "--linux-package-name", "mycontacts")
+        val result = ProcessBuilder(args).inheritIO().start().waitFor()
+        if (result != 0) throw GradleException("jpackage failed ($result)")
+        println("package in " + out)
+    }
+}
