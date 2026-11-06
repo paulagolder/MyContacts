@@ -4,6 +4,8 @@
 //   ./gradlew test      run the automated tests (test/java)
 //   ./gradlew run       compile and start the app (the Contacts viewer first)
 //   ./gradlew runFull   start it on the full MyContacts window
+//   ./gradlew runSandbox  start it on made-up test data in build/sandbox, to
+//                       try things (an import, say) away from your contacts
 //   ./gradlew build     compile and build the single runnable jar
 //   ./gradlew deploy    build it and copy it to ~/applications/MyContacts.jar
 //   ./gradlew dependencies --configuration runtimeClasspath
@@ -98,6 +100,17 @@ tasks.register<JavaExec>("runFull") {
     classpath = sourceSets.main.get().runtimeClasspath
     mainClass = application.mainClass
     args("--full")
+}
+
+// ./gradlew runSandbox runs MyContacts on a copy of the made-up test data in
+// build/sandbox, kept between runs; ./gradlew runSandbox -Preset starts afresh
+tasks.register<JavaExec>("runSandbox") {
+    group = "application"
+    description = "Runs MyContacts on a copy of the test data in build/sandbox"
+    classpath = sourceSets.test.get().runtimeClasspath
+    mainClass = "org.lerot.mycontacts.Sandbox"
+    args(layout.buildDirectory.dir("sandbox").get().asFile.path)
+    if (providers.gradleProperty("reset").isPresent) args("reset")
 }
 
 // Build one self-contained jar (the app plus every library unpacked into
