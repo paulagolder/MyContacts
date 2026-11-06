@@ -62,7 +62,7 @@ public class importBackupPanel extends jswVerticalPanel
 		String bufilename = MyContacts.topgui.budir + "/contacts_bu_"
 				+ mcDateDataType.getNow("yyyyMMdd") + ".xml";
 
-		selectedfile = new jswTextBox(this,bufilename,300,"4567");
+		selectedfile = new jswTextBox(this,bufilename,350,"4567");
 		selectedfile.setText(bufilename);
 		selectedfile.setEnabled(true);
 		// selectedfile.setSize(200,20);

@@ -57,7 +57,7 @@ public class exportPanel extends jswVerticalPanel implements ActionListener
 		jswHorizontalPanel filebar = new jswHorizontalPanel();
 		selbutton = new jswButton(this, "Select");
 		filebar.add(" LEFT ", selbutton);
-		selectedfile = new jswTextBox(this," ");
+		selectedfile = new jswTextBox(this," ",250,"Text Box");
 		String date = mcDateDataType.getNow("_yyyyMMdd");
 		String  filename = "Export_contacts_" + date;
 		selectedfile.setText(filename);

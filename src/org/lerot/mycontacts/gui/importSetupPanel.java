@@ -107,7 +107,7 @@ public class importSetupPanel extends jswVerticalPanel implements
 		jswHorizontalPanel filebar = new jswHorizontalPanel();
 		selbutton = new jswButton(this, "Select");
 		filebar.add(" LEFT ", selbutton);
-		selectedfile = new jswTextBox(this,"File name");
+		selectedfile = new jswTextBox(this,"File name",250,"File Name");
 		selectedfile.setText("Import File");
 		selectedfile.setEnabled(true);
 		filebar.add(" LEFT WIDTH=200  ", selectedfile);

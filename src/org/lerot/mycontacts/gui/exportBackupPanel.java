@@ -80,7 +80,7 @@ public class exportBackupPanel extends jswVerticalPanel
 		filebar.add(" LEFT ", selbutton);
 		String bufilename = MyContacts.topgui.budir + "/contacts_bu_"
 				+ mcDateDataType.getNow("yyyyMMdd") + ".xml";
-		selectedfile = new jswTextBox(this,bufilename,300,"6789");
+		selectedfile = new jswTextBox(this,bufilename,350,"6789");
 		//selectedfile = new jswTextBox(this,bufilename);
 		selectedfile.setText(bufilename);
 		selectedfile.setEnabled(true);
