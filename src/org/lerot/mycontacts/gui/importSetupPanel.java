@@ -39,6 +39,7 @@ public class importSetupPanel extends jswVerticalPanel implements
 			parent.repaint();
 			System.out.println(" import  ended");
 			MyContacts.topgui.startup();
+			MyContacts.selbox.refreshAllContacts("import");
 		}
 	}
 

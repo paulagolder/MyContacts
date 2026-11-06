@@ -174,7 +174,7 @@ public class exportBackupPanel extends jswVerticalPanel
 				exportfilename = selectedfile.getText();
 				new File(exportfilename);
 				imptrace.setVisible(true);
-				int outcount = backupXML(sortedcontacts, exportfilename);
+				int outcount = mcContacts.writeBackupXML(sortedcontacts, exportfilename);
 				countlabel.setText(outcount + " records exported ");
 				this.repaint();
 			} catch (Exception e2)
@@ -196,74 +196,6 @@ public class exportBackupPanel extends jswVerticalPanel
 		}
 		refresh();
 		this.repaint();
-	}
-
-	public int backupXML(Vector<mcContact> outlist, String exportfilename)
-	{
-		HashMap<String, Integer> taglist = new HashMap<String, Integer>();
-		mcAttribute anattrinbute = new mcAttribute(0);
-		Vector<String> attkeylist = anattrinbute.dbloadAttributeKeyList();
-		PrintWriter printWriter;
-		int k = 0;
-
-		try
-		{
-			printWriter = new PrintWriter(exportfilename);
-			printWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-			printWriter.println(
-					"<?xml-stylesheet type='text/xsl' href='./Stylesheets/ContactsStyler.xsl' ?>");
-			printWriter.println("<contacts source=\"mycontacts\" version=\"" + MyContacts.version+"\" >\n");
-			for (mcContact acontact : outlist)
-			{
-				k++;
-				String tid = acontact.getTID();
-				if(acontact.getCID() == 19)
-				{
-					System.out.println ( "found "+ tid);
-				}
-				String nameatt = acontact.toXML(attkeylist);
-				if (nameatt != null) printWriter.println(nameatt);
-				addTags(taglist, acontact);
-			}
-
-			HashMap<String, Integer> sortedtags = mcUtilities
-					.sortMapByValues(taglist);
-			printWriter.println("<taglist>");
-			for (Entry<String, Integer> anentry : sortedtags.entrySet())
-			{
-				String atag = anentry.getKey();
-				int count = anentry.getValue();
-				printWriter.println(
-						"<tag key='" + atag + "' count='" + count + "'/>");
-			}
-			printWriter.println("</taglist>");
-
-			// add attribute type, mappings out ? paul fix
-			printWriter.println("</contacts>");
-			printWriter.close();
-		} catch (Exception e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return k;
-	}
-
-	private void addTags(Map<String, Integer> taglist, mcContact acontact)
-	{
-		Set<String> tags = acontact.getTagList();
-		if (tags != null)
-		{
-			for (String atag : tags)
-			{
-				if (taglist.containsKey(atag))
-				{
-					int count = taglist.get(atag);
-					taglist.put(atag, count + 1);
-				} else
-					taglist.put(atag, 1);
-			}
-		}
 	}
 
 	public void refresh()

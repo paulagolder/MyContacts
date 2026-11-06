@@ -196,7 +196,8 @@ public class importBackupPanel extends jswVerticalPanel
 			this.repaint();
 
 			System.out.println("  import finished");
-           MyContacts.selbox.getAllcontactlist().relinkcontacts();
+           // show the imported contacts (the import has already relinked them)
+           MyContacts.selbox.refreshAllContacts("import");
 
 		} else
 			System.out.println(

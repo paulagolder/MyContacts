@@ -42,7 +42,10 @@ public class mcImportXML extends mcImports
 		failedobjects = 0;
 		if (message != null)
 			message.setText(" importing xml " + importfilename);
-		mappings = MyContacts.topgui.currentcon.createMappings("import", "XML");
+		mappings = ds().createMappings("import", "XML");
+		// the contacts already in the database, matched by tid
+		mcContacts all = new mcContacts();
+		all.refreshAllContacts();
 		if (!test)
 		{
 		//	initialiseImportDataTable(importfilename, importtype);
@@ -69,7 +72,14 @@ public class mcImportXML extends mcImports
 					mcContact importedcontact = new mcContact();
 					importedcontact.loadXML(el, i);
 				//	String ct = icontact.toXML(attkeylist);
-					mcContact existingcontact = MyContacts.selbox.getAllcontactlist().FindbyTID(importedcontact.getTID());
+					// the same contact: the one with its old id, if that still
+					// has its name (restoring into the same database), else
+					// the one with its name
+					mcContact existingcontact = all.FindbyID(importedcontact.getBackupCID());
+					if (existingcontact == null || existingcontact.getTID() == null
+							|| !mcUtilities.normalisename(existingcontact.getTID())
+									.equals(mcUtilities.normalisename(importedcontact.getTID())))
+						existingcontact = all.FindbyTID(importedcontact.getTID());
 					if (existingcontact == null)
 					{
 						System.out.println((test ? " would make new contact :" : " make new  contact :") + importedcontact);
@@ -79,11 +89,15 @@ public class mcImportXML extends mcImports
 							continue;
 						}
 						// each contact is saved completely or not at all
-						boolean saved = MyContacts.topgui.currentcon.transaction(() ->
+						boolean saved = ds().transaction(() ->
 						{
 							mcContact newcontact = new mcContact(importedcontact);
 							newcontact.insertNewContact();
 							newcontact.updateContact();
+							// a new contact starts tagged "newcontact"; a restored
+							// one without tags should stay without
+							if (importedcontact.getAttributebyKey("tags") == null)
+								new mcAttribute(newcontact.getCID(), "tags", "").dbdeleteAttribute();
 						});
 						if (saved)
 							newobjects++;
@@ -119,6 +133,13 @@ public class mcImportXML extends mcImports
 							k++;
 						}
 					}
+				}
+				if (!test)
+				{
+					// links in the file name the linked contact; point them at
+					// its id in this database
+					all.refreshAllContacts();
+					all.relinkcontacts();
 				}
 				System.out
 						.println(test ? " TEST ONLY, nothing saved. New contacts: " + newobjects

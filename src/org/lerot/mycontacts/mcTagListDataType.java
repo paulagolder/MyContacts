@@ -257,6 +257,19 @@ public class mcTagListDataType extends mcTextListDataType
 		return outlist;
 	}
 
+	// a list as written by toXML ("family,friends", items with a comma in
+	// quotes) back in the stored form "family;friends;"; a single item (a
+	// note, one tag) and older files already in the stored form are kept
+	public static String fromXMLList(String xmlvalue)
+	{
+		if (xmlvalue.isEmpty() || xmlvalue.contains(";")) return xmlvalue;
+		List<String> items = new ArrayList<>();
+		for (String item : parseTagString(xmlvalue, ','))
+			if (!item.trim().isEmpty()) items.add(item.trim());
+		if (items.size() == 1) return items.get(0);
+		return String.join(";", items) + ";";
+	}
+
 	@Override
 	public String toXML(String value)
 	{

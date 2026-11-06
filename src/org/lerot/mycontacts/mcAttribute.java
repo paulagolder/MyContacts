@@ -235,8 +235,8 @@ public class mcAttribute extends mcDataObject
             st.setInt(3, cid);
             st.setString(4, getRoot());
             st.setString(5, getQualifier());
-            st.executeUpdate();
-            int rescount = st.getUpdateCount();
+            // rows changed; none means the attribute is new
+            int rescount = st.executeUpdate();
             st.close();
             disconnect();
             if (rescount == 0)

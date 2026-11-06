@@ -167,7 +167,7 @@ public class mcAttributeValue
 			NodeList nl = at.getElementsByTagName("field");
 			if (nl != null && nl.getLength() > 0)
 			{
-				String outline = " { ";
+				String outline = "{ ";
 				for (int i = 0; i < nl.getLength(); i++)
 				{
 					Element fld = (Element) nl.item(i);
@@ -189,7 +189,12 @@ public class mcAttributeValue
 				if (nl.getLength() > 0)
 				{
 					valuenode = nl.item(0);
-					String value = valuenode.getTextContent();
+					String value = valuenode.getTextContent().trim();
+					// an empty value is held as "null" in memory, and written so
+					if (value.equals("null")) value = "";
+					// older backups wrote tags as "family,friends"; keep them as "family;friends;"
+					if (parent != null && "tags".equalsIgnoreCase(parent.getRoot()))
+						value = mcTagListDataType.fromXMLList(value);
 					setValue(value,updated);
 				}			
 	}

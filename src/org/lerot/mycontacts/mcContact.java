@@ -22,6 +22,8 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
 
     mcAttributes attributes = null;
     String TID = "new contact";
+    // the contact's id in the database a backup came from (CID='...')
+    int backupCID = -1;
     Timestamp update = null;
     List<String> noprintlist = new ArrayList<String>();
     String user = null;
@@ -79,6 +81,9 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
     public mcContact(mcContact impcontact)
     {
         setCID((new mcContacts()).getNewID());
+        // keep the contact's own list name (from a backup's tid='...'), which
+        // may differ from the formal name, e.g. a nickname
+        if (impcontact.getTID() != null && !impcontact.getTID().isBlank()) TID = impcontact.getTID();
         String fn = "";
         attributes = new mcAttributes();
         for (Entry<String, mcAttribute> arec : impcontact.getAttributes()
@@ -643,6 +648,7 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
     {
         TID = ct.getAttribute("tid");
         CID = Integer.parseInt(ct.getAttribute("CID"));
+        backupCID = CID;
         kind = ct.getAttribute("kind");
         String updatetext = ct.getAttribute("updated");
         try
@@ -989,6 +995,20 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
         return outcard;
     }
 
+    // the tid of the contact with this id ("000003"), from the database
+    private static String tidOf(String idstr)
+    {
+        try
+        {
+            var rows = doQuery("select value from attributeValues where cid = ? and root = 'tid' and qualifier = ''",
+                    Integer.parseInt(idstr.trim()));
+            return rows.isEmpty() ? null : rows.get(0).get("value");
+        } catch (NumberFormatException e)
+        {
+            return null;
+        }
+    }
+
     public String toXML(Vector<String> attkeys)
     {
         String xmlout = "<contact tid='" + StringEscapeUtils.escapeXml10(getTID())
@@ -1008,23 +1028,14 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
                 {
                 } else if (anattribute.islink())
                 {
+                    // the file names the linked contact, as ids differ between
+                    // databases; the import turns the name back into an id
                     String idstr = anattribute.getValue();
-                    mcContact fcontact = MyContacts.selbox.getAllcontactlist().FindbystrID(idstr);
-                    if (fcontact == null)
-                    {
-                        System.out.println(" not found contact : " + idstr);
-                    } else
-                    {
-                        String acontacttid = fcontact.getTID();
-                        if (acontacttid == null)
-                        {
-                            System.out.println(" not found link " + idstr);
-                        } else
-                        {
-                            System.out.println(" found link " + anattribute+"::"+acontacttid);
-                            xmlout += anattribute.toXML(StringEscapeUtils.escapeXml10(acontacttid));
-                        }
-                    }
+                    String acontacttid = tidOf(idstr);
+                    if (acontacttid == null)
+                        System.out.println(" not found link " + idstr);
+                    else
+                        xmlout += anattribute.toXML(acontacttid);
 
                 } else
                 {
@@ -1275,6 +1286,11 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
         updateContact();
     }
 
+    public int getBackupCID()
+    {
+        return backupCID;
+    }
+
     public int getCID()
     {
         return CID;
@@ -1328,39 +1344,32 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
     }
 
 
-    public void relinkcontact()
+    // links read from a backup name the linked contact; point each one at
+    // that contact's id in this database instead, replacing the old row
+    public void relinkcontact(mcContacts all)
     {
-        mcAttributes attributes = this.getAttributes();
-        for (Entry<String, mcAttribute> anentry : attributes.entrySet())
+        List<mcAttribute> links = new ArrayList<>();
+        for (Entry<String, mcAttribute> anentry : this.getAttributes().entrySet())
+            links.add(anentry.getValue());
+        // in two passes: a link's new id may be another link's old one, so
+        // all the old rows go before any new one is written
+        Map<mcAttribute, String> newids = new LinkedHashMap<>();
+        for (mcAttribute anattribute : links)
         {
-            mcAttribute anattribute = anentry.getValue();
-            if (anattribute.islink())
-            {
-                if (anattribute.getRoot().equalsIgnoreCase("related"))
-                {
-                    String value = anattribute.getValue();
-                    mcContact linkedcontact = MyContacts.selbox.FindbyTID(value);
-                    if (linkedcontact != null)
-                    {
-
-                        anattribute.setValue(linkedcontact.getIDstr(), null);
-                        anattribute.dbupsertAttribute();
-                    }
-                } else
-                {
-                    String value = anattribute.getValue();
-                    mcContact linkedcontact = MyContacts.selbox.FindbyTID(value);
-                    if (linkedcontact != null)
-                    {
-                        anattribute.setQualifier(linkedcontact.getIDstr());
-                        anattribute.setValue(linkedcontact.getIDstr(), null);
-                        anattribute.dbupsertAttribute();
-                    }
-                }
-
-            }
+            if (!anattribute.islink()) continue;
+            mcContact linkedcontact = all.FindbyTID(anattribute.getValue());
+            if (linkedcontact == null) continue;
+            newids.put(anattribute, linkedcontact.getIDstr());
+            anattribute.dbdeleteAttribute();
         }
-
+        for (Entry<mcAttribute, String> anentry : newids.entrySet())
+        {
+            mcAttribute anattribute = anentry.getKey();
+            String id = anentry.getValue();
+            if (!anattribute.getRoot().equalsIgnoreCase("related")) anattribute.setQualifier(id);
+            anattribute.setValue(id, null);
+            anattribute.dbupsertAttribute();
+        }
     }
 
    public mcAttributes selectLinkToAttributes(String selector)

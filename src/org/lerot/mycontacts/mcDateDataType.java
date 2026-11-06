@@ -212,6 +212,9 @@ public class mcDateDataType extends mcKeyValueDataType
 	{
 		Map<String, String> avaluemap = parseArray(aarray);
 		Map<String, String> bvaluemap = parseArray(barray);
+		// an empty value ("" or "{ }") has no fields
+		if (avaluemap == null) avaluemap = Map.of();
+		if (bvaluemap == null) return 0;
 		for (Map.Entry<String, String> bfield : bvaluemap.entrySet())
 		{
 			String bkey = bfield.getKey();

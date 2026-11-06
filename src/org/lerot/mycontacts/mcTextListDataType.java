@@ -161,18 +161,9 @@ public class mcTextListDataType extends mcDataType
 	@Override
 	public String toXML(String value)
 	{
-		SortedSet<String> tokenlist = getTokens(value);
-		String outxml = "  <value>";
-		String sep = "";
-		for (String atoken : tokenlist)
-		{
-			String outtag = StringEscapeUtils.escapeXml10(atoken);
-			if (outtag.contains(",")) outtag = "\"" + outtag + "\"";
-			outxml += sep + outtag;
-			sep = ",";
-		}
-		outxml += " </value>";
-		return outxml;
+		// exactly as stored ("family;friends;", or a note with its commas
+		// and word order); older backups held a sorted, comma separated list
+		return "  <value>" + StringEscapeUtils.escapeXml10(value == null ? "" : value.trim()) + " </value>";
 	}
 
 	@Override

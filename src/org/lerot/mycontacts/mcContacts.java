@@ -2,7 +2,9 @@ package org.lerot.mycontacts;
 
 import org.lerot.mywidgets.jswCheckbox;
 
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -551,25 +553,14 @@ public class mcContacts extends mcDataObject
 		return sortedcontacts;
 	}
 
+	// all the contacts in name order; contacts with the same name are all
+	// kept (in id order), so exports and backups leave none out
 	public Vector<mcContact> makeOrderedContactsVector()
 	{
-		TreeMap<String, mcContact> sortedcontacts = new TreeMap<String, mcContact>(
-				new MyContactComparator());
-	    Vector<mcContact> orderedcontactvector = new Vector<mcContact>();
-		//mcContacts orderedcontactvector = new mcContacts();
-		if (contactlist.size() > 0)
-		{
-			for (Entry<String, mcContact> entry : entrySet())
-			{
-				mcContact acontact = entry.getValue();
-				sortedcontacts.put(acontact.getTID(), acontact);
-			}
-
-			for (Entry<String, mcContact> entry : sortedcontacts.entrySet())
-			{
-				orderedcontactvector.add(entry.getValue());
-			}
-		}
+		Vector<mcContact> orderedcontactvector = new Vector<mcContact>(contactlist.values());
+		orderedcontactvector.sort(Comparator
+				.comparing((mcContact c) -> c.getTID() == null ? "" : c.getTID().toLowerCase())
+				.thenComparingInt(mcContact::getCID));
 		return orderedcontactvector;
 	}
 	
@@ -996,6 +987,41 @@ public class mcContacts extends mcDataObject
 		return k;
 	}
 	
+	// a backup of these contacts (Tools > Backup > Make backup), read back
+	// by mcImportXML; returns the number of contacts written
+	public static int writeBackupXML(Vector<mcContact> outlist, String exportfilename)
+	{
+		Map<String, Integer> taglist = new HashMap<String, Integer>();
+		Vector<String> attkeylist = new mcAttribute(0).dbloadAttributeKeyList();
+		int k = 0;
+		try (PrintWriter printWriter = new PrintWriter(exportfilename, StandardCharsets.UTF_8))
+		{
+			printWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+			printWriter.println(
+					"<?xml-stylesheet type='text/xsl' href='./Stylesheets/ContactsStyler.xsl' ?>");
+			printWriter.println("<contacts source=\"mycontacts\" version=\"" + MyContacts.version + "\" >\n");
+			for (mcContact acontact : outlist)
+			{
+				k++;
+				String nameatt = acontact.toXML(attkeylist);
+				if (nameatt != null) printWriter.println(nameatt);
+				Set<String> tags = acontact.getTagList();
+				if (tags != null)
+					for (String atag : tags)
+						taglist.merge(atag, 1, Integer::sum);
+			}
+			printWriter.println("<taglist>");
+			for (Entry<String, Integer> anentry : mcUtilities.sortMapByValues(new HashMap<>(taglist)).entrySet())
+				printWriter.println("<tag key='" + anentry.getKey() + "' count='" + anentry.getValue() + "'/>");
+			printWriter.println("</taglist>");
+			printWriter.println("</contacts>");
+		} catch (IOException e)
+		{
+			System.err.println("Cannot write backup " + exportfilename + " : " + e.getMessage());
+		}
+		return k;
+	}
+
 	public int backupXML(String exportfilename)
 	{
 
@@ -1199,7 +1225,7 @@ public class mcContacts extends mcDataObject
 		for (Entry<String, mcContact> anentry : contactlist.entrySet())
 		{
 			mcContact acontact = anentry.getValue();
-			acontact.relinkcontact();
+			acontact.relinkcontact(this);
 		}
 
 	}
