@@ -62,9 +62,9 @@ JPanel 0,0 1200x863
               JViewport 1,1 1192x548
                 jswTable 'correspondance table' 0,0 1192x548
           jswHorizontalPanel 'fred' 0,552 1196x100
-            jswDropPane 'HP:' 0,0 600x100
-              JLabel 274,33 52x33
-            jswButton 'note' 601,0 72x100
+            jswDropPane 'HP:' 0,0 561x100
+              JLabel 254,33 52x33
+            jswButton 'note' 562,0 72x100
               JButton 6,35 72x30
-            jswDropPane 'HP:' 674,0 600x100
-              JLabel 249,33 101x33
+            jswDropPane 'HP:' 635,0 561x100
+              JLabel 230,33 101x33

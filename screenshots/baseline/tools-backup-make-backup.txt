@@ -32,7 +32,7 @@ JPanel 0,0 1200x900
                   jswHorizontalPanel 'HP:' 0,62 444x40
                     jswButton 'Select' 5,5 72x30
                       JButton 0,0 72x30
-                    jswTextBox '/home/paul/Development/GitHubWorkspace/myContacts/build/screenshots/home/backups/contacts_bu_20261020.xml' 78,5 260x30
+                    jswTextBox '/home/paul/Development/GitHubWorkspace/myContacts/build/screenshots/home/backups/contacts_bu_20261106.xml' 78,5 260x30
                       JTextField 1,1 300x28
                     jswDropDownBox 'type' 339,5 100x30
                       JComboBox 0,0 100x30
