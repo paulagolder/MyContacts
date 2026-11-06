@@ -36,6 +36,10 @@ public class mcContacts extends mcDataObject
 		return newlist;
 	}
 	
+	// what a contact made with New Contact (or the viewer's +) starts with,
+	// besides its name and tags
+	static final String[] NEWCONTACTDETAILS = { "address", "mobile", "email" };
+
 	public static mcContact createNewContact()
 	{
 		mcContact newcontact = new mcContact();
@@ -44,6 +48,10 @@ public class mcContacts extends mcDataObject
 		newcontact.setUpdate();
 		int nid = newcontact.insertNewContact();
 		newcontact.setID(nid);
+		// the basic details to fill in, as empty rows on the Edit screen
+		// (as if added with CREATE NEW ATTRIBUTE)
+		for (String root : NEWCONTACTDETAILS)
+			newcontact.createAttribute(root, "").dbinsertAttribute();
 		MyContacts.selbox.put(newcontact);
 		return newcontact;
 	}

@@ -359,6 +359,14 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         makeEditPanel();
     }
 
+    // an attribute's value for the screen; an empty one (stored as "null",
+    // e.g. a detail of a new contact still to fill in) shows blank
+    private static String shown(mcAttribute attribute)
+    {
+        String value = attribute.getFormattedValue();
+        return value == null || value.equals("null") ? "" : value;
+    }
+
     public void clearEdit()
     {
         edit = "";
@@ -1067,7 +1075,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                             attributepanel.addCell(buttonbox, row, 3);
                         } else
                         {
-                            String value = anattribute.getFormattedValue();
+                            String value = shown(anattribute);
                             atteditbox = new jswTextBox(this, "Box_" + value);
                             atteditbox.setText(value);
                             atteditbox.setEnabled(true);
@@ -1093,7 +1101,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                             attributepanel.addCell(animage.DisplayImage(), row, 2);
                         } else
                         {
-                            String value = anattribute.getFormattedValue();
+                            String value = shown(anattribute);
                             attributepanel.addCell(new jswLabel(value), row, 2);
                         }
                         jswPanel buttonbox = new jswVerticalPanel("title", false, false);
@@ -1118,7 +1126,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
 
                     } else
                     {
-                        String value = anattribute.getFormattedValue();
+                        String value = shown(anattribute);
                         jswLabel alabel2 = new jswLabel(value);
                         attributepanel.addCell(alabel2, " FILLW ", row, 2);
                     }
