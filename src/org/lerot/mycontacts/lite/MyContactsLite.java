@@ -23,8 +23,9 @@ import java.util.List;
  * the contact's name, address, phone, mobile, email and birthday appear as
  * panels of selectable text. The email opens the mail program; "Edit in
  * MyContacts" opens the full window on that contact, in the same program
- * (see Main), and the title bar's window button opens it as it was. Reads
- * the database read-only, and stays on top unless unpinned.
+ * (see Main). In the title bar, + opens it on a new contact and the window
+ * button opens it as it was. Reads the database read-only, and stays on top
+ * unless unpinned.
  *
  *   ./gradlew run
  *   java -jar MyContacts.jar
@@ -436,6 +437,12 @@ public class MyContactsLite extends JFrame
 	{
 		JMenuBar bar = new JMenuBar();
 		bar.add(Box.createHorizontalGlue());
+		JButton add = new JButton(icon("plus.svg", 14));
+		add.setToolTipText("Add a new contact");
+		add.putClientProperty("JButton.buttonType", "toolBarButton");
+		add.setFocusable(false);
+		add.addActionListener(e -> MyContacts.newContact());
+		bar.add(add);
 		JButton full = new JButton(icon("window.svg", 14));
 		full.setToolTipText("Open the full MyContacts window");
 		full.putClientProperty("JButton.buttonType", "toolBarButton");

@@ -219,6 +219,13 @@ public class MyContacts extends JFrame implements ActionListener
         if (cid != null) SwingUtilities.invokeLater(() -> topgui.editContact(cid));
     }
 
+    // show the full window on a new, empty contact (the viewer's + button)
+    public static void newContact()
+    {
+        open(null);
+        SwingUtilities.invokeLater(() -> topgui.editContact(mcContacts.createNewContact().getID()));
+    }
+
     // show a contact in the Edit view
     public void editContact(int cid)
     {
