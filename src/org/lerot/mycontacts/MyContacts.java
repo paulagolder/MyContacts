@@ -51,6 +51,8 @@ public class MyContacts extends JFrame implements ActionListener
     public static mcDataTypes alldatatypes;
     public static mcAttributeTypes myattributetypes;
     public static String version = "_20251205";
+    // the program's icon, inside the program
+    public static final String ICON = "/org/lerot/mycontacts/mccontacts.png";
     // settings folder (~/.mccontacts/), read by non-GUI code; tests point it elsewhere
     public static String settingsdir;
     private final Dimension defdimension;
@@ -108,8 +110,7 @@ public class MyContacts extends JFrame implements ActionListener
             letterfolder = desktop + "Labels and Letters/";
             docsfolder = home + "/Documents/correspondance";
         }
-        java.net.URL jstatIconURL = ClassLoader.getSystemClassLoader()
-                .getResource("mccontacts.png");
+        java.net.URL jstatIconURL = MyContacts.class.getResource(ICON);
 
         if (jstatIconURL != null)
         {

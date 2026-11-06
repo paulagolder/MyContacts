@@ -61,8 +61,7 @@ public class jswDropPane extends jswHorizontalPanel
         //super(adirection);
         try
         {
-            target = ImageIO
-                    .read(new File("/home/paul/.mccontacts/mccontacts.png"));
+            target = ImageIO.read(MyContacts.class.getResource(MyContacts.ICON));
         } catch (IOException ex)
         {
             ex.printStackTrace();

@@ -4,17 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /*
- * Builds a fresh test database (from test/resources/testdb.sql: the real
- * schema and settings, plus three made-up contacts) and points the data
- * layer and settings folder at it, without starting the GUI.
+ * Builds a fresh test database (a new database from the starter kit, plus
+ * the made-up contacts in test/resources/testcontacts.sql) and points the
+ * data layer and settings folder at it, without starting the GUI.
  */
 public class TestDatabase
 {
@@ -33,25 +29,17 @@ public class TestDatabase
 	// write the test database file only
 	public static void createFile(Path db) throws IOException, SQLException
 	{
-		String script = new String(TestDatabase.class.getResourceAsStream("/testdb.sql")
-				.readAllBytes(), StandardCharsets.UTF_8);
-		try (Connection c = DriverManager.getConnection("jdbc:sqlite:" + db);
-				Statement st = c.createStatement())
-		{
-			for (String sql : script.split(";\\s*\\n"))
-			{
-				String stmt = sql.replaceAll("(?m)^--.*$", "").trim();
-				if (!stmt.isEmpty()) st.executeUpdate(stmt);
-			}
-		}
+		mcStarter.createDatabase(db);
+		mcStarter.runScript(db, new String(TestDatabase.class.getResourceAsStream("/testcontacts.sql")
+				.readAllBytes(), StandardCharsets.UTF_8));
 	}
 
-	// the folder holding the test copies of labelTemplates.xml etc.
+	// the starter kit's folder, holding labelTemplates.xml etc.
 	public static String settingsFolder()
 	{
 		try
 		{
-			return new File(TestDatabase.class.getResource("/labelTemplates.xml").toURI())
+			return new File(TestDatabase.class.getResource(mcStarter.KIT + "labelTemplates.xml").toURI())
 					.getParent();
 		} catch (URISyntaxException e)
 		{

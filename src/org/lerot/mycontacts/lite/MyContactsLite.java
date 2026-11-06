@@ -14,7 +14,6 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
-import java.io.File;
 import java.net.URI;
 import java.util.List;
 
@@ -460,8 +459,8 @@ public class MyContactsLite extends JFrame
 
 	private void setIcon()
 	{
-		File icon = new File(mcSettings.folder(), "mccontacts.png");
-		if (icon.isFile()) setIconImage(new ImageIcon(icon.getPath()).getImage());
+		java.net.URL icon = MyContacts.class.getResource(MyContacts.ICON);
+		if (icon != null) setIconImage(new ImageIcon(icon).getImage());
 	}
 
 	static Icon icon(String name, int size)

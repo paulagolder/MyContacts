@@ -35,7 +35,7 @@ class DatabaseTest
 		Map<String, String> checks = ds.checkmcdb();
 		assertEquals("yes", checks.get("Valid"));
 		assertEquals("3", checks.get("No of Contacts"));
-		assertEquals("Users Contacts", checks.get("Title"));
+		assertEquals("My Contacts", checks.get("Title"));
 	}
 
 	@Test

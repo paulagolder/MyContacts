@@ -17,6 +17,7 @@ import java.awt.event.ComponentEvent;
  *   java -jar MyContacts.jar --edit <id>   the full window on that contact
  *
  * Closing a window hides it; when no window is showing the program ends.
+ * On a new computer the first start sets up ~/.mccontacts (see mcStarter).
  */
 public class Main
 {
@@ -31,6 +32,7 @@ public class Main
 			if (args[i].equals("--full")) full = true;
 			else if (args[i].equals("--edit") && i + 1 < args.length) edit = Integer.parseInt(args[++i]);
 		}
+		mcStarter.setUp();
 		setupLookAndFeel();
 		boolean openFull = full || edit != null;
 		Integer contact = edit;

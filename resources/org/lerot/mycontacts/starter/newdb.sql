@@ -1,5 +1,6 @@
--- Test database for MyContacts: the real schema and settings tables,
--- with made-up contacts. Generated from mcdb5_2024.sqlite (no personal data).
+-- A new, empty MyContacts database: the tables, the attribute and data
+-- types, and the import/export mappings. A first start on a new computer
+-- creates one from this (see mcStarter); the tests add made-up contacts.
 
 CREATE TABLE `attribute` (
   `attributeKey` varchar(100)  DEFAULT NULL,
@@ -365,7 +366,7 @@ INSERT INTO "labelMappings" VALUES ('export', 'Vcard', 'org', 'ORG', '08');
 INSERT INTO "labelMappings" VALUES ('export', 'Vcard', 'member', 'MEMBER', '08');
 
 CREATE TABLE "parameters" ("key" VARCHAR NOT NULL , "value" VARCHAR NOT NULL );
-INSERT INTO "parameters" VALUES ('Title', 'Users Contacts');
+INSERT INTO "parameters" VALUES ('Title', 'My Contacts');
 
 CREATE TABLE `user` (
   `userid` varchar(10)  NOT NULL DEFAULT '',
@@ -378,22 +379,3 @@ CREATE TABLE `user` (
 );
 
 CREATE VIEW proup AS SELECT  DISTINCT  t1.cid, t1.value as 'tid' , t2.value as 'type' FROM attributeValues as t1  , attributeValues as t2 where t1.cid = t2.cid  and t1.root = 'tid'  and t2.root= 'kind';
-
--- made-up contacts
-INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'tid', '', 'Smith  Alice', '2026-01-01 12:00:00');
-INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'name', '', '{ fn:''Alice'' , sn:''Smith'' ,  }', '2026-01-01 12:00:00');
-INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'tags', '', 'friends;', '2026-01-01 12:00:00');
-INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'email', '', 'alice@example.com', '2026-01-01 12:00:00');
-INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'address', '', '{ street:''1 High Street'' , city:''Testtown'' , postcode:''TT1 1AA'' ,  }', '2026-01-01 12:00:00');
-INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'phone', '', '+441234567890', '2026-01-01 12:00:00');
-INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'mobile', '', '+447700900123', '2026-01-01 12:00:00');
-INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'birthday', '', '{ year:''1950'' , month:''3'' , day:''2'' ,  }', '2026-01-01 12:00:00');
-INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'email', 'old', 'alice@old.example.com', '2026-01-01 12:00:00');
-INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (2, 'memberof', '000001', '000001', '2026-01-01 12:00:00');
-INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'hasmember', '000003', '000003', '2026-01-01 12:00:00');
-INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (2, 'tid', '', 'O''Brien  Bob', '2026-01-01 12:00:00');
-INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (2, 'name', '', '{ fn:''Bob'' , sn:"O''Brien" ,  }', '2026-01-01 12:00:00');
-INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (2, 'tags', '', 'family;', '2026-01-01 12:00:00');
-INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (3, 'tid', '', 'Jones  Carol', '2026-01-01 12:00:00');
-INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (3, 'name', '', '{ fn:''Carol'' , sn:''Jones'' ,  }', '2026-01-01 12:00:00');
-INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (3, 'tags', '', 'work;', '2026-01-01 12:00:00');

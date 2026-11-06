@@ -861,7 +861,15 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         idbox.add(" ", idpanel1);
         idpanel1.applyStyle(panelstyles.getStyle("mediumLabel"));
         if (selcontact != null) idpanel1.setText(selcontact.getIDstr());
-        else idpanel1.setText(" no contact selected ");
+        else
+        {
+            // no contacts yet (a new database): only the New Contact button
+            idpanel1.setText(" no contact selected ");
+            this.repaint();
+            this.validate();
+            MyContacts.topgui.getContentPane().validate();
+            return;
+        }
 
         jswLabel idpanel2;
         jswLabel idpanel3;
