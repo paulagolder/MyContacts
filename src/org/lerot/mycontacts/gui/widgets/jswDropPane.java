@@ -7,6 +7,7 @@ import org.lerot.mycontacts.mcTIDDataType;
 import org.lerot.mycontacts.mcUtilities;
 import org.lerot.mycontacts.MyContacts;
 import org.lerot.mywidgets.jswHorizontalPanel;
+import org.lerot.mywidgets.jswScale;
 import org.lerot.mywidgets.jswStyle;
 import org.lerot.mywidgets.jswStyles;
 
@@ -75,7 +76,7 @@ public class jswDropPane extends jswHorizontalPanel
         direction = adirection;
         setLayout(new GridBagLayout());
         message = new JLabel(direction);
-        message.setFont(message.getFont().deriveFont(Font.BOLD, 24));
+        message.setFont(message.getFont().deriveFont(Font.BOLD, (float) jswScale.px(24)));
         add(message);
 
     }

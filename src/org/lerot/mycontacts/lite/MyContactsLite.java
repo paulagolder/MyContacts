@@ -3,9 +3,11 @@ package org.lerot.mycontacts.lite;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.swing.MigLayout;
 import org.lerot.mycontacts.MyContacts;
 import org.lerot.mycontacts.mcSettings;
+import org.lerot.mywidgets.jswScale;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -69,6 +71,9 @@ public class MyContactsLite extends JFrame
 		UIManager.put("ScrollBar.width", 8);
 		UIManager.put("ScrollBar.thumbArc", 999);
 		UIManager.put("ScrollBar.thumbInsets", new Insets(2, 2, 2, 2));
+		// MigLayout sizes below are for 100%; scale them like FlatLaf's fonts
+		PlatformDefaults.setHorizontalScaleFactor(jswScale.factor());
+		PlatformDefaults.setVerticalScaleFactor(jswScale.factor());
 		// FlatLaf draws the title bar, so the pin can sit in it
 		JFrame.setDefaultLookAndFeelDecorated(true);
 	}
@@ -84,7 +89,7 @@ public class MyContactsLite extends JFrame
 		content.add(cardPage(), "card");
 		setContentPane(content);
 		setAlwaysOnTop(true);
-		setSize(380, 720);
+		setSize(jswScale.windowSize(380, 720));
 		placeTopRight();
 
 		load();
@@ -337,7 +342,7 @@ public class MyContactsLite extends JFrame
 		{
 			this.fill = fill;
 			this.outline = outline;
-			this.arc = arc;
+			this.arc = jswScale.px(arc);
 			setOpaque(false);
 		}
 
@@ -406,7 +411,7 @@ public class MyContactsLite extends JFrame
 			Graphics2D g2 = (Graphics2D) g.create();
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g2.setColor(HIGHLIGHT);
-			g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 12, 12));
+			g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), jswScale.px(12), jswScale.px(12)));
 			g2.dispose();
 		}
 	}

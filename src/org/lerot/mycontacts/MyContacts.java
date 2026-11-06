@@ -199,7 +199,8 @@ public class MyContacts extends JFrame implements ActionListener
     {
         jswTheme.install();
         UIManager.put("FileChooser.readOnly", Boolean.TRUE);
-        mframe = new MyContacts(1200, 900);
+        Dimension size = jswScale.windowSize(1200, 900);
+        mframe = new MyContacts(size.width, size.height);
         mframe.setVisible(true);
         mframe.addWindowListener(new WindowAdapter()
         {
@@ -212,10 +213,7 @@ public class MyContacts extends JFrame implements ActionListener
         });
         mframe.getContentPane().setLayout(
                 new BoxLayout(mframe.getContentPane(), BoxLayout.X_AXIS));
-        Dimension actual = new Dimension();
-        actual.width = 1200;
-        actual.height = 900;
-        mframe.setSize(actual);
+        mframe.setSize(size);
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (int) ((dimension.getWidth() - mframe.getWidth()) / 2);
         int y = (int) ((dimension.getHeight() - mframe.getHeight()) / 2);

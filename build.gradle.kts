@@ -119,6 +119,11 @@ tasks.jar {
 // the new ones once they look right.
 val screenshotsDir = layout.buildDirectory.dir("screenshots")
 
+// ./gradlew screenshots -PuiScale=1.5 takes them as on a screen set to 150%
+// and writes build/screenshots/scale-1.5 instead
+val uiScale = providers.gradleProperty("uiScale").orNull
+val shotsFolder = if (uiScale != null) "scale-$uiScale" else "current"
+
 tasks.register<JavaExec>("screenshots") {
     group = "verification"
     description = "Saves a PNG of every screen to build/screenshots/current"
@@ -128,7 +133,8 @@ tasks.register<JavaExec>("screenshots") {
     // code and writes build/screenshots/legacy instead
     val legacy = providers.gradleProperty("jswLayout").orNull == "legacy"
     if (legacy) systemProperty("jsw.layout", "legacy")
-    args(screenshotsDir.get().dir(if (legacy) "legacy" else "current").asFile.path,
+    if (uiScale != null) systemProperty("flatlaf.uiScale", uiScale)
+    args(screenshotsDir.get().dir(if (legacy) "legacy" else shotsFolder).asFile.path,
         screenshotsDir.get().dir("home").asFile.path)
 }
 
@@ -139,7 +145,8 @@ tasks.register<JavaExec>("liteScreenshots") {
     mustRunAfter("screenshots")
     classpath = sourceSets.test.get().runtimeClasspath
     mainClass = "org.lerot.mycontacts.lite.LiteScreenshots"
-    args(screenshotsDir.get().dir("current").asFile.path,
+    if (uiScale != null) systemProperty("flatlaf.uiScale", uiScale)
+    args(screenshotsDir.get().dir(shotsFolder).asFile.path,
         screenshotsDir.get().dir("home-lite").asFile.path)
 }
 tasks.named("screenshots") { finalizedBy("liteScreenshots") }
