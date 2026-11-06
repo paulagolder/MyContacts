@@ -1245,45 +1245,10 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
 
     }
 
+    // a dropped vCard: add the details this contact does not have yet
     public void importVcard(VCard vcard)
     {
-        System.out.println(" loading vcard ");
-        if (vcard.getEmails().size() > 0)
-        {
-            mcAttribute att = createAttribute("email", "vcard");
-            att.getAttributevalue().setValue(vcard.getEmails().get(0).getValue(), "now");
-        }
-        if (vcard.getStructuredName() != null)
-        {
-            StructuredName st = vcard.getStructuredName();
-
-            String value = "{";
-            if (st.getFamily() != null) value += "Sn:" + st.getFamily() + ";";
-            if (st.getGiven() != null) value += "Fn:" + st.getGiven() + ";";
-            value += "}";
-            mcAttribute att = createAttribute("name", "vcard");
-            att.getAttributevalue().setValue(value, "now");
-        }
-        if (!vcard.getAddresses().isEmpty())
-        {
-            ezvcard.property.Address ad = vcard.getAddresses().get(0);
-            String value = "{";
-            if (ad.getStreetAddress() != null)
-                value += "street:" + ad.getStreetAddress() + ";";
-            if (ad.getLocality() != null)
-                value += "city:" + ad.getLocality() + ";";
-            if (ad.getPostalCode() != null)
-                value += "postcode:" + ad.getPostalCode() + ";";
-            if (ad.getRegion() != null)
-                value += "county:" + ad.getRegion() + ";";
-            if (ad.getCountry() != null)
-                value += "country:" + ad.getCountry() + ";";
-            value += "}";
-            mcAttribute att = createAttribute("address", "vcard");
-            att.getAttributevalue().setValue(value, "now");
-            // selcontact.addAttribute()
-        }
-        updateContact();
+        mcImportVcard.mergeInto(this, vcard);
     }
 
     public int getBackupCID()
