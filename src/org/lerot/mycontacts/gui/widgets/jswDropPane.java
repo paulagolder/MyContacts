@@ -84,7 +84,8 @@ public class jswDropPane extends jswHorizontalPanel
     @Override
     public Dimension getMinimumSize()
     {
-        return new Dimension(600, 100);
+        // FILLW stretches it; this only stops it shrinking below its heading
+        return jswScale.px(200, 100);
     }
 
     protected DropTarget getMyDropTarget()
@@ -290,12 +291,6 @@ public class jswDropPane extends jswHorizontalPanel
     public void doStyling(jswStyle style)
     {
         // TODO Auto-generated method stub
-    }
-
-    public jswStyle getStyle()
-    {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     public Dimension jswGetMinimumSize()
