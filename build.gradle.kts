@@ -2,8 +2,8 @@
 //
 // Everyday commands (run from the project folder):
 //   ./gradlew test      run the automated tests (test/java)
-//   ./gradlew run       compile and start the app
-//   ./gradlew runLite   start myContactsLite, the small "Contacts" viewer
+//   ./gradlew run       compile and start the app (the Contacts viewer first)
+//   ./gradlew runFull   start it on the full MyContacts window
 //   ./gradlew build     compile and build the single runnable jar
 //   ./gradlew deploy    build it and copy it to ~/applications/MyContacts.jar
 //   ./gradlew dependencies --configuration runtimeClasspath
@@ -59,9 +59,9 @@ dependencies {
     implementation("com.itextpdf:itextpdf:5.5.13.6")           // PDF labels
     implementation("org.odftoolkit:simple-odf:0.9.0")           // letters (.odt)
     implementation("com.googlecode.ez-vcard:ez-vcard:0.12.2")   // vCard import/export
-    implementation("com.formdev:flatlaf:3.7.2")                 // myContactsLite's look
-    implementation("com.formdev:flatlaf-extras:3.7.2")          // its SVG icons
-    implementation("com.miglayout:miglayout-swing:11.5.1")      // its layouts
+    implementation("com.formdev:flatlaf:3.7.2")                 // the look (the Contacts viewer styles it directly)
+    implementation("com.formdev:flatlaf-extras:3.7.2")          // the viewer's SVG icons
+    implementation("com.miglayout:miglayout-swing:11.5.1")      // the viewer's layouts
     // odfdom logs through SLF4J; discard its messages (and the startup notice)
     runtimeOnly("org.slf4j:slf4j-nop:1.7.36")
 
@@ -87,15 +87,17 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 application {
-    mainClass = "org.lerot.mycontacts.MyContacts"
+    // opens the Contacts viewer, with the full window a click away
+    mainClass = "org.lerot.mycontacts.Main"
 }
 
-// ./gradlew runLite starts myContactsLite, the small read-only "Contacts" viewer
-tasks.register<JavaExec>("runLite") {
+// ./gradlew runFull starts on the full window instead of the viewer
+tasks.register<JavaExec>("runFull") {
     group = "application"
-    description = "Runs myContactsLite"
+    description = "Runs MyContacts on the full window"
     classpath = sourceSets.main.get().runtimeClasspath
-    mainClass = "org.lerot.mycontacts.lite.MyContactsLite"
+    mainClass = application.mainClass
+    args("--full")
 }
 
 // Build one self-contained jar (the app plus every library unpacked into

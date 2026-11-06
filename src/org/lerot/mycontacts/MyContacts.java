@@ -137,15 +137,7 @@ public class MyContacts extends JFrame implements ActionListener
         currentcon = new mcDataSource(dotcontacts + dbsource);
         templist = new mcContactSet();
         topgui = this;
-        addWindowListener(new WindowAdapter()
-        {
-            @Override
-            public void windowClosing(WindowEvent e)
-            {
-                currentcon.close();
-                System.exit(0);
-            }
-        });
+        Main.closeHides(this);
         initiateStyles();
         bigpanel = new jswVerticalPanel("bigpanel", true, true);
         bigpanel.setBorder(jswStyle.makeLineBorder());
@@ -195,36 +187,35 @@ public class MyContacts extends JFrame implements ActionListener
         MyContacts.started = true;
     }
 
+    // the full window, without the Contacts viewer (see Main)
     public static void main(String[] args)
     {
-        jswTheme.install();
-        UIManager.put("FileChooser.readOnly", Boolean.TRUE);
-        Dimension size = jswScale.windowSize(1200, 900);
-        mframe = new MyContacts(size.width, size.height);
-        mframe.setVisible(true);
-        mframe.addWindowListener(new WindowAdapter()
-        {
+        String[] full = new String[args.length + 1];
+        full[0] = "--full";
+        System.arraycopy(args, 0, full, 1, args.length);
+        Main.main(full);
+    }
 
-            @Override
-            public void windowClosing(WindowEvent e)
-            {
-                System.exit(0);
-            }
-        });
-        mframe.getContentPane().setLayout(
-                new BoxLayout(mframe.getContentPane(), BoxLayout.X_AXIS));
-        mframe.setSize(size);
-        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (int) ((dimension.getWidth() - mframe.getWidth()) / 2);
-        int y = (int) ((dimension.getHeight() - mframe.getHeight()) / 2);
-        mframe.setLocation(x, y);
-        // started from myContactsLite: MyContacts --edit <contact id>
-        for (int i = 0; i + 1 < args.length; i++)
-            if (args[i].equals("--edit"))
-            {
-                int cid = Integer.parseInt(args[i + 1]);
-                SwingUtilities.invokeLater(() -> topgui.editContact(cid));
-            }
+    // show the full window, made the first time it is wanted; with a contact
+    // id, on that contact's Edit page
+    public static void open(Integer cid)
+    {
+        if (mframe == null)
+        {
+            Main.setupLookAndFeel();
+            Dimension size = jswScale.windowSize(1200, 900);
+            mframe = new MyContacts(size.width, size.height);
+            mframe.getContentPane().setLayout(
+                    new BoxLayout(mframe.getContentPane(), BoxLayout.X_AXIS));
+            mframe.setSize(size);
+            Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+            int x = (int) ((dimension.getWidth() - mframe.getWidth()) / 2);
+            int y = (int) ((dimension.getHeight() - mframe.getHeight()) / 2);
+            mframe.setLocation(x, y);
+        }
+        mframe.setVisible(true);
+        mframe.toFront();
+        if (cid != null) SwingUtilities.invokeLater(() -> topgui.editContact(cid));
     }
 
     // show a contact in the Edit view

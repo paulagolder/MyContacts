@@ -1,10 +1,9 @@
 package org.lerot.mycontacts.lite;
 
-import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.swing.MigLayout;
+import org.lerot.mycontacts.Main;
 import org.lerot.mycontacts.MyContacts;
 import org.lerot.mycontacts.mcSettings;
 import org.lerot.mywidgets.jswScale;
@@ -24,11 +23,12 @@ import java.util.List;
  * up a contact while doing something else. Search, pick from the list, and
  * the contact's name, address, phone, mobile, email and birthday appear as
  * panels of selectable text. The email opens the mail program; "Edit in
- * MyContacts" opens the main app on that contact. Reads the database
- * read-only, and stays on top unless unpinned.
+ * MyContacts" opens the full window on that contact, in the same program
+ * (see Main), and the title bar's window button opens it as it was. Reads
+ * the database read-only, and stays on top unless unpinned.
  *
- *   ./gradlew runLite
- *   java -cp MyContacts.jar org.lerot.mycontacts.lite.MyContactsLite
+ *   ./gradlew run
+ *   java -jar MyContacts.jar
  */
 public class MyContactsLite extends JFrame
 {
@@ -51,38 +51,44 @@ public class MyContactsLite extends JFrame
 	private final JPanel tiles = new TilePanel();
 	private ContactCard showing;
 
+	// the whole program, starting with this viewer (see Main)
 	public static void main(String[] args)
 	{
-		setupLookAndFeel();
-		ContactStore store = new ContactStore(mcSettings.databasePath());
-		SwingUtilities.invokeLater(() -> new MyContactsLite(store).setVisible(true));
+		Main.main(args);
+	}
+
+	private static MyContactsLite window;
+
+	// show the viewer, made the first time it is wanted
+	public static void open()
+	{
+		if (window == null)
+		{
+			setupLookAndFeel();
+			window = new MyContactsLite(new ContactStore(mcSettings.databasePath()));
+		}
+		window.setVisible(true);
+		window.toFront();
 	}
 
 	static void setupLookAndFeel()
 	{
-		MyContacts.settingsdir = mcSettings.folder();
-		FlatLaf.setGlobalExtraDefaults(java.util.Map.of("@accentColor", ACCENT));
-		FlatMacLightLaf.setup();
-		UIManager.put("List.selectionArc", 10);
-		// the title bar in the page colour, so the window is all one colour scheme
-		UIManager.put("TitlePane.background", PAGE);
-		UIManager.put("TitlePane.inactiveBackground", PAGE);
-		UIManager.put("ScrollBar.showButtons", false);
-		UIManager.put("ScrollBar.width", 8);
-		UIManager.put("ScrollBar.thumbArc", 999);
-		UIManager.put("ScrollBar.thumbInsets", new Insets(2, 2, 2, 2));
+		Main.setupLookAndFeel();
 		// MigLayout sizes below are for 100%; scale them like FlatLaf's fonts
 		PlatformDefaults.setHorizontalScaleFactor(jswScale.factor());
 		PlatformDefaults.setVerticalScaleFactor(jswScale.factor());
-		// FlatLaf draws the title bar, so the pin can sit in it
-		JFrame.setDefaultLookAndFeelDecorated(true);
 	}
 
 	public MyContactsLite(ContactStore store)
 	{
 		super("Contacts");
 		this.store = store;
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		Main.closeHides(this);
+		// FlatLaf draws this window's title bar, in the page colour, so the
+		// buttons can sit in it; the full window keeps the system's
+		setUndecorated(true);
+		getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
+		getRootPane().putClientProperty("JRootPane.titleBarBackground", PAGE);
 		setIcon();
 		setJMenuBar(titleBar());
 		content.add(listPage(), "list");
@@ -153,7 +159,7 @@ public class MyContactsLite extends JFrame
 			}
 		});
 		bindKey(list, "ENTER", this::openSelected);
-		JScrollPane scroll = new JScrollPane(list);
+		JScrollPane scroll = slimScroll(list);
 		scroll.setBorder(BorderFactory.createEmptyBorder());
 		scroll.setOpaque(false);
 		scroll.getViewport().setOpaque(false);
@@ -218,7 +224,7 @@ public class MyContactsLite extends JFrame
 		top.add(back);
 		page.add(top, BorderLayout.NORTH);
 
-		JScrollPane scroll = new JScrollPane(tiles);
+		JScrollPane scroll = slimScroll(tiles);
 		scroll.setBorder(BorderFactory.createEmptyBorder());
 		scroll.getViewport().setBackground(PAGE);
 		scroll.getVerticalScrollBar().setUnitIncrement(16);
@@ -243,7 +249,7 @@ public class MyContactsLite extends JFrame
 		edit.putClientProperty("JButton.buttonType", "borderless");
 		edit.putClientProperty("FlatLaf.styleClass", "small");
 		edit.setForeground(Color.decode(ACCENT));
-		edit.addActionListener(e -> editInMainApp(card.id()));
+		edit.addActionListener(e -> MyContacts.open(card.id()));
 		tiles.add(edit, "right, gaptop 6");
 
 		tiles.revalidate();
@@ -416,12 +422,27 @@ public class MyContactsLite extends JFrame
 		}
 	}
 
+	// a scroll pane with a thin rounded scrollbar and no arrow buttons
+	private static JScrollPane slimScroll(JComponent view)
+	{
+		JScrollPane scroll = new JScrollPane(view);
+		scroll.getVerticalScrollBar().putClientProperty("FlatLaf.style",
+				"width: 8; thumbArc: 999; thumbInsets: 2,2,2,2; showButtons: false");
+		return scroll;
+	}
+
 	// ---- title bar, window and actions ----
 
 	private JMenuBar titleBar()
 	{
 		JMenuBar bar = new JMenuBar();
 		bar.add(Box.createHorizontalGlue());
+		JButton full = new JButton(icon("window.svg", 14));
+		full.setToolTipText("Open the full MyContacts window");
+		full.putClientProperty("JButton.buttonType", "toolBarButton");
+		full.setFocusable(false);
+		full.addActionListener(e -> MyContacts.open(null));
+		bar.add(full);
 		JToggleButton pin = new JToggleButton(icon("pin.svg", 14), true);
 		pin.setToolTipText("Keep on top of other windows");
 		pin.putClientProperty("JButton.buttonType", "toolBarButton");
@@ -473,23 +494,5 @@ public class MyContactsLite extends JFrame
 				System.err.println("Cannot open mail for " + email + ": " + e.getMessage());
 			}
 		}).start();
-	}
-
-	// start the main app on this contact's Edit page
-	static void editInMainApp(int id)
-	{
-		try
-		{
-			String java = ProcessHandle.current().info().command()
-					.orElse(System.getProperty("java.home") + "/bin/java");
-			new ProcessBuilder(java, "-cp", System.getProperty("java.class.path"),
-					"org.lerot.mycontacts.MyContacts", "--edit", String.valueOf(id))
-					.redirectErrorStream(true)
-					.redirectOutput(ProcessBuilder.Redirect.DISCARD)
-					.start();
-		} catch (Exception e)
-		{
-			System.err.println("Cannot start MyContacts: " + e.getMessage());
-		}
 	}
 }
