@@ -119,6 +119,8 @@ tasks.jar {
     archiveFileName = "MyContacts.jar"
     manifest {
         attributes["Main-Class"] = application.mainClass
+        // shown in the Info popup (MyContacts.version); -PappVersion=1.2.0
+        attributes["Implementation-Version"] = providers.gradleProperty("appVersion").getOrElse("1.0.0")
     }
     val runtimeJars = configurations.runtimeClasspath
     dependsOn(runtimeJars)

@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.JarURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -50,7 +49,9 @@ public class MyContacts extends JFrame implements ActionListener
     public static Map<String, Map<String, String>> labeltemplates = null;
     public static mcDataTypes alldatatypes;
     public static mcAttributeTypes myattributetypes;
-    public static String version = "_20251205";
+    // the version, written into the jar by the build (-PappVersion; the
+    // GitHub workflow takes it from the release tag)
+    public static String version = appVersion();
     // the program's icon, inside the program
     public static final String ICON = "/org/lerot/mycontacts/mccontacts.png";
     // settings folder (~/.mccontacts/), read by non-GUI code; tests point it elsewhere
@@ -395,8 +396,9 @@ public class MyContacts extends JFrame implements ActionListener
         c.gridy = 0;
         c.insets = new Insets(2, 0, 2, 12);
         String[][] facts = {
-                {"Version", version.replaceFirst("^_", "")},
+                {"Version", version},
                 {"Built", buildDate()},
+                {"Java", System.getProperty("java.version") + "  (" + System.getProperty("java.vendor") + ")"},
                 {"Database", dbtitle + "  (" + dbsource + ")"},
                 {"Contacts", String.valueOf(selbox.countAll())},
                 {"Settings", propsfile}};
@@ -413,8 +415,7 @@ public class MyContacts extends JFrame implements ActionListener
         c.gridx = 0;
         c.gridwidth = 2;
         c.insets = new Insets(12, 0, 0, 0);
-        String text = props.getProperty("infotext",
-                "Set \"infotext\" in " + propsfile + " to describe this application.");
+        String text = props.getProperty("infotext", INFOTEXT);
         for (String line : text.strip().split("\\R"))
         {
             info.add(new JLabel(line.strip()), c);
@@ -424,17 +425,51 @@ public class MyContacts extends JFrame implements ActionListener
         JOptionPane.showMessageDialog(this, info, "About MyContacts", JOptionPane.PLAIN_MESSAGE);
     }
 
-    // when this build was compiled: the timestamp of this class file (or of its jar entry)
+    // what the Info popup says, unless "infotext" in the properties file replaces it
+    static final String INFOTEXT = """
+            MyContacts keeps your address book on this computer: contacts, groups and tags,
+            address labels, letters and correspondence.
+            The small Contacts window looks people up; this window adds and edits them,
+            prints labels, imports vCards (from Google, Apple or Outlook) and makes backups.
+            Developed by Paul Golder, with Claude (Anthropic) as AI pair programmer.""";
+
+    static String appVersion()
+    {
+        File jar = programJar();
+        if (jar != null)
+            try (java.util.jar.JarFile jf = new java.util.jar.JarFile(jar))
+            {
+                String v = jf.getManifest().getMainAttributes().getValue("Implementation-Version");
+                if (v != null) return v;
+            } catch (Exception e)
+            {
+                // not a jar we can read: a development run
+            }
+        return "development";
+    }
+
+    // the jar this program runs from, or null when run from class folders (an IDE)
+    static File programJar()
+    {
+        try
+        {
+            File f = new File(MyContacts.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            return f.isFile() ? f : null;
+        } catch (Exception e)
+        {
+            return null;
+        }
+    }
+
+    // when this build was made: the date of the program's jar (the entries in
+    // it all carry a fixed date, for reproducible builds), or of this class file
     static String buildDate()
     {
         try
         {
-            URL url = MyContacts.class.getResource("MyContacts.class");
-            long time;
-            if (url.getProtocol().equals("jar"))
-                time = ((JarURLConnection) url.openConnection()).getJarEntry().getTime();
-            else
-                time = new File(url.toURI()).lastModified();
+            File jar = programJar();
+            long time = jar != null ? jar.lastModified()
+                    : new File(MyContacts.class.getResource("MyContacts.class").toURI()).lastModified();
             return new SimpleDateFormat("d MMM yyyy, HH:mm").format(new Date(time));
         } catch (Exception e)
         {
