@@ -24,6 +24,8 @@ public class selectorBox extends jswVerticalPanel
     jswDropDownContactBox contactselectbox;
     private final jswTextBox filterbox;
     private final jswDropDownBox tagselectbox;
+    // set while setTaglist refills the tag selector, whose events are then not choices
+    private boolean refillingtags;
     private final jswLabel allcontacts;
     private final jswLabel browsecontacts;
     private mcContact selcontact;
@@ -99,6 +101,7 @@ public class selectorBox extends jswVerticalPanel
         if (action == null) return;
         if (action.equals("BROWSESELECT"))
         {
+            if (refillingtags) return;
             setBrowseFilter(tagselectbox);
             browsecontactlist = searchTag(browsefilter);
           //  searchterm = cmdmap.get("VALUE");
@@ -536,10 +539,14 @@ public class selectorBox extends jswVerticalPanel
         taglist = new mctagList();
         taglist.reloadTags();
         tagselectbox.removeActionListener(this);
-        tagselectbox.addItem("all");
+        refillingtags = true;
+        // empties the list first, so it can be filled again after a new tag
+        tagselectbox.setList("all");
         tagselectbox.addItem("selection");
         tagselectbox.addItem("friend");
         tagselectbox.addList(taglist.getTaglist());
+        if (browsefilter != null) tagselectbox.setSelected(browsefilter);
+        refillingtags = false;
         tagselectbox.addActionListener(this,"BROWSESELECT");
 
     }

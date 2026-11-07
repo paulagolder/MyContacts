@@ -24,6 +24,39 @@ public class searchPanel extends jswVerticalPanel implements ActionListener
         super(title, border, titledborder);
     }
 
+    // the contacts found get a tag made from the search term ("La Rochelle"
+    // gives "la rochelle"), and join the temporary list for printing labels
+    private void tagSelection()
+    {
+        mcContacts sellist = MyContacts.selbox.getSearchResultList();
+        for (Entry<String, mcContact> contactentry : sellist.entrySet())
+            MyContacts.topgui.templist.add(contactentry.getValue());
+        String term = MyContacts.selbox.getSearchterm();
+        String tag = term == null ? "" : term.toLowerCase().replaceAll("[;,#]", " ").replaceAll("\\s+", " ").trim();
+        if (tag.length() < 3)
+        {
+            JOptionPane.showMessageDialog(this, "The tag is made from the search term, which needs at least 3 letters.",
+                    "Tag selection", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        int answer = JOptionPane.showConfirmDialog(this,
+                "Add the tag \"" + tag + "\" to the " + sellist.size() + " contacts found?",
+                "Tag selection", JOptionPane.OK_CANCEL_OPTION);
+        if (answer != JOptionPane.OK_OPTION) return;
+        int[] added = { 0 };
+        boolean saved = MyContacts.dbTransaction("Tagging the contacts found", () ->
+        {
+            for (Entry<String, mcContact> contactentry : sellist.entrySet())
+                if (contactentry.getValue().addTag(tag)) added[0]++;
+        });
+        if (!saved) return;
+        // the new tag in the browse list's tag selector
+        MyContacts.selbox.setTaglist();
+        JOptionPane.showMessageDialog(this, "Tagged " + added[0] + " contacts \"" + tag + "\""
+                + (added[0] < sellist.size() ? " (the others had it already)." : "."),
+                "Tag selection", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     @Override
     public void actionPerformed(ActionEvent evt)
     {
@@ -51,12 +84,7 @@ String action = cmd;
             }
         } else if (action.startsWith("TAGSELECTION"))
         {
-            mcContacts sellist = MyContacts.selbox.getSearchResultList();
-            for (Entry<String, mcContact> contactentry : sellist.entrySet())
-            {
-                mcContact scontact = contactentry.getValue();
-                MyContacts.topgui.templist.add(scontact);
-            }
+            tagSelection();
         } else if (action.startsWith("SEARCHTAGS"))
         {
             String searchterm = searchfield.getText();
