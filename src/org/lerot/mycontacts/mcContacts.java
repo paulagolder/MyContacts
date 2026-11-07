@@ -919,80 +919,31 @@ public class mcContacts extends mcDataObject
 		return k;
 	}
 
+	// the Export page's XML: the same form as a backup, so Import backup
+	// (or Tools > Import, source XML) reads it, with the details chosen
 	public int saveXML(String exportfilename, Vector<String> attkeys)
 	{
-
-		mcMappings mappings = MyContacts.topgui.currentcon.createMappings("export",
-				"XML");
-		PrintWriter printWriter;
-		int k = 0;
-		HashMap<String, Integer> taglist = new HashMap<String, Integer>();
-		try
-		{
-			printWriter = new PrintWriter(exportfilename);
-			printWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-			printWriter.println(
-					"<?xml-stylesheet type='text/xsl' href='./Stylesheets/ContactsStyler.xsl' ?>");
-			printWriter.println("<contacts>" + "\n");
-			for (Entry<String, mcContact> anentry : contactlist.entrySet())
-			{
-				mcContact acontact = anentry.getValue();
-				mcAttributes attributes = acontact.getAttributes();
-
-				boolean isok = false;
-				for (String attkey : attkeys)
-				{
-					mcAttribute anattribute = attributes.get(attkey);
-					if (anattribute != null
-							&& anattribute.getFormattedValue() != null
-			                && (anattribute.getFormattedValue().trim().length()>1)
-							&& !anattribute.getFormattedValue().isEmpty()
-							&& !attkey.equalsIgnoreCase("name"))
-						isok = true;
-				}
-
-				if (isok)
-				{
-					addTags(taglist, acontact);
-					// System.out.println(" Printing " + acontact + " "
-					// + attributes.size());
-					k++;
-					acontact.getTID();
-					String nameatt = acontact.toXCard(attkeys, mappings);
-					if (nameatt != null) printWriter.println(nameatt);
-				}
-			}
-
-			if (attkeys.contains("tag list"))
-			{
-				HashMap<String, Integer> sortedtags = mcUtilities
-						.sortMapByValues(taglist);
-				printWriter.println("<taglist>");
-				for (Entry<String, Integer> anentry : sortedtags.entrySet())
-				{
-					String atag = anentry.getKey();
-					int count = anentry.getValue();
-					printWriter.println(
-							"<tag key='" + atag + "' count='" + count + "'/>");
-				}
-				printWriter.println("</taglist>");
-			}
-			printWriter.println("</contacts>");
-			printWriter.close();
-		} catch (Exception e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return k;
+		return writeBackupXML(makeOrderedContactsVector(), exportfilename, attkeys);
 	}
-	
+
 	// a backup of these contacts (Tools > Backup > Make backup), read back
 	// by mcImportXML; returns the number of contacts written
 	public static int writeBackupXML(Vector<mcContact> outlist, String exportfilename)
 	{
+		return writeBackupXML(outlist, exportfilename, null);
+	}
+
+	// the same with only these details (and always the name), as the Export
+	// page chooses; null for all of them
+	public static int writeBackupXML(Vector<mcContact> outlist, String exportfilename, Vector<String> details)
+	{
 		Map<String, Integer> taglist = new HashMap<String, Integer>();
 		Vector<String> attkeylist = new mcAttribute(0).dbloadAttributeKeyList();
+		if (details != null)
+		{
+			attkeylist.retainAll(details);
+			if (!attkeylist.contains("name")) attkeylist.add(0, "name");
+		}
 		int k = 0;
 		try (PrintWriter printWriter = new PrintWriter(exportfilename, StandardCharsets.UTF_8))
 		{

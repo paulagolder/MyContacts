@@ -646,10 +646,12 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
 
     public void loadXML_a(Element ct, int contactnumber)
     {
-        TID = ct.getAttribute("tid");
-        CID = Integer.parseInt(ct.getAttribute("CID"));
+        // a backup writes tid, kind and CID; files from the Export page of
+        // earlier versions wrote id and type, and no CID
+        TID = ct.hasAttribute("tid") ? ct.getAttribute("tid") : ct.getAttribute("id");
+        CID = ct.getAttribute("CID").matches("\\d+") ? Integer.parseInt(ct.getAttribute("CID")) : -1;
         backupCID = CID;
-        kind = ct.getAttribute("kind");
+        kind = ct.hasAttribute("kind") ? ct.getAttribute("kind") : ct.getAttribute("type");
         String updatetext = ct.getAttribute("updated");
         try
         {

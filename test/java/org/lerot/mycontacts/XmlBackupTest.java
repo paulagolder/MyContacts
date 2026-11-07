@@ -77,6 +77,51 @@ class XmlBackupTest
 		assertEquals(before, contents());
 	}
 
+	@Test
+	void importsAFileFromTheExportPageOfEarlierVersions() throws Exception
+	{
+		// <contact id=... type=...>, without a CID
+		java.nio.file.Files.writeString(Path.of(backup), String.join("\n",
+				"<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "<contacts>",
+				"<contact id='Golder Barbara' type='person'   >",
+				" <name   datatype='name'  update='2023-12-10 10:14:52.066'  > ",
+				"  <field key='sn' value='Golder' />", "  <field key='fn' value='Barbara' />", " </name>",
+				" <email   datatype='email'  update='2023-12-10 10:14:52'  > ",
+				"  <value>barbara@example.com</value> </email>",
+				" <tags   datatype='textlist'  update='2026-11-07 11:38:32.049'  > ",
+				"  <value>family;; </value> </tags>", "</contact>", "</contacts>"));
+		new mcImportXML(backup).importall(false, null);
+		List<String> barbara = contents().get("Golder Barbara");
+		assertNotNull(barbara, contents().keySet().toString());
+		assertTrue(barbara.contains("email/ = barbara@example.com"), barbara.toString());
+		assertTrue(barbara.contains("tags/ = [family]"), barbara.toString());
+	}
+
+	@Test
+	void theExportPageWritesAFileThatImports() throws Exception
+	{
+		// the Export page: some contacts (here Alice and Carol), some details
+		mcContacts chosen = new mcContacts();
+		chosen.refreshAllContacts();
+		chosen.remove(chosen.FindbyID(2));
+		chosen.remove(chosen.FindbyID(4));
+		chosen.remove(chosen.FindbyID(5));
+		assertEquals(2, chosen.saveXML(backup, new java.util.Vector<>(List.of("email", "tags"))));
+
+		Path empty = folder.resolve("empty.sqlite");
+		mcStarter.createDatabase(empty);
+		ds.close();
+		ds = new mcDataSource(empty.toString());
+		mcDataObject.useDataSource(ds);
+		new mcImportXML(backup).importall(false, null);
+
+		Map<String, List<String>> after = contents();
+		assertEquals(java.util.Set.of("Smith  Ally", "Jones  Carol"), after.keySet());
+		assertEquals(List.of("email/ = alice@example.com", "email/old = alice@old.example.com",
+				"name/ = { fn:'Alice' , sn:'Smith' ,  }", "tags/ = [family, friends]", "tid/ = Smith  Ally"),
+				after.get("Smith  Ally"));
+	}
+
 	private static java.util.Vector<mcContact> allContacts()
 	{
 		mcContacts all = new mcContacts();
