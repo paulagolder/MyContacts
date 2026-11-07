@@ -493,7 +493,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                         jswLabel aqual = new jswLabel(anattribute.getQualifier());
                         memberpanel.addCell(aqual, row, 1);
                         jswHorizontalPanel buttonpanel = new jswHorizontalPanel();
-                        jswButton viewcontact = new jswButton(this, "VIEW", "VIEW:" + linkedcontact.getIDstr());
+                        jswButton viewcontact = new jswButton(this, "**VIEW", "VIEW:" + linkedcontact.getIDstr());
                         buttonpanel.add(viewcontact);
                         jswButton disconnect = new jswButton(this, "REFLECT", "REFLECT:" + cid + ":" + selector + ":" + aqualifier);
                         buttonpanel.add(disconnect);
@@ -1163,11 +1163,11 @@ public class editPanel extends jswVerticalPanel implements ActionListener
             add(" FILLW ", newattributepanel);
         }
 
-        mcAttributes reltionslist = selcontact.selectLinkToAttributes("related");
-        if (reltionslist != null)
+        mcAttributes relationslist = selcontact.selectLinkToAttributes("related");
+        if (relationslist != null)
         {
-            jswVerticalPanel reltionspanel = makeLinkToPanel(reltionslist, "related", "Related to");
-            add(reltionspanel);
+            jswVerticalPanel relationspanel = makeLinkToPanel(relationslist, "related", "Related to");
+            add(relationspanel);
         }
 
         mcAttributes memberstlist = selcontact.selectLinkToAttributes("hasmember");
@@ -1185,9 +1185,10 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         }
 
         mcAttributes relatedlist = selcontact.selectLinkFromAttributes("related");
+
         if (relatedlist != null)
         {
-            jswVerticalPanel linkfrompanel = makeLinkToPanel(relatedlist,"related", "ex-Related");
+            jswVerticalPanel linkfrompanel = makeLinkedFromPanel(relatedlist,"related", "ex-Related");
             add(linkfrompanel);
         }
 
