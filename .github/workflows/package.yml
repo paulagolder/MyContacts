@@ -19,6 +19,7 @@ permissions:
 jobs:
   package:
     strategy:
+      fail-fast: false   # one failing does not cancel the other
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
@@ -52,12 +53,14 @@ jobs:
         working-directory: myContacts
         run: ./gradlew packageApp -PappVersion=$APP_VERSION
 
-      # jpackage makes the .msi with the WiX toolset, version 3
+      # jpackage makes the .msi with the WiX toolset, version 3 (GitHub's
+      # Windows machines usually have it already)
       - name: WiX toolset
         if: runner.os == 'Windows'
         run: |
-          choco install wixtoolset --version 3.14.1 -y --no-progress
-          echo "C:\Program Files (x86)\WiX Toolset v3.14\bin" >> $env:GITHUB_PATH
+          $wix = "C:\Program Files (x86)\WiX Toolset v3.14\bin"
+          if (-not (Test-Path "$wix\candle.exe")) { choco install wixtoolset -y --no-progress }
+          echo $wix >> $env:GITHUB_PATH
       - name: Windows installer
         if: runner.os == 'Windows'
         working-directory: myContacts
