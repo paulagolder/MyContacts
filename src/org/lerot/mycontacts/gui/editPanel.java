@@ -483,11 +483,17 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         return answer.trim().toLowerCase();
     }
 
-    private jswVerticalPanel makeLinkedFromPanel(mcAttributes getlinked, String selector, String title)
+    // links other contacts hold to this one with none back; explanation says
+    // what that means and what REFLECT will do
+    private jswVerticalPanel makeLinkedFromPanel(mcAttributes getlinked, String selector, String title, String explanation)
     {
         jswVerticalPanel frame = new jswVerticalPanel("title", false, false);
         jswLabel memberheading = new jswLabel(title);
         frame.add(memberheading);
+        jswLabel explanationlabel = new jswLabel(explanation);
+        explanationlabel.setStyleAttribute("fontStyle", Font.ITALIC);
+        explanationlabel.applyStyle();
+        frame.add(explanationlabel);
         jswTable memberpanel = new jswTable(this, selector, linktablestyles);
 
         int row = 0;
@@ -501,12 +507,14 @@ public class editPanel extends jswVerticalPanel implements ActionListener
             {
                 jswLabel alabel = new jswLabel(linkedcontact.getName());
                 memberpanel.addCell(alabel, row, 0);
-                jswLabel aqual = new jswLabel(anattribute.getQualifier());
+                // a member link's qualifier is only the contact's id
+                jswLabel aqual = new jswLabel(selector.equals("related") ? aqualifier : "");
                 memberpanel.addCell(aqual, row, 1);
                 jswHorizontalPanel buttonpanel = new jswHorizontalPanel();
                 jswButton viewcontact = new jswButton(this, "VIEW", "VIEW:" + linkedcontact.getIDstr());
                 buttonpanel.add(viewcontact);
                 jswButton disconnect = new jswButton(this, "REFLECT", "REFLECT:" + cid + ":" + selector + ":" + aqualifier);
+                disconnect.setToolTipText("Add the matching link back to " + linkedcontact.getName());
                 buttonpanel.add(disconnect);
                 memberpanel.addCell(buttonpanel, row, 2);
             } else
@@ -702,7 +710,8 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                 jswLabel alabel = new jswLabel(tid);
                 //   jswLabel alabel = new jswLabel(value);
                 memberpanel.addCell(alabel, row, 0);
-                jswLabel aqlabel = new jswLabel(qualifier);
+                // a member link's qualifier is only the contact's id
+                jswLabel aqlabel = new jswLabel(selector.equals("related") ? qualifier : "");
                 memberpanel.addCell(aqlabel, row, 1);
                 jswHorizontalPanel buttonpanel = new jswHorizontalPanel();
 
@@ -1139,21 +1148,24 @@ public class editPanel extends jswVerticalPanel implements ActionListener
 
         if (relatedlist != null)
         {
-            jswVerticalPanel linkfrompanel = makeLinkedFromPanel(relatedlist,"related", "Related to, not yet reflected");
+            jswVerticalPanel linkfrompanel = makeLinkedFromPanel(relatedlist, "related", "Related to, not yet reflected",
+                    "These contacts list this one as a relation, but it does not list them. REFLECT adds the link here and asks what the relationship is from this side.");
             add(linkfrompanel);
         }
 
         mcAttributes linkedmemberlist = selcontact.selectLinkFromAttributes("memberof");
         if (linkedmemberlist != null)
         {
-            jswVerticalPanel linkfrompanel = makeLinkedFromPanel(linkedmemberlist, "memberof", "Has Members, not yet reflected");
+            jswVerticalPanel linkfrompanel = makeLinkedFromPanel(linkedmemberlist, "memberof", "Has Members, not yet reflected",
+                    "These contacts say they are members of this one, but it does not list them as members. REFLECT adds them to Has Members.");
             add(linkfrompanel);
         }
 
         mcAttributes linkedorglist = selcontact.selectLinkFromAttributes("hasmember");
         if (linkedorglist != null)
         {
-            jswVerticalPanel linkfrompanel = makeLinkedFromPanel(linkedorglist, "hasmember", "Member Of, not yet reflected");
+            jswVerticalPanel linkfrompanel = makeLinkedFromPanel(linkedorglist, "hasmember", "Member Of, not yet reflected",
+                    "These contacts list this one as a member, but it does not say it belongs to them. REFLECT adds them to Member Of.");
             add(linkfrompanel);
         }
 
