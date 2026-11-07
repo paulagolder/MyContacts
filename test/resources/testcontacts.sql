@@ -11,6 +11,11 @@ INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, '
 INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'email', 'old', 'alice@old.example.com', '2026-01-01 12:00:00');
 INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (2, 'memberof', '000001', '000001', '2026-01-01 12:00:00');
 INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'hasmember', '000003', '000003', '2026-01-01 12:00:00');
+-- related links: Alice and Carol are friends both ways; Bob says Alice is his
+-- sister, with no link back, so Alice's Edit page shows it under ex-Related
+INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'related', 'friend', '000003', '2026-01-01 12:00:00');
+INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (3, 'related', 'friend', '000001', '2026-01-01 12:00:00');
+INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (2, 'related', 'sister', '000001', '2026-01-01 12:00:00');
 INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (2, 'tid', '', 'O''Brien  Bob', '2026-01-01 12:00:00');
 INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (2, 'name', '', '{ fn:''Bob'' , sn:"O''Brien" ,  }', '2026-01-01 12:00:00');
 INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (2, 'tags', '', 'family;', '2026-01-01 12:00:00');
