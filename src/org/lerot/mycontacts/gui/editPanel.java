@@ -1172,18 +1172,21 @@ public class editPanel extends jswVerticalPanel implements ActionListener
             llist.add("related");
             linkselect.addList(llist);
             newmemberpanel.add(" LEFT ", linkselect);
+            // the drop-downs are made as tall as the text box (40) so the row lines up
             linkselect.setStyleAttribute("mywidth", 120);
+            linkselect.setStyleAttribute("myheight", 40);
             linkselect.applyStyle();
             parentselect = new jswDropDownContactBox(null, "Select Contact", false);
             parentselect.addList(MyContacts.selbox.getAllcontactlist().makeOrderedContactsVector());
             newmemberpanel.add("  ", parentselect);// paul to fix
             parentselect.setStyleAttribute("mywidth", 300);
+            parentselect.setStyleAttribute("myheight", 40);
+            parentselect.setBorder(BorderFactory.createEmptyBorder()); // or it squeezes the list to 30
             parentselect.applyStyle();
-            atteditbox = new jswTextBox(this, "attedit");
+            // the relationship for a related link; Enter adds the link
+            atteditbox = new jswTextBox(this, "qualifier", 250, "ADDLINK");
             atteditbox.setEnabled(true);
-            newmemberpanel.add("  ", atteditbox);
-            atteditbox.setStyleAttribute("mywidth", 100);
-            atteditbox.applyStyle();
+            newmemberpanel.add(" MINWIDTH=252 ", atteditbox); // or it shrinks to its minimum
             jswPanel buttonbox = new jswHorizontalPanel();
             jswButton addmember = new jswButton(this, "ADD AS LINK", "ADDLINK");
             buttonbox.add("RIGHT", addmember);
