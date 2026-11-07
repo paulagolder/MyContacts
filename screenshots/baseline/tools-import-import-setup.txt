@@ -22,12 +22,12 @@ JPanel 0,0 1200x900
                   jswHorizontalPanel 'HP:' 0,0 154x30
                     jswLabel ' Setting up data import ' 5,5 144x20
                       JLabel 1,1 142x18
-                  jswHorizontalPanel 'HP:' 0,30 317x40
+                  jswHorizontalPanel 'HP:' 0,30 467x40
                     jswButton 'Select' 5,5 72x30
                       JButton 0,0 72x30
-                    jswTextBox 'File name' 78,5 60x30
-                      JTextField 1,1 100x28
-                    jswDropDownBox 'source' 139,5 100x30
+                    jswTextBox 'File name' 78,5 210x30
+                      JTextField 1,1 250x28
+                    jswDropDownBox 'source' 289,5 100x30
                       JComboBox 0,0 100x30
-                    jswButton 'Save' 240,5 72x30
+                    jswButton 'Save' 390,5 72x30
                       JButton 0,0 72x30
