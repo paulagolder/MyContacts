@@ -122,6 +122,28 @@ class XmlBackupTest
 				after.get("Smith  Ally"));
 	}
 
+	@Test
+	void anExportWithEveryDetailTickedRestoresLikeABackup() throws Exception
+	{
+		// the Export page's XML boxes: every kind of detail but tid and kind
+		Map<String, List<String>> before = contents();
+		java.util.Vector<String> ticked = new mcAttribute(0).dbloadAttributeKeyList();
+		ticked.removeAll(List.of("tid", "kind"));
+		mcContacts all = new mcContacts();
+		all.refreshAllContacts();
+		all.saveXML(backup, ticked);
+
+		Path empty = folder.resolve("empty.sqlite");
+		mcStarter.createDatabase(empty);
+		ds.close();
+		ds = new mcDataSource(empty.toString());
+		mcDataObject.useDataSource(ds);
+		new mcImportXML(backup).importall(false, null);
+
+		// group links and all
+		assertEquals(before, contents());
+	}
+
 	private static java.util.Vector<mcContact> allContacts()
 	{
 		mcContacts all = new mcContacts();

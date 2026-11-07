@@ -1,5 +1,6 @@
 package org.lerot.mycontacts.gui;
 
+import org.lerot.mycontacts.mcAttribute;
 import org.lerot.mycontacts.mcContacts;
 import org.lerot.mycontacts.mcDateDataType;
 import org.lerot.mycontacts.mcMappings;
@@ -75,8 +76,9 @@ public class exportPanel extends jswVerticalPanel implements ActionListener
 		varry.add("XML");
 		exporttypebox.addList(varry);
 		filebar.add(" LEFT WIDTH=50 ", exporttypebox);
-		checkbox = new jswCheckbox[20];
-		for (int i = 0; i < 20; i++)
+		// room for every kind of detail (the XML list has one box for each)
+		checkbox = new jswCheckbox[60];
+		for (int i = 0; i < checkbox.length; i++)
 		{
 			checkbox[i] = new jswCheckbox(this,"*");
 		}
@@ -228,6 +230,28 @@ public class exportPanel extends jswVerticalPanel implements ActionListener
 				option[0].setSelected(false);
 				orows = 1;
 			}
+			else if (exporttype.equalsIgnoreCase("xml"))
+			{
+				// every kind of detail the database has (group links,
+				// position, photo...), as the file is read back by MyContacts;
+				// tid and kind are always written, with each contact
+				crows = 0;
+				for (String key : new mcAttribute(0).dbloadAttributeKeyList())
+				{
+					if (key.equalsIgnoreCase("tid") || key.equalsIgnoreCase("kind")) continue;
+					checkbox[crows] = new jswCheckbox(this, key);
+					selectors.add(" INDENT=20 ", checkbox[crows]);
+					checkbox[crows].setVisible(true);
+					checkbox[crows].setSelected(true);
+					crows++;
+				}
+				// a count of each tag, at the end of the file
+				checkbox[crows] = new jswCheckbox(this,"Tag List");
+				selectors.add(" INDENT=20 ", checkbox[crows]);
+				checkbox[crows].setVisible(true);
+				checkbox[crows].setSelected(true);
+				crows++;
+			}
 			else
 			{
 				crows = 0;
@@ -235,14 +259,6 @@ public class exportPanel extends jswVerticalPanel implements ActionListener
 				{
 					String localstring = entry.getKey();
 					checkbox[crows] = new jswCheckbox(this,localstring);
-					selectors.add(" INDENT=20 ", checkbox[crows]);
-					checkbox[crows].setVisible(true);
-					checkbox[crows].setSelected(true);
-					crows++;
-				}
-				if (exporttype.equalsIgnoreCase("xml"))
-				{
-					checkbox[crows] = new jswCheckbox(this,"Tag List");
 					selectors.add(" INDENT=20 ", checkbox[crows]);
 					checkbox[crows].setVisible(true);
 					checkbox[crows].setSelected(true);
