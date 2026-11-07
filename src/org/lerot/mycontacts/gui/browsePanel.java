@@ -63,9 +63,8 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 			String selid = action.substring(5);
 			mcContact selcon = MyContacts.selbox.getAllcontactlist()
 					.FindbystrID(selid);
-			MyContacts.selbox.contactselectbox.setSelected(selcon);
-			MyContacts.selbox.contactselectbox.contactddbox.setSelectedItem(selcon);
-			// MyContacts.selbox.setSelcontact(selcon); // paul fiddling here
+			if (selcon == null) System.out.println(" no contact " + selid + " to view");
+			MyContacts.selbox.showContact(selcon);
 			MyContacts.topgui.refreshView();
 		} else if (action.startsWith("USE:"))
 		{

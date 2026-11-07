@@ -504,6 +504,23 @@ public class selectorBox extends jswVerticalPanel
         // filterbox.clear();
     }
 
+    // show this contact (a group member's VIEW button); if the browse list,
+    // a tag, leaves it out, browse all contacts instead
+    public void showContact(mcContact contact)
+    {
+        if (contact == null) return;
+        if (!contactselectbox.contains(contact))
+        {
+            browsefilter = "all";
+            tagselectbox.removeActionListener(this);
+            tagselectbox.setSelected("all");
+            tagselectbox.addActionListener(this, "BROWSESELECT");
+            update();
+        }
+        selcontact = contact;
+        update2();
+    }
+
     public void setBrowseFilter(jswDropDownBox sb)
     {
         browsefilter = sb.getSelectedValue();
