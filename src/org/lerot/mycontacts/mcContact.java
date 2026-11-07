@@ -1391,22 +1391,43 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
 
     }
 
-   public mcAttributes selectLinkFromAttributes(String selector)
+    // the root of the link that matches a link of this root coming the other way
+    public static String reflectRoot(String root)
+    {
+        if (root.equalsIgnoreCase("memberof")) return "hasmember";
+        if (root.equalsIgnoreCase("hasmember")) return "memberof";
+        return root.toLowerCase();
+    }
+
+    // true if this contact has a link of this root to the contact, whatever its qualifier
+    public boolean hasLinkTo(String root, String idstr)
+    {
+        for (mcAttribute anattribute : getAttributesbyRoot(root).values())
+        {
+            if (idstr.equalsIgnoreCase(anattribute.getValue())) return true;
+        }
+        return false;
+    }
+
+    // links of this root held by other contacts that point at this one and
+    // have no matching link back, or null if there are none
+    public mcAttributes selectLinkFromAttributes(String selector)
     {
         mcAttributes list = new mcAttributes();
-
-            mcAttributes getlinked = (new mcAttributes())
-                    .FindByAttributeValue(selector, getIDstr());
-            for (Entry<String, mcAttribute> anentry : getlinked.entrySet())
-            {
-                mcAttribute anattribute = anentry.getValue();
-                int cid = anattribute.getCid();
-                mcContact linkedcontact = MyContacts.selbox.FindbyID(cid);
-                anattribute.setTag(linkedcontact.getTID());
-                if (linkedcontact != null) list.put(anattribute);
-            }
-            return list;
-
+        String reflectroot = reflectRoot(selector);
+        mcAttributes getlinked = (new mcAttributes())
+                .FindByAttributeValue(selector, getIDstr());
+        for (Entry<String, mcAttribute> anentry : getlinked.entrySet())
+        {
+            mcAttribute anattribute = anentry.getValue();
+            String fromid = mcUtilities.makeIDstr(anattribute.getCid());
+            if (hasLinkTo(reflectroot, fromid)) continue;
+            mcContact linkedcontact = MyContacts.selbox.FindbyID(anattribute.getCid());
+            if (linkedcontact != null) anattribute.setTag(linkedcontact.getTID());
+            list.put(anattribute);
+        }
+        if (list.size() == 0) return null;
+        return list;
     }
 
 

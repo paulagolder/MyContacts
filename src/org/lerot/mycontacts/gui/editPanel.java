@@ -168,7 +168,15 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                 mcContact linkcontact = parentselect.getSelectedValue();
                 String linktype = linkselect.getSelectedValue();
                 System.out.println("adding " + selcontact + " as " + linktype + " : " + linkcontact);
-                mcAttribute newatt = selcontact.createAttribute(linktype, linkcontact.getIDstr(), false);
+                // member links are keyed by the linked contact's id; a related
+                // link by the relationship, typed in the box or asked for here
+                String qualifier = linkcontact.getIDstr();
+                if (linktype.equalsIgnoreCase("related"))
+                {
+                    qualifier = askRelationship(atteditbox.getText(), selcontact, linkcontact);
+                    if (qualifier == null) return;
+                }
+                mcAttribute newatt = selcontact.createAttribute(linktype, qualifier, false);
                 if (newatt != null)
                 {
                     newatt.getAttributevalue().setValue(linkcontact.getIDstr(), "now");
@@ -177,33 +185,35 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                 } else System.out.println(" cannot create duplicate");
             } else if (action.startsWith("REFLECT:"))
             {
+                // REFLECT:<cid of the other contact>:<root of its link>:<qualifier of its link>
                 System.out.println(" reflect=" + action);
-                String newdata = action.substring(8).toLowerCase();
-                String[] data = newdata.split(":");
-                mcContact linkcontact = MyContacts.selbox.FindbyID(data[0]);
-                System.out.println(" link contact " + linkcontact + " ++ " + data[0] + " + " + data[1] + " + " + data[2]);
-                String root = data[1];
-                String qualifier = data[0];
-                // qualifier = selcontact.getIDstr();
-                if (root.equalsIgnoreCase("hasmember"))
-                {
-                    root = "memberof";
-                    qualifier = selcontact.getIDstr();
-                } else if (root.equalsIgnoreCase("memberof"))
-                {
-                    root = "hasmember";
-                    qualifier = selcontact.getIDstr();
-                } else if (root.equalsIgnoreCase("related)"))
-                {
-                    root = "related";
-                    qualifier = "rev-" + qualifier;
-                }
+                String[] data = action.substring(8).toLowerCase().split(":", 3);
                 String newid = mcUtilities.makeIDstr(data[0]);
-                System.out.println("adding  link + to " + data[2] + " " + root + " " + qualifier);
+                String root = mcContact.reflectRoot(data[1]);
+                String qualifier = newid;
+                if (root.equals("related"))
+                {
+                    // a girlfriend link is offered back as has_girlfriend, for the
+                    // user to change to boyfriend; has_girlfriend offers girlfriend
+                    String theirqualifier = data.length > 2 ? data[2] : "";
+                    String offer = "";
+                    if (theirqualifier.startsWith("has_")) offer = theirqualifier.substring(4);
+                    else if (!theirqualifier.isEmpty() && !theirqualifier.matches("\\d+"))
+                        offer = "has_" + theirqualifier;
+                    qualifier = askRelationship(offer, selcontact, MyContacts.selbox.FindbyID(newid));
+                    if (qualifier == null) return;
+                }
+                System.out.println("adding link to " + newid + " " + root + " " + qualifier);
                 mcAttribute newatt = selcontact.createAttribute(root, qualifier);
-                newatt.getAttributevalue().setValue(newid, "now");
-                System.out.println("new attribute:" + newatt);
-                newatt.dbupsertAttribute();
+                if (newatt != null)
+                {
+                    newatt.getAttributevalue().setValue(newid, "now");
+                    System.out.println("new attribute:" + newatt);
+                    newatt.dbupsertAttribute();
+                } else
+                {
+                    JOptionPane.showMessageDialog(this, "This contact already has a " + root + " link called " + qualifier + ".\nEdit that one first, then reflect again.");
+                }
             } else if (action.startsWith("ADDGROUP"))
             {
                 System.out.println("adding " + groupselect.getSelectedValue() + " to " + selcontact);
@@ -461,71 +471,17 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         return tablestyles;
     }
 
-    private jswVerticalPanel makeLinkedFromPanel(mcContact selcontact, String selector, String title)
+    // asks what a related contact is to this one, starting from offer;
+    // null if the user cancels or leaves it empty
+    private String askRelationship(String offer, mcContact selcontact, mcContact linkcontact)
     {
-        jswVerticalPanel frame = new jswVerticalPanel("title", false, false);
-        jswLabel memberheading = new jswLabel(title);
-        frame.add(memberheading);
-        jswTable memberpanel = new jswTable(this, selector, linktablestyles);
-        if (selcontact != null)
-        {
-            mcAttributes cattributes = selcontact.getAttributes();
-            // cattributes.printList("ca ");
-            mcAttributes getlinked = (new mcAttributes()).FindByAttributeValue(selector, selcontact.getIDstr());
-            //  getlinked.printList("lk ");
-            int row = 0;
-            for (Entry<String, mcAttribute> anentry : getlinked.entrySet())
-            {
-                mcAttribute anattribute = anentry.getValue();
-                String aroot = anattribute.getRoot();
-                if (aroot.equalsIgnoreCase("memberof")) aroot = "hasmember";
-                else if (aroot.equalsIgnoreCase("hasmember")) aroot = "memberof";
-                String avalue = mcUtilities.makeIDstr(anattribute.getCid());
-                String aqualifier = mcUtilities.makeIDstr(anattribute.getQualifier());
-                if (!selcontact.hasAttributeByValue(aroot, avalue, avalue))
-                {
-                    int cid = anattribute.getCid();
-                    mcContact linkedcontact = MyContacts.selbox.FindbyID(cid);
-                    if (linkedcontact != null)
-                    {
-                        jswLabel alabel = new jswLabel(linkedcontact.getName());
-                        memberpanel.addCell(alabel, row, 0);
-                        jswLabel aqual = new jswLabel(anattribute.getQualifier());
-                        memberpanel.addCell(aqual, row, 1);
-                        jswHorizontalPanel buttonpanel = new jswHorizontalPanel();
-                        jswButton viewcontact = new jswButton(this, "**VIEW", "VIEW:" + linkedcontact.getIDstr());
-                        buttonpanel.add(viewcontact);
-                        jswButton disconnect = new jswButton(this, "REFLECT", "REFLECT:" + cid + ":" + selector + ":" + aqualifier);
-                        buttonpanel.add(disconnect);
-                        memberpanel.addCell(buttonpanel, row, 2);
-                    } else
-                    {
-                        jswLabel alabel = new jswLabel(" invalid link ");
-                        memberpanel.addCell(alabel, row, 0);
-                        jswLabel aqual = new jswLabel(anattribute.getQualifier());
-                        memberpanel.addCell(aqual, row, 1);
-                        jswHorizontalPanel buttonpanel = new jswHorizontalPanel();
-                        jswButton disconnect = new jswButton(this, "DELETE", "DELETE" + anattribute.getKey());
-                        buttonpanel.add(disconnect);
-                        memberpanel.addCell(buttonpanel, row, 2);
-                    }
-                    row++;
-                }
-            }
-            if (row == 0)
-            {
-                return null;
-            } else
-            {
-                frame.add(memberpanel);
-                return frame;
-            }
-        } else
-        {
-            return null;
-        }
+        String name = linkcontact == null ? "this contact" : linkcontact.getName();
+        String answer = (String) JOptionPane.showInputDialog(this,
+                "How is " + name + " related to " + selcontact.getName() + "?\n(girlfriend, brother, ...)",
+                "Relationship", JOptionPane.QUESTION_MESSAGE, null, null, offer == null ? "" : offer.trim());
+        if (answer == null || answer.trim().isEmpty()) return null;
+        return answer.trim().toLowerCase();
     }
-
 
     private jswVerticalPanel makeLinkedFromPanel(mcAttributes getlinked, String selector, String title)
     {
@@ -538,12 +494,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         for (Entry<String, mcAttribute> anentry : getlinked.entrySet())
         {
             mcAttribute anattribute = anentry.getValue();
-            String aroot = anattribute.getRoot();
-            if (aroot.equalsIgnoreCase("memberof")) aroot = "hasmember";
-            else if (aroot.equalsIgnoreCase("hasmember")) aroot = "memberof";
-            String avalue = mcUtilities.makeIDstr(anattribute.getCid());
-            String aqualifier = mcUtilities.makeIDstr(anattribute.getQualifier());
-
+            String aqualifier = anattribute.getQualifier();
             int cid = anattribute.getCid();
             mcContact linkedcontact = MyContacts.selbox.FindbyID(cid);
             if (linkedcontact != null)
@@ -1195,7 +1146,14 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         mcAttributes linkedmemberlist = selcontact.selectLinkFromAttributes("memberof");
         if (linkedmemberlist != null)
         {
-            jswVerticalPanel linkfrompanel = makeLinkToPanel(linkedmemberlist, "memberof", "ex-MemberOf");
+            jswVerticalPanel linkfrompanel = makeLinkedFromPanel(linkedmemberlist, "memberof", "ex-MemberOf");
+            add(linkfrompanel);
+        }
+
+        mcAttributes linkedorglist = selcontact.selectLinkFromAttributes("hasmember");
+        if (linkedorglist != null)
+        {
+            jswVerticalPanel linkfrompanel = makeLinkedFromPanel(linkedorglist, "hasmember", "ex-HasMember");
             add(linkfrompanel);
         }
 
