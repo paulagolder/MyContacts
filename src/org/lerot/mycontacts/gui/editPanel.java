@@ -1139,21 +1139,21 @@ public class editPanel extends jswVerticalPanel implements ActionListener
 
         if (relatedlist != null)
         {
-            jswVerticalPanel linkfrompanel = makeLinkedFromPanel(relatedlist,"related", "ex-Related");
+            jswVerticalPanel linkfrompanel = makeLinkedFromPanel(relatedlist,"related", "Related to, not yet reflected");
             add(linkfrompanel);
         }
 
         mcAttributes linkedmemberlist = selcontact.selectLinkFromAttributes("memberof");
         if (linkedmemberlist != null)
         {
-            jswVerticalPanel linkfrompanel = makeLinkedFromPanel(linkedmemberlist, "memberof", "ex-MemberOf");
+            jswVerticalPanel linkfrompanel = makeLinkedFromPanel(linkedmemberlist, "memberof", "Has Members, not yet reflected");
             add(linkfrompanel);
         }
 
         mcAttributes linkedorglist = selcontact.selectLinkFromAttributes("hasmember");
         if (linkedorglist != null)
         {
-            jswVerticalPanel linkfrompanel = makeLinkedFromPanel(linkedorglist, "hasmember", "ex-HasMember");
+            jswVerticalPanel linkfrompanel = makeLinkedFromPanel(linkedorglist, "hasmember", "Member Of, not yet reflected");
             add(linkfrompanel);
         }
 
