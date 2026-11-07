@@ -1,6 +1,8 @@
 package org.lerot.mycontacts.gui;
 
+import org.lerot.mycontacts.mcContact;
 import org.lerot.mycontacts.mcDataSource;
+import org.lerot.mycontacts.mcStarter;
 import org.lerot.mycontacts.MyContacts;
 import org.lerot.mywidgets.*;
 import org.lerot.mywidgets.jswTextBox;
@@ -18,7 +20,8 @@ public class dbEditPanel extends jswVerticalPanel implements ActionListener
 	private static final long serialVersionUID = 1L;
 	private ButtonGroup bg;
 	Vector<String> found;
-	jswOptionset options;
+	// each database's "select" button, in one group so only one is chosen
+	private final java.util.Map<String, jswOption> selectors = new java.util.LinkedHashMap<>();
 	jswTextBox searchfield;
 	private jswTable resulttable;
 	jswTextBox newname;
@@ -29,7 +32,7 @@ public class dbEditPanel extends jswVerticalPanel implements ActionListener
 	private jswVerticalPanel seldbpanel;
 	private jswLabel selname;
 	private String seldbname;
-	private JComponent loaddbpanel;
+	private jswTextBox emptyname;
 
 	public dbEditPanel()
 	{
@@ -41,6 +44,10 @@ public class dbEditPanel extends jswVerticalPanel implements ActionListener
 		jswHorizontalPanel printbar = new jswHorizontalPanel();
 		jswButton refreshbutton = new jswButton(this, "refresh", "refresh");
 		printbar.add(refreshbutton);
+		// a new database with no contacts, as on a first start
+		emptyname = new jswTextBox(this, "name of new database", 200, "createempty");
+		printbar.add(" RIGHT ", emptyname);
+		printbar.add(" RIGHT ", new jswButton(this, "create empty", "createempty"));
 		this.add(printbar);
 		resulttable = new jswTable(this,"dbfound", MyContacts.getTableStyles() );
 		this.add(resulttable);
@@ -70,17 +77,6 @@ public class dbEditPanel extends jswVerticalPanel implements ActionListener
 		seldbpanel.add(selbar);
 		seldbpanel.setVisible(false);
 		this.add(seldbpanel);
-		loaddbpanel = new jswVerticalPanel("title",false,false);;
-		jswLabel ldlabel = new jswLabel(" Import to new database");
-		loaddbpanel.add(ldlabel);
-		jswHorizontalPanel loadbar = new jswHorizontalPanel();
-		jswButton load = new jswButton(this, "select import ", "import");
-		loadbar.add(load);
-		jswLabel loadname = new jswLabel("");
-		loadbar.add(" FILLW ", loadname);
-		loaddbpanel.add(loadbar);
-		loaddbpanel.setVisible(false);
-		this.add(loaddbpanel);
 		refresh();
 		this.repaint();
 		MyContacts.topgui.mainpanel.repaint();
@@ -96,13 +92,11 @@ public class dbEditPanel extends jswVerticalPanel implements ActionListener
 		{
 			newdbpanel.setVisible(false);
 			seldbpanel.setVisible(false);
-			loaddbpanel.setVisible(false);
 
 			int row = 0;
-			options.getSelected();
 			for (String adb : found)
 			{
-				if (options.isSelected(adb))
+				if (selectors.containsKey(adb) && selectors.get(adb).isSelected())
 				{
 					System.out.println("selected db  " + adb);
 					selecteddb = adb;
@@ -121,15 +115,6 @@ public class dbEditPanel extends jswVerticalPanel implements ActionListener
 							mode = 1;
 							newdbpanel.setVisible(true);
 							newdbpanel.repaint();
-						} else if (mychecks.get("No of Contacts")
-								.equalsIgnoreCase("0"))
-						{
-							System.out.println("selected db empty :");
-							mode = 2;
-							seldbname = mychecks.get("dbname");
-							selname.setText(selecteddb);
-							loaddbpanel.setVisible(true);
-							loaddbpanel.repaint();
 						} else
 						{
 							System.out.println("selected db  old :");
@@ -147,6 +132,9 @@ public class dbEditPanel extends jswVerticalPanel implements ActionListener
 		} else if (action.equalsIgnoreCase("refresh"))
 		{
 			refresh();
+		} else if (action.equalsIgnoreCase("createempty"))
+		{
+			createEmpty(emptyname.getText());
 		} else if (action.equalsIgnoreCase("selectdef"))
 		{
 			saveParamChangesAsXML();
@@ -158,6 +146,9 @@ public class dbEditPanel extends jswVerticalPanel implements ActionListener
 			MyContacts.topgui.dbsource= selecteddb;
 			//(new mcDataObject()).setConnection(MyContacts.topgui.currentcon);
 			MyContacts.topgui.startup();
+			// the contacts of the database now open, not the last one's
+			MyContacts.selbox.setSelcontact((mcContact) null);
+			MyContacts.selbox.refreshAllContacts("database");
 		}
 
 		else if (action.equalsIgnoreCase("makenew"))
@@ -195,6 +186,39 @@ public class dbEditPanel extends jswVerticalPanel implements ActionListener
 		MyContacts.topgui.getContentPane().validate();
 	}
 
+	// make <name>.sqlite in the settings folder, empty but with the tables
+	// and settings a database needs, then choose it in the list
+	private void createEmpty(String name)
+	{
+		name = name.trim().replaceFirst("(?i)\\.sqlite$", "");
+		if (name.isEmpty() || name.matches(".*[/\\\\:].*"))
+		{
+			JOptionPane.showMessageDialog(this, "Type a name for the new database (without / \\ or :).",
+					"New database", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		File file = new File(MyContacts.topgui.dotcontacts + name + ".sqlite");
+		if (file.exists())
+		{
+			JOptionPane.showMessageDialog(this, file.getName() + " already exists.",
+					"New database", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		try
+		{
+			mcStarter.createDatabase(file.toPath());
+		} catch (Exception e)
+		{
+			JOptionPane.showMessageDialog(this, "Cannot make " + file.getName() + ":\n" + e.getMessage(),
+					"New database", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		emptyname.setText("");
+		refresh();
+		jswOption made = selectors.get(file.getPath());
+		if (made != null) made.getButton().doClick();
+	}
+
 	public void refresh()
 	{
 		found = mcDataSource.getdbs(MyContacts.topgui.dotcontacts);
@@ -207,7 +231,7 @@ public class dbEditPanel extends jswVerticalPanel implements ActionListener
 		{
 			int dbfound = found.size();
 			bg = new ButtonGroup();
-			options = new jswOptionset( null,"options",false,false,false) ;
+			selectors.clear();
 			int row = 0;
 			for (String adbpath : found)
 			{
@@ -222,13 +246,11 @@ public class dbEditPanel extends jswVerticalPanel implements ActionListener
 				resulttable.addCell(mychecks.get("Valid"), row, 2);
 				resulttable.addCell(mychecks.get("No of Contacts"), row, 3);
 				resulttable.addCell(mychecks.get("Latest Update"), row, 4);
-				jswHorizontalPanel optionpanel = new jswHorizontalPanel();
-				options.addNewOption( "select", adbpath,"select");
-				// options[row].setToolTipText(acontact.getIDstr());
-				//options[row].addActionListener(this);
-				//bg.add(options[row]);
-				optionpanel.add(" ", options);
-				resulttable.addCell(optionpanel, row, 5);
+				// a button on each row (one set of buttons could only sit in one row)
+				jswOption select = new jswOption(this, "select", false, "select");
+				bg.add(select.getButton());
+				selectors.put(adbpath, select);
+				resulttable.addCell(select, row, 5);
 				row++;
 			}
 		}
