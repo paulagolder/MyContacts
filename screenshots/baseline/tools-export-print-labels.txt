@@ -27,11 +27,11 @@ JPanel 0,0 1200x900
                       JRadioButton 0,0 61x20
                     jswOption 'temptag' 176,29 95x22
                       JRadioButton 0,0 96x20
-                  jswHorizontalPanel 'HP:' 0,91 343x40
+                  jswHorizontalPanel 'HP:' 0,91 383x40
                     jswButton 'Select' 5,5 72x30
                       JButton 0,0 72x30
-                    jswTextBox ' ' 78,5 260x30
-                      JTextField 1,1 300x28
+                    jswTextBox ' ' 78,5 300x30
+                      JTextField 1,1 298x28
                   jswHorizontalPanel 'HP:' 0,131 258x40
                     jswDropDownBox 'Select layout' 5,5 100x30
                       JComboBox 0,0 100x30

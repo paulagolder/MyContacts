@@ -22,13 +22,13 @@ JPanel 0,0 1200x900
                   jswHorizontalPanel 'HP:' 0,0 156x30
                     jswLabel ' Edit Contact Databases ' 5,5 146x20
                       JLabel 1,1 144x18
-                  jswHorizontalPanel 'HP:' 0,30 353x40
+                  jswHorizontalPanel 'HP:' 0,30 393x40
                     jswButton 'refresh' 5,5 72x30
                       JButton 0,0 72x30
-                    jswTextBox 'name of new database' 78,5 160x30
-                      JTextField 1,1 200x28
-                        jswTextPrompt 7,3 186x22
-                    jswButton 'create empty' 239,5 109x30
+                    jswTextBox 'name of new database' 78,5 200x30
+                      JTextField 1,1 198x28
+                        jswTextPrompt 7,3 184x22
+                    jswButton 'create empty' 279,5 109x30
                       JButton 0,0 109x30
                   jswTable 'dbfound' 0,70 965x31
                     jswCell 'acell' 2,1 86x27

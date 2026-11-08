@@ -23,11 +23,11 @@ JPanel 0,0 1200x863
       jswHorizontalPanel 'HP:' 1,40 1195x43
         jswButton 'Previous' 5,5 82x33
           JButton 0,1 82x30
-        jswHorizontalPanel 'filterpanel' 88,5 201x33
-          jswTextBox 'stuff' 0,0 160x33
-            JTextField 1,1 200x31
-              jswTextPrompt 7,3 186x25
-          jswButton '>' 161,0 40x33
+        jswHorizontalPanel 'filterpanel' 88,5 241x33
+          jswTextBox 'stuff' 0,0 200x33
+            JTextField 1,2 198x28
+              jswTextPrompt 7,3 184x22
+          jswButton '>' 201,0 40x33
             JButton 0,1 24x30
         jswDropDownContactBox 'contactselect' 497,5 115x33
           JComboBox 5,5 105x23
@@ -54,14 +54,30 @@ JPanel 0,0 1200x863
           jswCell 'acell' 1190,1 6x27
             jswLabel '' 3,0 2x26
               JLabel 1,1 0x24
-        jswLabel 'Correspondance' 0,61 101x20
+        jswVerticalPanel 'LinkTo' 0,61 222x61
+          jswLabel 'Related to' 0,0 63x20
+            JLabel 1,1 61x18
+          jswTable 'related' 0,20 222x36
+            jswCell 'acell' 2,1 100x32
+              jswLabel 'Smith  Alice' 3,0 96x31
+                JLabel 1,1 94x29
+            jswCell 'acell' 100,1 41x32
+              jswLabel 'friend' 3,0 37x31
+                JLabel 1,1 35x29
+            jswCell 'acell' 139,1 9x32
+              jswLabel ' ' 3,0 5x31
+                JLabel 1,1 3x29
+            jswCell 'acell' 146,1 76x32
+              jswButton 'VIEW' 3,0 72x30
+                JButton 0,0 72x30
+        jswLabel 'Correspondance' 0,122 101x20
           JLabel 1,1 99x18
-        correspondancePanel 'correspondance panel' 0,81 1196x652
-          jswScrollPane 'scrollpane' 0,0 1196x552
-            JScrollPane 1,1 1194x550
-              JViewport 1,1 1192x548
-                jswTable 'correspondance table' 0,0 1192x548
-          jswHorizontalPanel 'fred' 0,552 1196x100
+        correspondancePanel 'correspondance panel' 0,142 1196x591
+          jswScrollPane 'scrollpane' 0,0 1196x491
+            JScrollPane 1,1 1194x489
+              JViewport 1,1 1192x487
+                jswTable 'correspondance table' 0,0 1192x487
+          jswHorizontalPanel 'fred' 0,491 1196x100
             jswDropPane 'HP:' 0,0 561x100
               JLabel 254,33 52x33
             jswButton 'note' 562,0 72x100

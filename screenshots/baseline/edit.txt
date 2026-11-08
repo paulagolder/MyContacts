@@ -100,26 +100,52 @@ JPanel 0,0 1200x900
           jswHorizontalPanel 'HP:' 1005,5 186x40
             jswButton 'CREATE NEW ATTRIBUTE' 5,5 176x30
               JButton 0,0 176x30
-        jswVerticalPanel 'LinkTo' 0,210 65x29
-          jswLabel 'ex-Related' 0,0 65x20
-            JLabel 1,1 63x18
-          jswTable 'related' 0,20 4x4
-        jswVerticalPanel 'LinkTo' 0,239 85x29
-          jswLabel 'ex-MemberOf' 0,0 85x20
-            JLabel 1,1 83x18
-          jswTable 'memberof' 0,20 4x4
-        jswHorizontalPanel 'newmember' 0,268 1196x40
+        jswVerticalPanel 'LinkTo' 0,210 300x61
+          jswLabel 'Related to' 0,0 63x20
+            JLabel 1,1 61x18
+          jswTable 'related' 0,20 300x36
+            jswCell 'acell' 2,1 100x32
+              jswLabel 'Smith  Alice' 3,0 96x31
+                JLabel 1,1 94x29
+            jswCell 'acell' 100,1 46x32
+              jswLabel 'friend' 3,0 42x31
+                JLabel 1,1 40x29
+            jswCell 'acell' 144,1 156x32
+              jswHorizontalPanel 'HP:' 3,0 152x31
+                jswButton 'VIEW' 0,0 72x31
+                  JButton 0,0 72x30
+                jswButton 'EDIT ME' 73,0 79x31
+                  JButton 0,0 79x30
+        jswVerticalPanel 'title' 0,271 645x86
+          jswLabel 'Member Of, not yet reflected' 0,0 174x20
+            JLabel 1,1 172x18
+          jswLabel 'These contacts list this one as a member, but it does not say it belongs to them. REFLECT adds them to Member Of.' 0,20 645x20
+            JLabel 1,1 643x18
+          jswTable 'hasmember' 0,40 262x36
+            jswCell 'acell' 2,1 100x32
+              jswLabel 'Smith  Alice' 3,0 96x31
+                JLabel 1,1 94x29
+            jswCell 'acell' 100,1 6x32
+              jswLabel '' 3,0 2x31
+                JLabel 1,1 0x29
+            jswCell 'acell' 104,1 158x32
+              jswHorizontalPanel 'HP:' 3,0 154x31
+                jswButton 'VIEW' 0,0 72x31
+                  JButton 0,0 72x30
+                jswButton 'REFLECT' 73,0 81x31
+                  JButton 0,0 81x30
+        jswHorizontalPanel 'newmember' 0,357 1196x40
           jswDropDownBox 'null' 0,0 120x40
             JComboBox 0,5 120x30
           jswDropDownContactBox 'dropdown' 121,0 300x40
-            JComboBox 5,5 300x30
-          jswTextBox 'attedit' 422,0 60x40
-            JTextField 1,1 100x38
-              jswTextPrompt 7,3 86x32
+            JComboBox 0,5 300x30
+          jswTextBox 'qualifier' 422,0 250x40
+            JTextField 1,6 248x28
+              jswTextPrompt 7,3 234x22
           jswHorizontalPanel 'HP:' 1080,0 116x40
             jswButton 'ADD AS LINK' 5,5 106x30
               JButton 0,0 106x30
-        jswHorizontalPanel 'HP:' 0,308 1196x40
+        jswHorizontalPanel 'HP:' 0,397 1196x40
           jswDropDownBox 'Select Group' 0,0 100x40
             JComboBox 0,5 100x30
           jswHorizontalPanel 'HP:' 1000,0 196x40
