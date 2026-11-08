@@ -151,8 +151,10 @@ public class mcLetter
 		}
 	}
 
+	// the letter templates in the settings folder, read the first time they are wanted
 	public static Vector<String> getTemplateList()
 	{
+		if (templates == null) getTemplates(mcSettings.folder());
 		return templates;
 	}
 

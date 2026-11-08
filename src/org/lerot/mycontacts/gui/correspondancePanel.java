@@ -371,7 +371,7 @@ public class correspondancePanel extends jswVerticalPanel implements ActionListe
         boolean made = !directory.exists() && directory.mkdirs();
         fc.setCurrentDirectory(directory);
         int returnVal = fc.showSaveDialog(this);
-        if (returnVal != JFileChooser.APPROVE_OPTION && made) browsePanel.removeEmptyFolders(directory);
+        if (returnVal != JFileChooser.APPROVE_OPTION && made) addressDialog.removeEmptyFolders(directory);
         return returnVal;
     }
 

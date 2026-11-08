@@ -65,6 +65,17 @@ public class mcSettings
 		return correspondenceFolder() + "/AllVcards";
 	}
 
+	// the folders for the whole program (MyContacts.docsfolder and letterfolder),
+	// and the shared ones made if missing; contact folders are made when needed
+	public static void setUpFolders()
+	{
+		MyContacts.docsfolder = correspondenceFolder();
+		MyContacts.letterfolder = labelsFolder();
+		for (String dir : new String[] { labelsFolder(), vcardsFolder() })
+			if (!new File(dir).isDirectory() && !new File(dir).mkdirs())
+				System.err.println("Cannot create folder " + dir);
+	}
+
 	// a contact's name with no spaces or punctuation, e.g. GolderPaulRandRachel
 	public static String fileName(mcContact contact)
 	{

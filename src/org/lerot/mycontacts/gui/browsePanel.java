@@ -69,43 +69,15 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 		} else if (action.startsWith("USE:"))
 		{
 			System.out.println(" use address " + selcontact.getTID());
-			String address = selcontact.makeBlockAddress("\n", true);
-
-			String[] options = new String[] { "Letter", "Label", "Copy",
-					"Cancel" };
-			TextTransfer textTransfer = new TextTransfer();
-			textTransfer.setClipboardContents(address);
-			// the letter template is chosen here too, so Letter goes straight to the file name
-			jswDropDownBox templatelist = new jswDropDownBox((ActionListener)this,"template");
-			for (String text : mcLetter.getTemplateList())
-			{
-				templatelist.addItem(text);
-			}
-			templatelist.setStyleAttribute("mywidth", 300);
-			templatelist.applyStyle();
-			jswHorizontalPanel templatebar = new jswHorizontalPanel();
-			templatebar.add(new jswLabel("Letter template"));
-			templatebar.add(templatelist);
-			Object[] message = new Object[] { "Use this address\n" + address, templatebar };
-			int n = JOptionPane.showOptionDialog(this,
-					message, "Address",
-					JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
-					options, options[0]);
-			System.out.println("action is " + n);
-			if (n != 3)
-			{
-				if (n == 1)
-				{
-					printlabel(address);
-				} else if (n == 0)
-				{
-					printletter(selcontact, address, templatelist.getSelectedValue());
-				} else if (n == 2)
-				{
-					textTransfer.setClipboardContents(address);
-				}
-			}
-
+			addressDialog.show(this, selcontact, selcontact.makeBlockAddress("\n", true));
+		} else if (action.startsWith("USEGROUP:"))
+		{
+			// a member without an address of their own, at the group's address
+			mcContact group = MyContacts.selbox.getAllcontactlist().FindbystrID(action.substring(9));
+			String address = groupAddress(group);
+			if (address != null)
+				addressDialog.show(this, selcontact,
+						selcontact.getName("Title Fn Mn Sn ").trim() + "\n" + address);
 		} else if (action.startsWith("MAKEGROUPEMAIL"))
 		{
 			String sendermail = "paul.a.golder@lerot.org";
@@ -158,9 +130,6 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 			String info = selatt.getValue();
 			TextTransfer textTransfer = new TextTransfer();
 			textTransfer.setClipboardContents(info);
-		} else if (action.equalsIgnoreCase("template"))
-		{
-			// a letter template picked in the address box; read when Letter is pressed
 		} else
 		{
 			System.out
@@ -414,6 +383,16 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 
 
 
+	// a group's address, one line per row without the group's name, or null
+	private static String groupAddress(mcContact group)
+	{
+		if (group == null) return null;
+		mcAttribute address = group.getAttributebyKey("address");
+		if (address == null || address.isEmpty()) return null;
+		return ((mcAddressDataType) address.getDataType())
+				.getBlockFormattedValue(address.getValue(), "\n", true);
+	}
+
 	private jswVerticalPanel makeLinkToPanel(mcAttributes contacts,String selector, String title)
 	{
 		jswVerticalPanel vpanel = new jswVerticalPanel("LinkTo",false,false);
@@ -431,7 +410,14 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 			jswButton viewcontact = new jswButton(this, "VIEW",
 					"VIEW:" + linkedcontact.getValue());
 			memberpanel.addCell(linkedcontact.getQualifier(), row, 1);
-			memberpanel.addCell(" ", row, 2);
+			// a member with no address of their own can use the group's
+			if (selector.equals("memberof") && selcontact.getAttributebyKey("address") == null
+					&& groupAddress(MyContacts.selbox.getAllcontactlist()
+							.FindbystrID(linkedcontact.getValue())) != null)
+				memberpanel.addCell(new jswButton(this, "USE",
+						"USEGROUP:" + linkedcontact.getValue()), row, 2);
+			else
+				memberpanel.addCell(" ", row, 2);
 			memberpanel.addCell(viewcontact, row, 3);
 			row++;
 		}
@@ -479,164 +465,6 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 			row++;
 		}
 		return memberpanel;
-	}
-
-	private void printlabel(String address)
-	{
-
-		JFileChooser fc = new JFileChooser(MyContacts.letterfolder);
-		fc.setDialogTitle("Specify a file to save label");
-		String labelname = mcLetter.makeFileName(selcontact);
-		fc.setSelectedFile(
-				new File(MyContacts.letterfolder + "/" + labelname + ".pdf"));
-		;
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("PDF",
-				"pdf");
-		fc.setFileFilter(filter);
-		;
-		int returnVal = fc.showSaveDialog(this);
-
-		if (returnVal == JFileChooser.APPROVE_OPTION)
-		{
-			mcContacts thiscontactlist = new mcContacts();
-			// String address = selcontact.makeBlockAddress("\n");
-			thiscontactlist.put(selcontact);
-			File fileToSave = fc.getSelectedFile();
-			String filepath = fileToSave.getPath();
-			File afile = new File(filepath);
-			afile.getAbsoluteFile().getParentFile().mkdirs();
-			jswVerticalPanel panel = new jswVerticalPanel("options",false,false);
-			jswOptionset options = new jswOptionset(this,"options",false,false);
-			options.addNewOption("OK");
-			options.addNewOption("Cancel");
-
-			jswTextArea addressarea = new jswTextArea("address", true);
-			addressarea.setText(address);
-			jswDropDownBox pagelayout = new jswDropDownBox(this,"Layout");
-			for (Entry<String, Map<String, String>> entry : MyContacts.labeltemplates
-					.entrySet())
-			{
-				pagelayout.addItem(entry.getKey());
-			}
-			jswThumbwheel startpos = new jswThumbwheel(this,"Starting Position", 1,
-					10);
-			startpos.setValue(1);
-			pagelayout.setPreferredSize(new Dimension(100, 50));
-			panel.add(new jswLabel("Address"));
-			panel.add(addressarea);
-			panel.add(startpos);
-			panel.add(pagelayout);
-			JDialog dialog = null;
-			JOptionPane optionPane = new JOptionPane();
-			optionPane.setMessage("");
-			optionPane.setMessageType(JOptionPane.PLAIN_MESSAGE);
-			optionPane.setOptionType(JOptionPane.OK_CANCEL_OPTION);
-			optionPane.add(panel);
-			dialog = optionPane.createDialog(null, "Print Label");
-			dialog.setVisible(true);
-			int pane = (Integer) optionPane.getValue();
-			if (pane == 0)
-			{
-				int sp = startpos.getValue();
-				address = addressarea.getText();
-				String sellayout = pagelayout.getSelectedValue();
-				System.out.println("selectedlayout " + sellayout);
-				mcPDF labelpages = new mcPDF(afile, "Lerot Contacts Labels");
-				labelpages.setLayout(sellayout);
-				int ncount = labelpages.makeLabelPage(address, sp);
-			}
-
-		} else
-		{
-			System.out.println("Open command cancelled by user.");
-		}
-	}
-
-	private void printletter(mcContact selcontact, String address, String template)
-	{
-		if (template == null || template.isBlank())
-		{
-			JOptionPane.showMessageDialog(this, "There are no letter templates to choose from.",
-					"Letter", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		// the contact's folder is made for the dialog, and removed again if nothing is saved
-		File contactfolder = new File(mcSettings.contactFolder(selcontact));
-		boolean madefolder = !contactfolder.exists() && contactfolder.mkdirs();
-		JFileChooser fc = new JFileChooser(contactfolder);
-		fc.setDialogTitle("Specify a file to save Letter");
-		String lettername = mcLetter.makeFileName(selcontact);
-		fc.setSelectedFile(new File(contactfolder, lettername + ".odt"));
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("ODT",
-				"odt");
-		fc.setFileFilter(filter);
-		int returnVal = fc.showSaveDialog(this);
-		boolean written = false;
-
-		if (returnVal == JFileChooser.APPROVE_OPTION)
-		{
-			{
-				File fileToSave = fc.getSelectedFile();
-				String filepath = fileToSave.getPath();
-				lettername = fileToSave.getName();
-				// MyContacts.docsfolder = fileToSave.getParent();
-				try
-				{
-					// String address = selcontact.makeBlockAddress("\n");
-					String salutation = mcLetter.getSalutation(selcontact);
-					String printdate = mcDateDataType.getNow("dd MMM yyyy");
-					String filedate = mcDateDataType.getNow("yyyy-MM-dd");
-					mcLetter letter = new mcLetter();
-					letter.setOutputFileName(filepath);
-					letter.setTemplateFileName(
-							MyContacts.topgui.dotcontacts + template);
-					letter.setVariable("address", address);
-					letter.setVariable("salutation", salutation);
-					letter.setVariable("printdate", printdate);
-					written = letter.printLetter();
-					if (written) offerToOpen(fileToSave);
-					else JOptionPane.showMessageDialog(this,
-							"The letter could not be written to\n" + filepath,
-							"Letter", JOptionPane.ERROR_MESSAGE);
-
-				} catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-		} else
-		{
-			System.out.println("Open command cancelled by user.");
-		}
-		if (!written && madefolder) removeEmptyFolders(contactfolder);
-	}
-
-	// says where the letter went, and opens it in the default word processor
-	private void offerToOpen(File letter)
-	{
-		int n = JOptionPane.showConfirmDialog(this,
-				"Letter saved as\n" + letter.getPath() + "\n\nOpen it now?",
-				"Letter", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-		if (n != JOptionPane.YES_OPTION) return;
-		try
-		{
-			Desktop.getDesktop().open(letter);
-		} catch (Exception e)
-		{
-			JOptionPane.showMessageDialog(this,
-					"Could not open the letter: " + e.getMessage(),
-					"Letter", JOptionPane.ERROR_MESSAGE);
-		}
-	}
-
-	// removes a folder made for a save dialog, and its parents up to the correspondence
-	// folder, while they are empty
-	static void removeEmptyFolders(File folder)
-	{
-		File top = new File(MyContacts.docsfolder).getAbsoluteFile();
-		File f = folder.getAbsoluteFile();
-		while (f != null && !f.equals(top) && f.delete())
-			f = f.getParentFile();
 	}
 
 	private void printVcard()

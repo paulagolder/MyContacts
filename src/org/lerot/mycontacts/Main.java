@@ -33,6 +33,7 @@ public class Main
 			else if (args[i].equals("--edit") && i + 1 < args.length) edit = Integer.parseInt(args[++i]);
 		}
 		mcStarter.setUp();
+		mcSettings.setUpFolders();
 		// one connection, shared by the Contacts viewer and the full window
 		mcDataObject.useDataSource(new mcDataSource(mcSettings.databasePath()));
 		setupLookAndFeel();

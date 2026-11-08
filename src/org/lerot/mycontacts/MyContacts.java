@@ -101,11 +101,7 @@ public class MyContacts extends JFrame implements ActionListener
         String home = userhome.replace('\\', '/');
         dotcontacts = mcSettings.folder();
         desktop = home + "/Desktop/";
-        docsfolder = mcSettings.correspondenceFolder();
-        letterfolder = mcSettings.labelsFolder();
-        for (String dir : new String[] { letterfolder, mcSettings.vcardsFolder() })
-            if (!new File(dir).isDirectory() && !new File(dir).mkdirs())
-                System.err.println("Cannot create folder " + dir);
+        mcSettings.setUpFolders();
         java.net.URL jstatIconURL = MyContacts.class.getResource(ICON);
 
         if (jstatIconURL != null)
@@ -490,7 +486,7 @@ public class MyContacts extends JFrame implements ActionListener
         mcAttributeTypes.loadAttributeTypes();
         selbox.setBrowseFilter("all");
         mode = "BROWSE";
-        mcLetter.getTemplates(dotcontacts);
+        mcLetter.getTemplates(mcSettings.folder());
         labeltemplates = mcPDF.readTemplates();
     }
 

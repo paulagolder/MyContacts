@@ -5,6 +5,8 @@ import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.swing.MigLayout;
 import org.lerot.mycontacts.Main;
 import org.lerot.mycontacts.MyContacts;
+import org.lerot.mycontacts.gui.addressDialog;
+import org.lerot.mycontacts.mcContact;
 import org.lerot.mycontacts.mcDataObject;
 import org.lerot.mywidgets.jswScale;
 
@@ -234,8 +236,13 @@ public class MyContactsLite extends JFrame
 		tiles.removeAll();
 		tiles.add(textTile(card.name(), "h3"));
 		if (card.address() != null)
-			tiles.add(card.addressFrom() == null ? textTile(card.address(), null)
-					: noted(textTile(card.address(), null), "from " + card.addressFrom()));
+		{
+			Tile address = textTile(card.address(), null);
+			// the envelope opens the full window's "Use this address" box
+			address.add(iconButton("envelope.svg", "Write a letter or print a label",
+					() -> useAddress(card)), "cell 1 0, aligny top");
+			tiles.add(card.addressFrom() == null ? address : noted(address, "from " + card.addressFrom()));
+		}
 		addTile(card.phone());
 		addTile(card.mobile());
 		if (card.email() != null) tiles.add(emailTile(card.email()));
@@ -252,6 +259,27 @@ public class MyContactsLite extends JFrame
 		tiles.repaint();
 		pages.show(content, "card");
 		SwingUtilities.invokeLater(() -> tiles.scrollRectToVisible(new Rectangle(0, 0, 1, 1)));
+	}
+
+	// a letter, label or copy of the address, with the name above it; a
+	// borrowed group address keeps the contact's own name
+	private void useAddress(ContactCard card)
+	{
+		mcContact contact = mcContact.getContact(String.valueOf(card.id()));
+		if (contact == null) return;
+		String address = card.addressFrom() == null ? contact.makeBlockAddress("\n", true)
+				: card.name() + "\n" + card.address();
+		addressDialog.show(this, contact, address);
+	}
+
+	private static JButton iconButton(String icon, String tip, Runnable action)
+	{
+		JButton button = new JButton(icon(icon, 16));
+		button.putClientProperty("JButton.buttonType", "toolBarButton");
+		button.setToolTipText(tip);
+		button.setFocusable(false);
+		button.addActionListener(e -> action.run());
+		return button;
 	}
 
 	private void addTile(String text)
