@@ -10,6 +10,7 @@ import org.lerot.mywidgets.jswHorizontalPanel;
 import org.lerot.mywidgets.jswScale;
 import org.lerot.mywidgets.jswStyle;
 import org.lerot.mywidgets.jswStyles;
+import org.lerot.mywidgets.jswTheme;
 
 import javax.imageio.ImageIO;
 import javax.mail.Address;
@@ -74,8 +75,8 @@ public class jswDropPane extends jswHorizontalPanel
         //	doStyling(style);
         direction = adirection;
         setLayout(new GridBagLayout());
-        message = new JLabel(direction);
-        message.setFont(message.getFont().deriveFont(Font.BOLD, (float) jswScale.px(24)));
+        message = new JLabel("Drop " + direction + " letters here");
+        message.setForeground(Color.decode(jswTheme.MUTED));
         add(message);
 
     }

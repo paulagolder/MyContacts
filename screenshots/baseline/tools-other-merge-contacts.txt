@@ -22,13 +22,13 @@ JPanel 0,0 1200x900
                   jswHorizontalPanel 'HP:' 0,0 113x30
                     jswLabel ' Merge Contacts ' 5,5 103x20
                       JLabel 1,1 101x18
-                  jswHorizontalPanel 'HP:' 0,30 83x40
-                    jswButton 'MERGE' 5,5 73x30
-                      JButton 0,0 73x30
-                  jswTable 'contactsfound' 0,70 171x31
-                    jswCell 'acell' 2,1 169x27
-                      jswLabel ' no contact selected ' 3,0 165x26
-                        JLabel 1,1 163x24
-                  jswHorizontalPanel 'HP:' 0,101 181x30
+                  jswHorizontalPanel 'HP:' 0,30 82x40
+                    jswButton 'MERGE' 5,5 72x30
+                      JButton 0,0 72x30
+                  jswTable 'contactsfound' 0,70 143x26
+                    jswCell 'acell' 2,1 141x22
+                      jswLabel ' no contact selected ' 3,0 138x21
+                        JLabel 1,1 136x19
+                  jswHorizontalPanel 'HP:' 0,96 181x30
                     jswLabel ' Selecting contacts to merge' 5,5 171x20
                       JLabel 1,1 169x18

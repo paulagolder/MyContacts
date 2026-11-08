@@ -387,7 +387,7 @@ public class correspondancePanel extends jswVerticalPanel implements ActionListe
         tablestyle.putAttribute("borderColor", jswTheme.BORDER);
 
         jswStyle cellstyle = tablestyles.makeStyle("xcell");
-        cellstyle.putAttribute("foregroundColor", "Blue");
+        cellstyle.putAttribute("foregroundColor", jswTheme.ACCENT);
         cellstyle.putAttribute("borderWidth", "1");
         cellstyle.putAttribute("borderColor", jswTheme.CELLBORDER);
         cellstyle.setHorizontalAlign("LEFT");

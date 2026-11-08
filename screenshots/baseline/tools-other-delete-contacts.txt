@@ -22,11 +22,11 @@ JPanel 0,0 1200x900
                   jswHorizontalPanel 'HP:' 0,0 112x30
                     jswLabel ' Delete Contacts ' 5,5 102x20
                       JLabel 1,1 100x18
-                  jswHorizontalPanel 'HP:' 0,30 303x40
-                    jswButton 'DELETE SELECTED' 5,5 136x30
+                  jswHorizontalPanel 'HP:' 0,30 267x40
+                    jswButton 'DELETE SELECTED' 5,5 120x30
+                      JButton 0,0 120x30
+                    jswButton 'DELETE UNSELECTED' 126,5 136x30
                       JButton 0,0 136x30
-                    jswButton 'DELETE UNSELECTED' 142,5 156x30
-                      JButton 0,0 156x30
                   jswTable 'contactsfound' 0,70 4x4
                   jswHorizontalPanel 'HP:' 0,74 179x30
                     jswLabel ' Selecting contacts to delete' 5,5 169x20

@@ -42,45 +42,45 @@ JPanel 0,0 1200x863
             JLabel 1,1 66x28
           jswLabel ' ' 69,0 111x30
             JLabel 1,1 109x28
-          jswButton 'VCard' 1124,0 72x30
-            JButton 0,0 72x30
-        jswTable 'attributes' 0,30 1196x31
-          jswCell 'acell' 2,1 41x27
-            jswLabel 'tags' 3,0 37x26
-              JLabel 1,1 35x24
-          jswCell 'acell' 41,1 1151x27
-            jswLabel 'work; ' 3,0 1147x26
-              JLabel 1,1 1145x24
-          jswCell 'acell' 1190,1 6x27
-            jswLabel '' 3,0 2x26
-              JLabel 1,1 0x24
-        jswVerticalPanel 'LinkTo' 0,61 222x61
+          jswButton 'Export vCard' 1088,0 108x30
+            JButton 0,0 108x30
+        jswTable 'attributes' 0,30 1196x26
+          jswCell 'acell' 2,1 34x22
+            jswLabel 'tags' 3,0 31x21
+              JLabel 1,1 29x19
+          jswCell 'acell' 34,1 1158x22
+            jswLabel 'work; ' 3,0 1155x21
+              JLabel 1,1 1153x19
+          jswCell 'acell' 1190,1 6x22
+            jswLabel '' 3,0 3x21
+              JLabel 1,1 1x19
+        jswVerticalPanel 'LinkTo' 0,56 205x61
           jswLabel 'Related to' 0,0 63x20
             JLabel 1,1 61x18
-          jswTable 'related' 0,20 222x36
-            jswCell 'acell' 2,1 100x32
-              jswLabel 'Smith  Alice' 3,0 96x31
-                JLabel 1,1 94x29
-            jswCell 'acell' 100,1 41x32
-              jswLabel 'friend' 3,0 37x31
-                JLabel 1,1 35x29
-            jswCell 'acell' 139,1 9x32
-              jswLabel ' ' 3,0 5x31
-                JLabel 1,1 3x29
-            jswCell 'acell' 146,1 76x32
+          jswTable 'related' 0,20 205x36
+            jswCell 'acell' 2,1 83x32
+              jswLabel 'Smith  Alice' 3,0 80x31
+                JLabel 1,1 78x29
+            jswCell 'acell' 83,1 41x32
+              jswLabel 'friend' 3,0 38x31
+                JLabel 1,1 36x29
+            jswCell 'acell' 122,1 9x32
+              jswLabel ' ' 3,0 6x31
+                JLabel 1,1 4x29
+            jswCell 'acell' 129,1 76x32
               jswButton 'VIEW' 3,0 72x30
                 JButton 0,0 72x30
-        jswLabel 'Correspondance' 0,122 101x20
+        jswLabel 'Correspondance' 0,117 101x20
           JLabel 1,1 99x18
-        correspondancePanel 'correspondance panel' 0,142 1196x591
-          jswScrollPane 'scrollpane' 0,0 1196x491
-            JScrollPane 1,1 1194x489
-              JViewport 1,1 1192x487
-                jswTable 'correspondance table' 0,0 1192x487
-          jswHorizontalPanel 'fred' 0,491 1196x100
+        correspondancePanel 'correspondance panel' 0,137 1196x596
+          jswScrollPane 'scrollpane' 0,0 1196x496
+            JScrollPane 1,1 1194x494
+              JViewport 1,1 1192x492
+                jswTable 'correspondance table' 0,0 1192x492
+          jswHorizontalPanel 'fred' 0,496 1196x100
             jswDropPane 'HP:' 0,0 561x100
-              JLabel 254,33 52x33
+              JLabel 219,41 123x17
             jswButton 'note' 562,0 72x100
               JButton 6,35 72x30
             jswDropPane 'HP:' 635,0 561x100
-              JLabel 230,33 101x33
+              JLabel 207,41 147x17

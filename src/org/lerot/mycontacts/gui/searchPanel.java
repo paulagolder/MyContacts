@@ -234,7 +234,7 @@ String action = cmd;
         colstyle.setHorizontalAlign("RIGHT");
         jswStyle col0style = tablestyles.makeStyle("col_0");
         col0style.putAttribute("fontStyle", Font.BOLD);
-        col0style.putAttribute("fontSize", jswTheme.HEADING);
+        col0style.putAttribute("fontSize", jswTheme.TEXT);
         col0style.putAttribute("minwidth", true);
         col0style.setHorizontalAlign("LEFT");
 

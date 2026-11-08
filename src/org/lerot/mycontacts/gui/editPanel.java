@@ -80,7 +80,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         colstyle.setHorizontalAlign("RIGHT");
         jswStyle col0style = tablestyles.makeStyle("col_0");
         col0style.putAttribute("fontStyle", Font.BOLD);
-        col0style.putAttribute("fontSize", jswTheme.HEADING);
+        col0style.putAttribute("fontSize", jswTheme.TEXT);
         col0style.putAttribute("minwidth", true);
         col0style.setHorizontalAlign("LEFT");
         jswStyle col1style = tablestyles.makeStyle("col_1");
@@ -547,7 +547,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
     {
         jswStyles tablestyles = jswStyles.clone("ArrayTableStyles", MyContacts.getTableStyles());
         jswStyle cellstyle = tablestyles.makeStyle("cell");
-        cellstyle.putAttribute("foregroundColor", "Blue");
+        cellstyle.putAttribute("foregroundColor", jswTheme.ACCENT);
         cellstyle.putAttribute("borderWidth", "1");
         cellstyle.putAttribute("borderColor", jswTheme.CELLBORDER);
         cellstyle.setHorizontalAlign("LEFT");
@@ -640,7 +640,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                             jswHorizontalPanel buttonpanel = new jswHorizontalPanel();
                             jswButton viewcontact2 = new jswButton(this, "VIEW", "VIEW:" + linkedcontact.getIDstr());
                             buttonpanel.add(viewcontact2);
-                            jswButton disconnect = new jswButton(this, "EDIT ME", "EDITATTRIBUTE:" + anattribute.getKey());
+                            jswButton disconnect = new jswButton(this, "Edit", "EDITATTRIBUTE:" + anattribute.getKey());
                             buttonpanel.add(disconnect);
                             memberpanel.addCell(buttonpanel, row, 2);
                         }
@@ -717,7 +717,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
 
                 jswButton viewcontact2 = new jswButton(this, "VIEW", "VIEW:" + value);
                 buttonpanel.add(viewcontact2);
-                jswButton disconnect = new jswButton(this, "EDIT ME", "EDITATTRIBUTE:" + anattribute.getKey());
+                jswButton disconnect = new jswButton(this, "Edit", "EDITATTRIBUTE:" + anattribute.getKey());
                 buttonpanel.add(disconnect);
                 memberpanel.addCell(buttonpanel, row, 2);
             }
@@ -783,7 +783,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         tablestyle.putAttribute("borderColor", jswTheme.BORDER);
 
         jswStyle cellstyle = tablestyles.makeStyle("cell");
-        cellstyle.putAttribute("foregroundColor", "Blue");
+        cellstyle.putAttribute("foregroundColor", jswTheme.ACCENT);
         cellstyle.putAttribute("borderWidth", "1");
         cellstyle.putAttribute("borderColor", jswTheme.CELLBORDER);
         cellstyle.setHorizontalAlign("LEFT");
@@ -791,7 +791,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
 
         jswStyle cellcstyle = tablestyles.makeStyle("cellcontent");
         // cellcstyle.putAttribute("backgroundColor", "xtransparent");
-        cellcstyle.putAttribute("foregroundColor", "Blue");
+        cellcstyle.putAttribute("foregroundColor", jswTheme.ACCENT);
         cellcstyle.setHorizontalAlign("LEFT");
         cellcstyle.putAttribute("fontsize", jswTheme.TEXT);
 
@@ -901,9 +901,9 @@ public class editPanel extends jswVerticalPanel implements ActionListener
             idpanel3 = new jswLabel(" ");
             idbox.add(" ", idpanel3);
             if (acontact != null) idpanel3.setText(acontact.getTags());
-            jswButton idedit = new jswButton(this, "EDIT ME", "EDITID");
+            jswButton idedit = new jswButton(this, "Edit", "EDITID");
             idbox.add("RIGHT", idedit);
-            jswButton imvcard = new jswButton(this, "VCARD", "IMPORTVCARD");
+            jswButton imvcard = new jswButton(this, "Import vCard", "IMPORTVCARD");
             idbox.add("RIGHT", imvcard);
         }
 
@@ -1065,7 +1065,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                             attributepanel.addCell(new jswLabel(value), row, 2);
                         }
                         jswPanel buttonbox = new jswVerticalPanel("title", false, false);
-                        jswButton idedit = new jswButton(this, "EDIT ME", "EDITATTRIBUTE:" + attributekey);
+                        jswButton idedit = new jswButton(this, "Edit", "EDITATTRIBUTE:" + attributekey);
                         buttonbox.add(idedit);
                         // jswLabel imagesize = new jswLabel(
                         // " size=" + anattribute.getValue().length());
@@ -1091,14 +1091,14 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                         attributepanel.addCell(alabel2, " FILLW ", row, 2);
                     }
                     jswPanel buttonbox = new jswVerticalPanel("title", false, false);
-                    jswButton idedit = new jswButton(this, "EDIT ME.", "EDITATTRIBUTE:" + attributekey);
+                    jswButton idedit = new jswButton(this, "Edit", "EDITATTRIBUTE:" + attributekey);
                     buttonbox.add(idedit);
                     attributepanel.addCell(buttonbox, row, 3);
                 }
 
                 if (edit.equalsIgnoreCase(""))
                 {
-                    jswButton idedit = new jswButton(this, "EDIT ME..", "EDITATTRIBUTE:" + attributekey);
+                    jswButton idedit = new jswButton(this, "Edit", "EDITATTRIBUTE:" + attributekey);
                     attributepanel.addCell(idedit, row, 3);
                 } else if (edit == "editattribute")
                 {

@@ -30,22 +30,22 @@ JPanel 0,0 1200x900
                         jswTextPrompt 7,3 184x22
                     jswButton 'create empty' 279,5 109x30
                       JButton 0,0 109x30
-                  jswTable 'dbfound' 0,70 965x31
-                    jswCell 'acell' 2,1 86x27
-                      jswLabel 'test.sqlite' 3,0 82x26
-                        JLabel 1,1 80x24
-                    jswCell 'acell' 86,1 646x27
-                      jswLabel '/home/paul/Development/GitHubWorkspace/myContacts/build/screenshots/home/.mccontacts/test.sqlite' 3,0 642x26
-                        JLabel 1,1 640x24
-                    jswCell 'acell' 730,1 26x27
-                      jswLabel 'yes' 3,0 22x26
-                        JLabel 1,1 20x24
-                    jswCell 'acell' 754,1 13x27
-                      jswLabel '3' 3,0 9x26
-                        JLabel 1,1 7x24
-                    jswCell 'acell' 765,1 121x27
-                      jswLabel '2026-01-01 12:00:00' 3,0 117x26
-                        JLabel 1,1 115x24
-                    jswCell 'acell' 884,1 81x27
+                  jswTable 'dbfound' 0,70 951x28
+                    jswCell 'acell' 2,1 72x24
+                      jswLabel 'test.sqlite' 3,0 69x23
+                        JLabel 1,1 67x21
+                    jswCell 'acell' 72,1 646x24
+                      jswLabel '/home/paul/Development/GitHubWorkspace/myContacts/build/screenshots/home/.mccontacts/test.sqlite' 3,0 643x23
+                        JLabel 1,1 641x21
+                    jswCell 'acell' 716,1 26x24
+                      jswLabel 'yes' 3,0 23x23
+                        JLabel 1,1 21x21
+                    jswCell 'acell' 740,1 13x24
+                      jswLabel '3' 3,0 10x23
+                        JLabel 1,1 8x21
+                    jswCell 'acell' 751,1 121x24
+                      jswLabel '2026-01-01 12:00:00' 3,0 118x23
+                        JLabel 1,1 116x21
+                    jswCell 'acell' 870,1 81x24
                       jswOption 'select' 3,0 55x20
                         JRadioButton 0,0 55x20

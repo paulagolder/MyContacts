@@ -122,7 +122,7 @@ public class ImportEditPanel extends jswVerticalPanel implements ActionListener
 	{
 		jswStyles tablestyles = new jswStyles("edittable");
 		jswStyle cellstyle = tablestyles.makeStyle("cell");
-		cellstyle.putAttribute("foregroundColor", "Blue");
+		cellstyle.putAttribute("foregroundColor", jswTheme.ACCENT);
 		cellstyle.putAttribute("borderWidth", "1");
 		cellstyle.putAttribute("borderColor", jswTheme.CELLBORDER);
 		cellstyle.setHorizontalAlign("LEFT");
@@ -161,7 +161,7 @@ public class ImportEditPanel extends jswVerticalPanel implements ActionListener
 	{
 		jswStyles tablestyles = new jswStyles("fieldedit");
 		jswStyle cellstyle = tablestyles.makeStyle("cell");
-		cellstyle.putAttribute("foregroundColor", "Blue");
+		cellstyle.putAttribute("foregroundColor", jswTheme.ACCENT);
 		cellstyle.putAttribute("borderWidth", "1");
 		cellstyle.putAttribute("borderColor", jswTheme.CELLBORDER);
 		cellstyle.setHorizontalAlign("LEFT");

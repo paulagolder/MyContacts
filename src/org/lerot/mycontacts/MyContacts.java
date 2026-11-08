@@ -269,7 +269,7 @@ public class MyContacts extends JFrame implements ActionListener
 
         jswStyle mediumlabelStyle = panelstyles.makeStyle("mediumLabel");
         mediumlabelStyle.putAttribute("fontsize", jswTheme.TITLE);
-        mediumlabelStyle.putAttribute("foregroundColor", "Blue");
+        mediumlabelStyle.putAttribute("foregroundColor", "#2B2B2B");
 
         jswStyle jswButtonStyles = panelstyles.makeStyle("jswButton");
         jswButtonStyles.putAttribute("fontsize", jswTheme.TEXT);
@@ -337,7 +337,7 @@ public class MyContacts extends JFrame implements ActionListener
         colstyle.setHorizontalAlign("RIGHT");
         jswStyle col0style = tablestyles.makeStyle("col_0");
         col0style.putAttribute("fontStyle", Font.BOLD);
-        col0style.putAttribute("fontSize", jswTheme.HEADING);
+        col0style.putAttribute("fontSize", jswTheme.TEXT);
         col0style.putAttribute("minwidth", true);
         col0style.setHorizontalAlign("LEFT");
 

@@ -322,7 +322,7 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 			idpanel2.setText(selcontact.getName());
 			idpanel2.applyStyle(panelstyles.getStyle("mediumLabel"));
 			//idpanel2.applyStyle();
-			jswButton vcardexport = new jswButton(this, "VCard");
+			jswButton vcardexport = new jswButton(this, "Export vCard", "VCARD");
 			idbox.add("RIGHT", vcardexport);
 			selcontact.fillContact();
 			jswTable contactattributes = makeAttributePanel(selcontact, "B");
@@ -606,7 +606,7 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 		colstyle.setHorizontalAlign("RIGHT");
 		jswStyle col0style = tablestyles.makeStyle("col_0");
 		col0style.putAttribute("fontStyle", Font.BOLD);
-		col0style.putAttribute("fontSize", jswTheme.HEADING);
+		col0style.putAttribute("fontSize", jswTheme.TEXT);
 		col0style.putAttribute("minwidth", true);
 		col0style.setHorizontalAlign("LEFT");
 
