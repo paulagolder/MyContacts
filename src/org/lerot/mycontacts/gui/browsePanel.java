@@ -35,7 +35,7 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 	{
         super("browse",false,false);
 		this.setTrace(true);
-        vcarddirectory = MyContacts.topgui.desktop;
+        vcarddirectory = mcSettings.vcardsFolder();
 		jswStyles defaultstyles = jswStyles.getDefaultStyles();
 		tablestyles = StylesMakeAttributeTable();
 		tablestyles = searchTableStyles();
@@ -641,8 +641,7 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 
 	private void printVcard()
 	{
-		String name = selcontact.getName("sn fn");
-		name = name.replace(" ", "");
+		String name = mcSettings.fileName(selcontact);
 		String date = mcDateDataType.getNow("_yyyyMMdd");
 		String fname = vcarddirectory + "/" + name + date + ".vcf";
 		File vfile = new File(fname);

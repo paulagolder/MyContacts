@@ -103,8 +103,9 @@ public class MyContacts extends JFrame implements ActionListener
         desktop = home + "/Desktop/";
         docsfolder = mcSettings.correspondenceFolder();
         letterfolder = mcSettings.labelsFolder();
-        if (!new File(letterfolder).isDirectory() && !new File(letterfolder).mkdirs())
-            System.err.println("Cannot create labels folder " + letterfolder);
+        for (String dir : new String[] { letterfolder, mcSettings.vcardsFolder() })
+            if (!new File(dir).isDirectory() && !new File(dir).mkdirs())
+                System.err.println("Cannot create folder " + dir);
         java.net.URL jstatIconURL = MyContacts.class.getResource(ICON);
 
         if (jstatIconURL != null)

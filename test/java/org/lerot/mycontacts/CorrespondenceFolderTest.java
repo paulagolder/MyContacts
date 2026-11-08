@@ -31,4 +31,10 @@ class CorrespondenceFolderTest
 		assertTrue(mcSettings.labelsFolder().endsWith("/AllLabels"));
 		assertTrue(mcSettings.labelsFolder().startsWith(mcSettings.correspondenceFolder()));
 	}
+
+	@Test
+	void vcardsGoInAllVcards()
+	{
+		assertEquals(mcSettings.correspondenceFolder() + "/AllVcards", mcSettings.vcardsFolder());
+	}
 }

@@ -59,6 +59,12 @@ public class mcSettings
 		return correspondenceFolder() + "/AllLabels";
 	}
 
+	// exported vCards, next to the labels
+	public static String vcardsFolder()
+	{
+		return correspondenceFolder() + "/AllVcards";
+	}
+
 	// a contact's name with no spaces or punctuation, e.g. GolderPaulRandRachel
 	public static String fileName(mcContact contact)
 	{
