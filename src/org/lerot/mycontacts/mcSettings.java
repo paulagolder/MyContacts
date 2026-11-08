@@ -1,5 +1,6 @@
 package org.lerot.mycontacts;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,5 +41,35 @@ public class mcSettings
 	public static String databasePath()
 	{
 		return folder() + properties().getProperty("database", "mcdb.sqlite");
+	}
+
+	// letters, notes and labels, ~/Documents/MyCorrespondance unless properties.xml
+	// names another "correspondence" folder (relative to the home folder)
+	public static String correspondenceFolder()
+	{
+		String home = System.getProperty("user.home").replace('\\', '/');
+		String dir = properties().getProperty("correspondence", "Documents/MyCorrespondance");
+		if (!new File(dir).isAbsolute()) dir = home + "/" + dir;
+		return dir.replaceAll("/+$", "");
+	}
+
+	// all labels in one folder, named to sort above the contact folders
+	public static String labelsFolder()
+	{
+		return correspondenceFolder() + "/AllLabels";
+	}
+
+	// a contact's name with no spaces or punctuation, e.g. GolderPaulRandRachel
+	public static String fileName(mcContact contact)
+	{
+		String name = contact.getName("sn fn").replaceAll("[^\\p{L}\\p{N}_-]", "");
+		if (name.isEmpty()) name = "contact" + contact.getID();
+		return name;
+	}
+
+	// a contact's folder of letters and notes; it is made when the first one is saved
+	public static String contactFolder(mcContact contact)
+	{
+		return MyContacts.docsfolder + "/" + fileName(contact);
 	}
 }

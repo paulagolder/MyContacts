@@ -41,8 +41,8 @@ public class correspondancePanel extends jswVerticalPanel implements ActionListe
         super("correspondance panel", false, false);
         jswStyles cstyles = StylesMakeCorrespondence();
         this.selcontact = selcontact;
-        tidyTID = mcTIDDataType.toTidyStr(selcontact.getTID());
-        foldername = MyContacts.docsfolder + File.separator + tidyTID;
+        tidyTID = mcSettings.fileName(selcontact);
+        foldername = mcSettings.contactFolder(selcontact);
         notesfolder = foldername + File.separator + "notes";
         sentfolder = foldername + File.separator + "sent";
         receivedfolder = foldername + File.separator + "received";
@@ -126,7 +126,7 @@ public class correspondancePanel extends jswVerticalPanel implements ActionListe
     public Vector<mcCorrespondance> getCorrespondance()
     {
         letterlist = new Vector<mcCorrespondance>();
-        File folder = new File(MyContacts.docsfolder + "/" + tidyTID);
+        File folder = new File(foldername);
         if (!folder.exists())
         {
             System.out.println("folder:" + tidyTID + ": does not exist");
@@ -194,11 +194,9 @@ public class correspondancePanel extends jswVerticalPanel implements ActionListe
             {
                 String path;
                 if (aletter.getRole() == null)
-                    path = MyContacts.docsfolder + "/"
-                            + tidyTID + File.separator + aletter.getFilename();
+                    path = foldername + File.separator + aletter.getFilename();
                 else
-                    path = MyContacts.docsfolder + "/"
-                            + tidyTID + File.separator + aletter.getRole() + File.separator + aletter.getFilename();
+                    path = foldername + File.separator + aletter.getRole() + File.separator + aletter.getFilename();
                 System.out.println(" reading " + path);
                 File letter = new File(path);
                 boolean exists = letter.exists();
@@ -307,13 +305,7 @@ public class correspondancePanel extends jswVerticalPanel implements ActionListe
         FileNameExtensionFilter filter = new FileNameExtensionFilter("txt",
                 "txt");
         fc.setFileFilter(filter);
-        File directory = new File(newnote.getOutputFileDir());
-        if (!directory.exists())
-        {
-            directory.mkdir();
-        }
-        fc.setCurrentDirectory(directory);
-        int returnVal = fc.showSaveDialog(this);
+        int returnVal = showSaveDialogIn(fc, new File(newnote.getOutputFileDir()));
 
         if (returnVal == JFileChooser.APPROVE_OPTION)
         {
@@ -335,8 +327,7 @@ public class correspondancePanel extends jswVerticalPanel implements ActionListe
         JFileChooser fc = new JFileChooser();
         fc.setDialogTitle("Specify a file to save Note");
         String lettername = mcLetter.makeFileName(selcontact);
-        String nfilepath = MyContacts.docsfolder + "/" + mcTIDDataType.toTidyStr(selcontact.getTID()) + "/notes/"
-                + lettername + ".txt";
+        String nfilepath = foldername + "/notes/" + lettername + ".txt";
         File newfile = new File(nfilepath);
 
 
@@ -345,8 +336,7 @@ public class correspondancePanel extends jswVerticalPanel implements ActionListe
         FileNameExtensionFilter filter = new FileNameExtensionFilter("ODT",
                 "odt");
         fc.setFileFilter(filter);
-        fc.setCurrentDirectory(newfile);
-        int returnVal = fc.showSaveDialog(this);
+        int returnVal = showSaveDialogIn(fc, newfile.getParentFile());
 
         if (returnVal == JFileChooser.APPROVE_OPTION)
         {
@@ -374,6 +364,16 @@ public class correspondancePanel extends jswVerticalPanel implements ActionListe
         }
     }
 
+
+    // a save dialog in a contact's folder, which is only kept if something is saved in it
+    private int showSaveDialogIn(JFileChooser fc, File directory)
+    {
+        boolean made = !directory.exists() && directory.mkdirs();
+        fc.setCurrentDirectory(directory);
+        int returnVal = fc.showSaveDialog(this);
+        if (returnVal != JFileChooser.APPROVE_OPTION && made) browsePanel.removeEmptyFolders(directory);
+        return returnVal;
+    }
 
     private jswStyles StylesMakeCorrespondence()
     {

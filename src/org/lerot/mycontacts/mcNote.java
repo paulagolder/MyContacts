@@ -19,8 +19,7 @@ public class mcNote
         text = " Note re: "+contact.getName()+"\n";
         text +=" Date   : "+  mcDateDataType.getNow(" dd MM yyyy")+"\n\n";
         outputFileName = makeFileName(contact);
-        outputFileDir = MyContacts.docsfolder + File.separator
-                + mcTIDDataType.toTidyStr(contact.getTID())+ File.separator+"notes";
+        outputFileDir = mcSettings.contactFolder(contact) + File.separator + "notes";
     }
 
     public void addText(String intext)
@@ -30,10 +29,10 @@ public class mcNote
     }
 	public void printNote(String selfile)
 	{
-        File directory = new File(outputFileDir);
+        File directory = new File(selfile).getAbsoluteFile().getParentFile();
         if (!directory.exists())
         {
-            directory.mkdir();
+            directory.mkdirs();
         }
 		try
 		{
@@ -51,10 +50,7 @@ public class mcNote
 
 	public static String makeFileName(mcContact selcontact)
 	{
-		String name = selcontact.getName("sn fn");
-		name = name.replace(" ", "");
-		String date = mcDateDataType.getNow("_yyyyMMdd");
-		return name + date;
+		return mcSettings.fileName(selcontact) + mcDateDataType.getNow("_yyyyMMdd");
 	}
 	
 	public static String makeFileName(String name)

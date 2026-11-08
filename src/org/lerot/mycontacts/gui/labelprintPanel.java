@@ -69,7 +69,7 @@ public class labelprintPanel extends jswVerticalPanel implements ActionListener,
         selbutton = new jswButton(this, "Select");
         filebar.add(" LEFT ", selbutton);
         selectedfile = new jswTextBox(this, " ");
-        selectedfile.setText("Output File");
+        selectedfile.setText(MyContacts.letterfolder + "/" + mcLetter.makeFileName("Labels") + ".pdf");
         selectedfile.setEnabled(true);
         this.add(" ", filebar);
         filebar.add(" LEFT  ", selectedfile);
@@ -154,6 +154,7 @@ public class labelprintPanel extends jswVerticalPanel implements ActionListener,
             MyContacts.labeltemplates = mcPDF.readTemplates();
             String filename = selectedfile.getText();
             File afile = new File(filename);
+            afile.getAbsoluteFile().getParentFile().mkdirs();
             int sp = startpos.getValue();
             boolean showcountryselected = showcountry.isSelected();
             String pagelayout = layoutpanel.getSelectedValue();

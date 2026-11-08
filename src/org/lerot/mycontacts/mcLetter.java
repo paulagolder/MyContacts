@@ -47,7 +47,8 @@ public class mcLetter
 	private String outputFileName;
 	String templateFileName;
 
-	public void printLetter()
+	// true if the letter was written
+	public boolean printLetter()
 	{
 		File file1 = new File(templateFileName);
 		File file2 = new File(outputFileName);
@@ -55,9 +56,11 @@ public class mcLetter
 		{
 			readOdt(file1);
 			saveOdt(file2);
+			return true;
 		} catch (Exception e)
 		{
 			e.printStackTrace();
+			return false;
 		}
 	}
 
@@ -155,10 +158,7 @@ public class mcLetter
 
 	public static String makeFileName(mcContact selcontact)
 	{
-		String name = selcontact.getName("sn fn");
-		name = name.replace(" ", "");
-		String date = mcDateDataType.getNow("_yyyyMMdd");
-		return name + date;
+		return mcSettings.fileName(selcontact) + mcDateDataType.getNow("_yyyyMMdd");
 	}
 	
 	public static String makeFileName(String name)

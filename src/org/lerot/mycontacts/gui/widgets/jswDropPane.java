@@ -3,7 +3,7 @@ package org.lerot.mycontacts.gui.widgets;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import org.lerot.mycontacts.mcContact;
-import org.lerot.mycontacts.mcTIDDataType;
+import org.lerot.mycontacts.mcSettings;
 import org.lerot.mycontacts.mcUtilities;
 import org.lerot.mycontacts.MyContacts;
 import org.lerot.mywidgets.jswHorizontalPanel;
@@ -179,11 +179,11 @@ public class jswDropPane extends jswHorizontalPanel
                         }
                     } else
                     {
-                        File directory = new File(MyContacts.docsfolder + File.separator
-                                + mcTIDDataType.toTidyStr(selcontact.getTID())+File.separator+direction);
+                        File directory = new File(mcSettings.contactFolder(selcontact)
+                                + File.separator + direction);
                         if (!directory.exists())
                         {
-                            directory.mkdir();
+                            directory.mkdirs();
                         }
                         if (fobject instanceof java.nio.file.Path)
                         {
@@ -213,9 +213,7 @@ public class jswDropPane extends jswHorizontalPanel
                             }
                             System.out.println("lastModifiedTime..: " + lmtd);
 
-                            File dest = new File(MyContacts.docsfolder + File.separator
-                                    +  mcTIDDataType.toTidyStr(selcontact.getTID()) +File.separator+direction+ File.separator
-                                    + fobject.getFileName());
+                            File dest = new File(directory, fobject.getFileName().toString());
                             //     String status = direction;
                             try
                             {

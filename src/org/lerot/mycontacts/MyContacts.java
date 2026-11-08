@@ -78,7 +78,6 @@ public class MyContacts extends JFrame implements ActionListener
     public Properties props;
     public String propsfile;
     public String dbsource;
-    public String docs;
     public String budir;
     jswVerticalPanel bigpanel;
     jswPushButtonset buttonset;
@@ -101,16 +100,11 @@ public class MyContacts extends JFrame implements ActionListener
         os = System.getProperty("os.name");
         String home = userhome.replace('\\', '/');
         dotcontacts = mcSettings.folder();
-        if (os.startsWith("Windows"))
-        {
-            letterfolder = home + "/Documents/correspondance";
-            docsfolder = home + "/Documents/correspondance";
-        } else
-        {
-            desktop = home + "/Desktop/";
-            letterfolder = desktop + "Labels and Letters/";
-            docsfolder = home + "/Documents/correspondance";
-        }
+        desktop = home + "/Desktop/";
+        docsfolder = mcSettings.correspondenceFolder();
+        letterfolder = mcSettings.labelsFolder();
+        if (!new File(letterfolder).isDirectory() && !new File(letterfolder).mkdirs())
+            System.err.println("Cannot create labels folder " + letterfolder);
         java.net.URL jstatIconURL = MyContacts.class.getResource(ICON);
 
         if (jstatIconURL != null)
@@ -135,7 +129,6 @@ public class MyContacts extends JFrame implements ActionListener
         File budirfile = new File(budir);
         if (!budirfile.isDirectory() && !budirfile.mkdirs())
             System.err.println("Cannot create backup directory " + budir);
-        docs = props.getProperty("docs", "Documents/correspondance/");
         currentcon = new mcDataSource(dotcontacts + dbsource);
         templist = new mcContactSet();
         topgui = this;
@@ -576,11 +569,10 @@ public class MyContacts extends JFrame implements ActionListener
                 {
                     System.out.println("File dropped 487 ");
                     mcContact selcontact = MyContacts.selbox.getSelcontact();
-                    File directory = new File(MyContacts.docsfolder + File.separator
-                            + selcontact.getID());
+                    File directory = new File(mcSettings.contactFolder(selcontact));
                     if (!directory.exists())
                     {
-                        directory.mkdir();
+                        directory.mkdirs();
                     }
                     Transferable transfer = dtde.getTransferable();
                     if (transfer.isDataFlavorSupported(
@@ -596,9 +588,7 @@ public class MyContacts extends JFrame implements ActionListener
                             {
                                 // File dest = new
                                 // File(System.getProperty("user.home")+File.separator+"source.getName());"
-                                File dest = new File(MyContacts.docsfolder
-                                        + File.separator + selcontact.getID()
-                                        + File.separator + source.getName());
+                                File dest = new File(directory, source.getName());
 
                                 Files.copy(Paths.get(source.getAbsolutePath()),
                                         Paths.get(dest.getAbsolutePath()),

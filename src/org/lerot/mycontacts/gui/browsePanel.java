@@ -75,8 +75,20 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 					"Cancel" };
 			TextTransfer textTransfer = new TextTransfer();
 			textTransfer.setClipboardContents(address);
+			// the letter template is chosen here too, so Letter goes straight to the file name
+			jswDropDownBox templatelist = new jswDropDownBox((ActionListener)this,"template");
+			for (String text : mcLetter.getTemplateList())
+			{
+				templatelist.addItem(text);
+			}
+			templatelist.setStyleAttribute("mywidth", 300);
+			templatelist.applyStyle();
+			jswHorizontalPanel templatebar = new jswHorizontalPanel();
+			templatebar.add(new jswLabel("Letter template"));
+			templatebar.add(templatelist);
+			Object[] message = new Object[] { "Use this address\n" + address, templatebar };
 			int n = JOptionPane.showOptionDialog(this,
-					"Use this address\n" + address, "Address",
+					message, "Address",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
 					options, options[0]);
 			System.out.println("action is " + n);
@@ -87,7 +99,7 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 					printlabel(address);
 				} else if (n == 0)
 				{
-					printletter(selcontact, address);
+					printletter(selcontact, address, templatelist.getSelectedValue());
 				} else if (n == 2)
 				{
 					textTransfer.setClipboardContents(address);
@@ -146,6 +158,9 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 			String info = selatt.getValue();
 			TextTransfer textTransfer = new TextTransfer();
 			textTransfer.setClipboardContents(info);
+		} else if (action.equalsIgnoreCase("template"))
+		{
+			// a letter template picked in the address box; read when Letter is pressed
 		} else
 		{
 			System.out
@@ -489,6 +504,7 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 			File fileToSave = fc.getSelectedFile();
 			String filepath = fileToSave.getPath();
 			File afile = new File(filepath);
+			afile.getAbsoluteFile().getParentFile().mkdirs();
 			jswVerticalPanel panel = new jswVerticalPanel("options",false,false);
 			jswOptionset options = new jswOptionset(this,"options",false,false);
 			options.addNewOption("OK");
@@ -536,22 +552,29 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 		}
 	}
 
-	private void printletter(mcContact selcontact, String address)
+	private void printletter(mcContact selcontact, String address, String template)
 	{
-		JFileChooser fc = new JFileChooser();
+		if (template == null || template.isBlank())
+		{
+			JOptionPane.showMessageDialog(this, "There are no letter templates to choose from.",
+					"Letter", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		// the contact's folder is made for the dialog, and removed again if nothing is saved
+		File contactfolder = new File(mcSettings.contactFolder(selcontact));
+		boolean madefolder = !contactfolder.exists() && contactfolder.mkdirs();
+		JFileChooser fc = new JFileChooser(contactfolder);
 		fc.setDialogTitle("Specify a file to save Letter");
 		String lettername = mcLetter.makeFileName(selcontact);
-		fc.setSelectedFile(new File(MyContacts.docsfolder + "/" + selcontact.getCID()
-				+ "/" + lettername + ".odt"));
+		fc.setSelectedFile(new File(contactfolder, lettername + ".odt"));
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("ODT",
 				"odt");
 		fc.setFileFilter(filter);
 		int returnVal = fc.showSaveDialog(this);
+		boolean written = false;
 
 		if (returnVal == JFileChooser.APPROVE_OPTION)
 		{
-			String template = templateselector();
-			if (template != null)
 			{
 				File fileToSave = fc.getSelectedFile();
 				String filepath = fileToSave.getPath();
@@ -570,7 +593,11 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 					letter.setVariable("address", address);
 					letter.setVariable("salutation", salutation);
 					letter.setVariable("printdate", printdate);
-					letter.printLetter();
+					written = letter.printLetter();
+					if (written) offerToOpen(fileToSave);
+					else JOptionPane.showMessageDialog(this,
+							"The letter could not be written to\n" + filepath,
+							"Letter", JOptionPane.ERROR_MESSAGE);
 
 				} catch (Exception e)
 				{
@@ -581,6 +608,35 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 		{
 			System.out.println("Open command cancelled by user.");
 		}
+		if (!written && madefolder) removeEmptyFolders(contactfolder);
+	}
+
+	// says where the letter went, and opens it in the default word processor
+	private void offerToOpen(File letter)
+	{
+		int n = JOptionPane.showConfirmDialog(this,
+				"Letter saved as\n" + letter.getPath() + "\n\nOpen it now?",
+				"Letter", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+		if (n != JOptionPane.YES_OPTION) return;
+		try
+		{
+			Desktop.getDesktop().open(letter);
+		} catch (Exception e)
+		{
+			JOptionPane.showMessageDialog(this,
+					"Could not open the letter: " + e.getMessage(),
+					"Letter", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	// removes a folder made for a save dialog, and its parents up to the correspondence
+	// folder, while they are empty
+	static void removeEmptyFolders(File folder)
+	{
+		File top = new File(MyContacts.docsfolder).getAbsoluteFile();
+		File f = folder.getAbsoluteFile();
+		while (f != null && !f.equals(top) && f.delete())
+			f = f.getParentFile();
 	}
 
 	private void printVcard()
@@ -694,28 +750,6 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 		col3style.putAttribute("minwidth", "true");
 
 		return tablestyles;
-	}
-
-	String templateselector()
-	{
-		jswDropDownBox templatelist = new jswDropDownBox((ActionListener)this,"template");
-		for (String text : mcLetter.getTemplateList())
-		{
-			templatelist.addItem(text);
-		}
-		JDialog dialog = null;
-		JOptionPane optionPane = new JOptionPane();
-		optionPane.setMessage("");
-		optionPane.setMessageType(JOptionPane.PLAIN_MESSAGE);
-		optionPane.setOptionType(JOptionPane.OK_CANCEL_OPTION);
-		optionPane.add(templatelist);
-		dialog = optionPane.createDialog(null, "Select Template");
-		dialog.setVisible(true);
-		int pane = (Integer) optionPane.getValue();
-		if (pane == 0)
-			return templatelist.getSelectedValue();
-		else
-			return null;
 	}
 
 	public static jswStyles searchTableStyles()
