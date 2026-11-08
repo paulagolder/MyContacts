@@ -7,21 +7,44 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class mcDataObject
 {
 	static mcDataSource datasource;
 	public static String errorMessage = "";
+	private static final java.util.List<Runnable> contactsListeners = new CopyOnWriteArrayList<>();
 
 	public mcDataObject()
 	{
        ds();
 	}
 
-	// for programs without the main window (myContactsLite, tests): use this database
+	// the database for the whole program, opened in Main; tests set their own
 	public static void useDataSource(mcDataSource source)
 	{
 		datasource = source;
+		fireContactsChanged();
+	}
+
+	// the database the program is using (the full window's, once it is open)
+	public static mcDataSource current()
+	{
+		return ds();
+	}
+
+	// run whenever saved contacts change or another database is opened; it
+	// may be called on any thread, and from inside a commit, so it should
+	// only note the change (the Contacts viewer reloads afterwards)
+	public static void addContactsListener(Runnable listener)
+	{
+		contactsListeners.add(listener);
+	}
+
+	static void fireContactsChanged()
+	{
+		for (Runnable listener : contactsListeners)
+			listener.run();
 	}
 
 	// the current database; follows a switch made in dbEditPanel

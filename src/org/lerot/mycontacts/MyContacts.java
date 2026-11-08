@@ -130,7 +130,9 @@ public class MyContacts extends JFrame implements ActionListener
         File budirfile = new File(budir);
         if (!budirfile.isDirectory() && !budirfile.mkdirs())
             System.err.println("Cannot create backup directory " + budir);
-        currentcon = new mcDataSource(dotcontacts + dbsource);
+        // the connection Main opened, which the Contacts viewer shares
+        currentcon = mcDataObject.current();
+        if (currentcon == null) currentcon = new mcDataSource(dotcontacts + dbsource);
         templist = new mcContactSet();
         topgui = this;
         Main.closeHides(this);

@@ -33,6 +33,8 @@ public class Main
 			else if (args[i].equals("--edit") && i + 1 < args.length) edit = Integer.parseInt(args[++i]);
 		}
 		mcStarter.setUp();
+		// one connection, shared by the Contacts viewer and the full window
+		mcDataObject.useDataSource(new mcDataSource(mcSettings.databasePath()));
 		setupLookAndFeel();
 		boolean openFull = full || edit != null;
 		Integer contact = edit;
@@ -74,7 +76,8 @@ public class Main
 	{
 		for (Frame frame : Frame.getFrames())
 			if (frame.isVisible()) return;
-		if (MyContacts.topgui != null) MyContacts.topgui.currentcon.close();
+		mcDataSource db = mcDataObject.current();
+		if (db != null) db.close();
 		System.exit(0);
 	}
 }

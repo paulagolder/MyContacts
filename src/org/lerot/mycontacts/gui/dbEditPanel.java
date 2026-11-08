@@ -1,6 +1,7 @@
 package org.lerot.mycontacts.gui;
 
 import org.lerot.mycontacts.mcContact;
+import org.lerot.mycontacts.mcDataObject;
 import org.lerot.mycontacts.mcDataSource;
 import org.lerot.mycontacts.mcStarter;
 import org.lerot.mycontacts.MyContacts;
@@ -143,6 +144,7 @@ public class dbEditPanel extends jswVerticalPanel implements ActionListener
 
 			MyContacts.topgui.currentcon.close();
 			MyContacts.topgui.currentcon = new mcDataSource(selecteddb);
+			mcDataObject.useDataSource(MyContacts.topgui.currentcon);
 			MyContacts.topgui.dbsource= selecteddb;
 			//(new mcDataObject()).setConnection(MyContacts.topgui.currentcon);
 			MyContacts.topgui.startup();

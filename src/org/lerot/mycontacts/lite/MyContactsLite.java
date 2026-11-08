@@ -5,7 +5,7 @@ import net.miginfocom.layout.PlatformDefaults;
 import net.miginfocom.swing.MigLayout;
 import org.lerot.mycontacts.Main;
 import org.lerot.mycontacts.MyContacts;
-import org.lerot.mycontacts.mcSettings;
+import org.lerot.mycontacts.mcDataObject;
 import org.lerot.mywidgets.jswScale;
 
 import javax.swing.*;
@@ -65,7 +65,7 @@ public class MyContactsLite extends JFrame
 		if (window == null)
 		{
 			setupLookAndFeel();
-			window = new MyContactsLite(new ContactStore(mcSettings.databasePath()));
+			window = new MyContactsLite(new ContactStore());
 		}
 		window.setVisible(true);
 		window.toFront();
@@ -99,15 +99,11 @@ public class MyContactsLite extends JFrame
 		placeTopRight();
 
 		load();
-		// pick up changes made in the main app when coming back to this window
-		addWindowListener(new WindowAdapter()
-		{
-			@Override
-			public void windowActivated(WindowEvent e)
-			{
-				if (store.refresh()) reshow();
-			}
-		});
+		// show contacts saved in the full window straight away; a save can be
+		// several commits, so wait for them to finish before reloading
+		Timer reload = new Timer(300, e -> { if (store.refresh()) reshow(); });
+		reload.setRepeats(false);
+		mcDataObject.addContactsListener(() -> SwingUtilities.invokeLater(reload::restart));
 		bindKey(content, "ESCAPE", this::escape);
 	}
 

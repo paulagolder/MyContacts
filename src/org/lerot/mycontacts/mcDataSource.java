@@ -1,5 +1,8 @@
 package org.lerot.mycontacts;
 
+import org.sqlite.SQLiteCommitListener;
+import org.sqlite.SQLiteConnection;
+
 import java.io.File;
 import java.io.FileReader;
 import java.sql.*;
@@ -14,19 +17,12 @@ public class mcDataSource
 	String path="";
 	private int txdepth = 0;
 	private boolean txfailed = false;
-
-	// a read-only connection can never change the database (myContactsLite)
-	private final boolean readonly;
+	// set when contact data changes, reported once it is committed
+	private boolean contactsChanged;
 
 	public mcDataSource(String apath)
 	{
-		this(apath, false);
-	}
-
-	public mcDataSource(String apath, boolean readonly)
-	{
 		path = apath;
-		this.readonly = readonly;
 	}
 	
 	public Connection getConnection()
@@ -159,15 +155,10 @@ public class mcDataSource
 				File dbfile = new File(path);
 				dbname = dbfile.getName();
 				connectstring = "jdbc:sqlite:"	+ path;
-				if (readonly)
-				{
-					org.sqlite.SQLiteConfig config = new org.sqlite.SQLiteConfig();
-					config.setReadOnly(true);
-					con = DriverManager.getConnection(connectstring, config.toProperties());
-				} else
-					con = DriverManager.getConnection(connectstring);
+				con = DriverManager.getConnection(connectstring);
 				if(con!=null)
 				{
+					watchContactChanges();
 				  //System.out.println("Can connect to " + connectstring);
 					dbname = dbfile.getName();
 					//System.out.println("opened :"+ dbname);
@@ -185,6 +176,33 @@ public class mcDataSource
 			errorMessage = " cannot read " + path;
 			con = null;
 		}
+	}
+
+	// tell mcDataObject's listeners when a commit has changed the contacts
+	// (attributeValues), whichever part of the program made the change
+	private void watchContactChanges() throws SQLException
+	{
+		SQLiteConnection sqlite = con.unwrap(SQLiteConnection.class);
+		sqlite.addUpdateListener((type, database, table, rowid) ->
+		{
+			if (table.equalsIgnoreCase("attributeValues")) contactsChanged = true;
+		});
+		sqlite.addCommitListener(new SQLiteCommitListener()
+		{
+			@Override
+			public void onCommit()
+			{
+				if (!contactsChanged) return;
+				contactsChanged = false;
+				mcDataObject.fireContactsChanged();
+			}
+
+			@Override
+			public void onRollback()
+			{
+				contactsChanged = false;
+			}
+		});
 	}
 
 	public Map<String, String> checkmcdb()

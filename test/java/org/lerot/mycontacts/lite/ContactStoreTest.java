@@ -5,31 +5,33 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.lerot.mycontacts.TestDatabase;
+import org.lerot.mycontacts.mcDataObject;
+import org.lerot.mycontacts.mcDataSource;
 
 import java.nio.file.Path;
-import java.sql.DriverManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-// myContactsLite's read-only view of the contacts
+// the Contacts viewer's cards, read through the program's connection
 class ContactStoreTest
 {
 	@TempDir
 	Path folder;
+	mcDataSource ds;
 	ContactStore store;
 
 	@BeforeEach
 	void setUp() throws Exception
 	{
-		TestDatabase.create(folder).close();
-		store = new ContactStore(folder.resolve("test.sqlite").toString());
+		ds = TestDatabase.create(folder);
+		store = new ContactStore();
 		store.refresh();
 	}
 
 	@AfterEach
 	void tearDown()
 	{
-		store.close();
+		ds.close();
 	}
 
 	@Test
@@ -92,25 +94,29 @@ class ContactStoreTest
 	}
 
 	@Test
-	void reloadsOnlyWhenTheDatabaseChanges() throws Exception
+	void reloadsWhenAContactIsSaved()
 	{
 		assertFalse(store.refresh());
-		Thread.sleep(1100); // file times can be to the second
-		try (var c = DriverManager.getConnection("jdbc:sqlite:" + folder.resolve("test.sqlite"));
-				var st = c.createStatement())
-		{
-			st.executeUpdate("insert into attributeValues(cid, root, qualifier, value) values (2, 'email', '', 'bob@example.com')");
-		}
+		new mcDataObject().doExecute(
+				"insert into attributeValues(cid, root, qualifier, value) values (2, 'email', '', 'bob@example.com')");
 		assertTrue(store.refresh());
 		assertEquals("bob@example.com", store.find(2).orElseThrow().email());
 	}
 
 	@Test
-	void cannotChangeTheDatabase() throws Exception
+	void doesNotReloadForOtherTables()
 	{
-		var con = new org.lerot.mycontacts.mcDataSource(folder.resolve("test.sqlite").toString(), true).getConnection();
-		assertThrows(java.sql.SQLException.class,
-				() -> con.createStatement().executeUpdate("delete from attributeValues"));
-		con.close();
+		assertFalse(store.refresh());
+		// the full window rebuilds its allcontacts summary table often
+		new mcDataObject().doExecute("create table allcontacts as select cid from attributeValues");
+		assertFalse(store.refresh());
+	}
+
+	@Test
+	void reloadsWhenAnotherDatabaseIsOpened()
+	{
+		assertFalse(store.refresh());
+		mcDataObject.useDataSource(ds);
+		assertTrue(store.refresh());
 	}
 }

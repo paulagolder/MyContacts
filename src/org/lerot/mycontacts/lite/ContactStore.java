@@ -2,42 +2,35 @@ package org.lerot.mycontacts.lite;
 
 import org.lerot.mycontacts.*;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /*
- * The contacts, read from the database through a read-only connection (so
- * myContactsLite can never change or lock it), turned into ContactCards.
- * Reloads when the database file has changed, e.g. after editing in the
- * main app.
+ * The contacts, read through the program's database connection and turned
+ * into ContactCards. Reloads after contacts are saved anywhere in the
+ * program (or another database is opened).
  */
 public class ContactStore
 {
 	private static final DateTimeFormatter DAYMONTHYEAR = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.UK);
 	private static final DateTimeFormatter DAYMONTH = DateTimeFormatter.ofPattern("d MMMM", Locale.UK);
 
-	private final File database;
-	private final mcDataSource datasource;
 	private List<ContactCard> cards = List.of();
-	private long loadedVersion = -1;
+	private volatile boolean stale = true;
 	private boolean typesLoaded;
 
-	public ContactStore(String databasePath)
+	public ContactStore()
 	{
-		database = new File(databasePath);
-		datasource = new mcDataSource(databasePath, true);
+		mcDataObject.addContactsListener(() -> stale = true);
 	}
 
-	// load the contacts if the database has changed since last time;
-	// true if it did
+	// load the contacts if they have changed since last time; true if they did
 	public boolean refresh()
 	{
-		long version = database.lastModified();
-		if (version == loadedVersion) return false;
+		if (!stale) return false;
+		stale = false;
 		load();
-		loadedVersion = version;
 		return true;
 	}
 
@@ -57,14 +50,8 @@ public class ContactStore
 		return cards.stream().filter(c -> c.id() == id).findFirst();
 	}
 
-	public void close()
-	{
-		datasource.close();
-	}
-
 	private void load()
 	{
-		mcDataObject.useDataSource(datasource);
 		if (!typesLoaded)
 		{
 			mcDataTypes.loadTypes();

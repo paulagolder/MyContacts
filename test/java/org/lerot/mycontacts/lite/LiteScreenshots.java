@@ -2,6 +2,8 @@ package org.lerot.mycontacts.lite;
 
 import org.lerot.mycontacts.Screenshots;
 import org.lerot.mycontacts.mcSettings;
+import org.lerot.mycontacts.mcDataObject;
+import org.lerot.mycontacts.mcDataSource;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -27,7 +29,8 @@ public class LiteScreenshots
 		MyContactsLite.setupLookAndFeel();
 		SwingUtilities.invokeAndWait(() ->
 		{
-			window = new MyContactsLite(new ContactStore(mcSettings.databasePath()));
+			mcDataObject.useDataSource(new mcDataSource(mcSettings.databasePath()));
+			window = new MyContactsLite(new ContactStore());
 			window.setAlwaysOnTop(false);
 			window.setFocusableWindowState(false);
 			window.setVisible(true);
