@@ -120,16 +120,7 @@ public class labelprintPanel extends jswVerticalPanel implements ActionListener,
             jswOptionset sourcelist = (jswOptionset)evt.getSource();
             String sourcetag  = action;
           //  String sourcetag = cmdmap.get("VALUE");
-            if (sourcetag.equalsIgnoreCase("source:hashtag"))
-            {
-                System.out.println("hashtag selected ");
-                sellist = topgui.templist.toContactList();
-            } else
-            {
-                sellist = MyContacts.selbox.getBrowsecontactlist();
-                System.out.println("selection selected ");
-                if(sellist == null) sellist =  MyContacts.selbox.getAllcontactlist();
-            }
+            sellist = chooseSource(sourcetag.equalsIgnoreCase("source:hashtag"));
             System.out.println("contacts selected :"+sellist.size());
         } else if (action.equals("SELECT"))
         {
@@ -168,6 +159,8 @@ public class labelprintPanel extends jswVerticalPanel implements ActionListener,
             String pagelayout = layoutpanel.getSelectedValue();
             labelpages = new mcPDF(afile, "Lerot Contacts Labels");
             labelpages.setLayout(pagelayout);
+            // the source buttons may never have been clicked, so read them now
+            sellist = chooseSource(hashtagsource.isSelected());
             System.out.println("label print : " + sellist.size());
             int ncount = labelpages.makeLabelsPages(sellist, sp, showcountryselected);
             prog.setText(" Printing complete " + ncount + " pages");
@@ -175,6 +168,14 @@ public class labelprintPanel extends jswVerticalPanel implements ActionListener,
             System.out.println("label print action " + action + " unrecognised ");
         topgui.refreshView();
         topgui.getContentPane().validate();
+    }
+
+    private mcContacts chooseSource(boolean hashtagged)
+    {
+        if (hashtagged) return topgui.templist.toContactList();
+        mcContacts list = MyContacts.selbox.getBrowsecontactlist();
+        if (list == null) list = MyContacts.selbox.getAllcontactlist();
+        return list;
     }
 
     public void refresh()
