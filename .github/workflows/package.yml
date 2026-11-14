@@ -68,6 +68,7 @@ jobs:
 
       - uses: actions/upload-artifact@v7
         with:
+          retention-days: 2   # only to download a trial build; a release page keeps its files
           name: MyContacts-${{ runner.os }}
           path: myContacts/build/package/*
       - name: Release page
