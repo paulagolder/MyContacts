@@ -14,6 +14,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
 import java.net.URI;
@@ -243,8 +244,8 @@ public class MyContactsLite extends JFrame
 					() -> useAddress(card)), "cell 1 0, aligny top");
 			tiles.add(card.addressFrom() == null ? address : noted(address, "from " + card.addressFrom()));
 		}
-		addTile(card.phone());
-		addTile(card.mobile());
+		addPhoneTile(card.phone());
+		addPhoneTile(card.mobile());
 		if (card.email() != null) tiles.add(emailTile(card.email()));
 		addTile(card.birthday());
 
@@ -270,6 +271,34 @@ public class MyContactsLite extends JFrame
 		String address = card.addressFrom() == null ? contact.makeBlockAddress("\n", true)
 				: card.name() + "\n" + card.address();
 		addressDialog.show(this, contact, address);
+	}
+
+	// the telephone offers the number to copy, as dialled in the UK or with
+	// its country code
+	private void addPhoneTile(String number)
+	{
+		if (number == null) return;
+		Tile tile = textTile(number, null);
+		tile.add(iconButton("phone.svg", "Copy this number",
+				() -> usePhone(number)), "cell 1 0, aligny center, hmax 12pt"); // no taller than the text
+		tiles.add(tile);
+	}
+
+	private void usePhone(String stored)
+	{
+		PhoneNumber number = PhoneNumber.of(stored);
+		String[] options = { "Copy UK", "Copy Int", "Cancel" };
+		String message = "Copy this number\n\nUK:    " + number.uk()
+				+ "\nInt:    " + number.international();
+		int n = JOptionPane.showOptionDialog(this, message, "Phone",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		if (n == 0) copy(number.uk());
+		else if (n == 1) copy(number.international());
+	}
+
+	private static void copy(String text)
+	{
+		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(text), null);
 	}
 
 	private static JButton iconButton(String icon, String tip, Runnable action)

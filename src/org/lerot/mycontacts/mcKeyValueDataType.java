@@ -281,7 +281,9 @@ public abstract class mcKeyValueDataType extends mcDataType
 		}
 		if(mappedvalue==null)
 			{
-			System.out.println("problem in arraydata type no mappedvalues "+avalue);
+			// "{ }" is an address (or name or date) saved with every field blank
+			if (!avalue.replaceAll("[{}\\s]", "").isEmpty())
+				System.out.println("problem in arraydata type no mappedvalues "+avalue);
 			return mapvalues;
 			}
 		for (Entry<String, String> entry : mappedvalue.entrySet())
