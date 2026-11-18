@@ -6,6 +6,7 @@ import net.miginfocom.swing.MigLayout;
 import org.lerot.mycontacts.Main;
 import org.lerot.mycontacts.MyContacts;
 import org.lerot.mycontacts.gui.addressDialog;
+import org.lerot.mycontacts.mcAttribute;
 import org.lerot.mycontacts.mcContact;
 import org.lerot.mycontacts.mcDataObject;
 import org.lerot.mywidgets.jswScale;
@@ -244,8 +245,8 @@ public class MyContactsLite extends JFrame
 					() -> useAddress(card)), "cell 1 0, aligny top");
 			tiles.add(card.addressFrom() == null ? address : noted(address, "from " + card.addressFrom()));
 		}
-		addPhoneTile(card.phone());
-		addPhoneTile(card.mobile());
+		addPhoneTile(card, card.phone());
+		addPhoneTile(card, card.mobile());
 		if (card.email() != null) tiles.add(emailTile(card.email()));
 		addTile(card.birthday());
 
@@ -274,26 +275,36 @@ public class MyContactsLite extends JFrame
 	}
 
 	// the telephone offers the number to copy, as dialled in the UK or with
-	// its country code
-	private void addPhoneTile(String number)
+	// its country code, or a WhatsApp chat with it
+	private void addPhoneTile(ContactCard card, String number)
 	{
 		if (number == null) return;
 		Tile tile = textTile(number, null);
-		tile.add(iconButton("phone.svg", "Copy this number",
-				() -> usePhone(number)), "cell 1 0, aligny center, hmax 12pt"); // no taller than the text
+		tile.add(iconButton("phone.svg", "Copy this number, or WhatsApp it",
+				() -> usePhone(card, number)), "cell 1 0, aligny center, hmax 12pt"); // no taller than the text
 		tiles.add(tile);
 	}
 
-	private void usePhone(String stored)
+	private void usePhone(ContactCard card, String stored)
 	{
 		PhoneNumber number = PhoneNumber.of(stored);
-		String[] options = { "Copy UK", "Copy Int", "Cancel" };
+		String[] options = { "Copy UK", "Copy Int", "WhatsApp", "Cancel" };
 		String message = "Copy this number\n\nUK:    " + number.uk()
 				+ "\nInt:    " + number.international();
 		int n = JOptionPane.showOptionDialog(this, message, "Phone",
 				JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 		if (n == 0) copy(number.uk());
 		else if (n == 1) copy(number.international());
+		else if (n == 2) openWeb(number.whatsApp(greeting(card)));
+	}
+
+	// "Hi Irene, ", or "Hi, " when the first name is not known
+	private static String greeting(ContactCard card)
+	{
+		mcContact contact = mcContact.getContact(String.valueOf(card.id()));
+		mcAttribute name = contact == null ? null : contact.getAttribute("name", "");
+		String first = name == null ? null : name.getFormattedValue("fn");
+		return first == null || first.isBlank() ? "Hi, " : "Hi " + first.trim().replaceAll("\\s+", " ") + ", ";
 	}
 
 	private static void copy(String text)
@@ -535,6 +546,24 @@ public class MyContactsLite extends JFrame
 		{
 			public void actionPerformed(ActionEvent e) { action.run(); }
 		});
+	}
+
+	// in the default browser
+	static void openWeb(URI uri)
+	{
+		new Thread(() ->
+		{
+			try
+			{
+				if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))
+					Desktop.getDesktop().browse(uri);
+				else
+					new ProcessBuilder("xdg-open", uri.toString()).start();
+			} catch (Exception e)
+			{
+				System.err.println("Cannot open " + uri + ": " + e.getMessage());
+			}
+		}).start();
 	}
 
 	static void openMail(String email)

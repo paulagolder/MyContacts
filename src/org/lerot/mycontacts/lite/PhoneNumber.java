@@ -1,5 +1,9 @@
 package org.lerot.mycontacts.lite;
 
+import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 /*
  * A phone number written two ways, for copying:
  *   uk()             as dialled in the UK: 01234567890, or 0033... abroad
@@ -27,5 +31,14 @@ public record PhoneNumber(String international)
 	{
 		if (international.startsWith(UK)) return "0" + international.substring(UK.length());
 		return "00" + international.substring(1);
+	}
+
+	// opens a chat with this number in WhatsApp Web, the message box holding text
+	public URI whatsApp(String text)
+	{
+		String link = "https://web.whatsapp.com/send?phone=" + international.substring(1);
+		if (text != null && !text.isEmpty())
+			link += "&text=" + URLEncoder.encode(text, StandardCharsets.UTF_8).replace("+", "%20");
+		return URI.create(link);
 	}
 }
