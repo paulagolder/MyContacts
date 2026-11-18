@@ -289,14 +289,21 @@ public class MyContactsLite extends JFrame
 	{
 		PhoneNumber number = PhoneNumber.of(stored);
 		String[] options = { "Copy UK", "Copy Int", "WhatsApp", "Cancel" };
-		String message = "Copy this number\n\nUK:    " + number.uk()
-				+ "\nInt:    " + number.international();
-		int n = JOptionPane.showOptionDialog(this, message, "Phone",
+		String text = "Copy this number\n\nUK:    " + number.uk()
+				+ "\nInt:    " + number.international() + "\n ";
+		// unticked, WhatsApp opens the chat empty, as for a call
+		String greeting = greeting(card);
+		JCheckBox withGreeting = new JCheckBox("WhatsApp with \"" + greeting.trim() + "\"", greetOnWhatsApp);
+		int n = JOptionPane.showOptionDialog(this, new Object[] { text, withGreeting }, "Phone",
 				JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		greetOnWhatsApp = withGreeting.isSelected();
 		if (n == 0) copy(number.uk());
 		else if (n == 1) copy(number.international());
-		else if (n == 2) openWeb(number.whatsApp(greeting(card)));
+		else if (n == 2) openWeb(number.whatsApp(greetOnWhatsApp ? greeting : null));
 	}
+
+	// the tick box's last setting, while the program runs
+	private static boolean greetOnWhatsApp = false;
 
 	// "Hi Irene, ", or "Hi, " when the first name is not known
 	private static String greeting(ContactCard card)
