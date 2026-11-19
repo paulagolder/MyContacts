@@ -1287,18 +1287,22 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
         CID = cID;
     }
 
-    public void addGroup(String selected)
+    // the contacts given join this one's Has Members (as the Add as link
+    // button makes them); itself and those already members are left out.
+    // How many were added.
+    public int addMembers(Collection<mcContact> contacts)
     {
-        mcContacts selcons = MyContacts.selbox.searchTag(selected);
-        for (Entry<String, mcContact> anentry : selcons.entrySet())
+        int added = 0;
+        for (mcContact acontact : contacts)
         {
-            mcContact acontact = anentry.getValue();
-            mcAttribute newatt = this.createAttribute("member",
-                    acontact.getIDstr());
-            newatt.getAttributevalue().setValue(acontact.getTID(), "now");
+            if (acontact.getCID() == getCID()) continue;
+            mcAttribute newatt = createAttribute("hasmember", acontact.getIDstr(), false);
+            if (newatt == null) continue;
+            newatt.getAttributevalue().setValue(acontact.getIDstr(), "now");
             newatt.dbupsertAttribute();
+            added++;
         }
-
+        return added;
     }
 
     public mcContacts getMembers(String selector)

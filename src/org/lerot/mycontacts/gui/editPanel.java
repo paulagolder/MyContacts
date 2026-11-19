@@ -216,8 +216,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                 }
             } else if (action.startsWith("ADDGROUP"))
             {
-                System.out.println("adding " + groupselect.getSelectedValue() + " to " + selcontact);
-                selcontact.addGroup(groupselect.getSelectedValue());
+                addGroupAsMembers(selcontact, groupselect.getSelectedValue());
             } else if (action.startsWith("ADDTOGROUP"))
             {
                 mcContact parent = parentselect.getSelectedValue();
@@ -377,6 +376,23 @@ public class editPanel extends jswVerticalPanel implements ActionListener
             System.out.println(evt.getSource().toString());
         }
         makeEditPanel();
+    }
+
+    // everyone with the tag joins this contact's Has Members, after asking
+    private void addGroupAsMembers(mcContact selcontact, String tag)
+    {
+        mcContacts tagged = tag == null ? null : MyContacts.selbox.searchTag(tag);
+        if (tagged == null || tagged.isEmpty()) return;
+        int answer = JOptionPane.showConfirmDialog(this, "Add the " + tagged.size() + " contacts tagged \""
+                + tag + "\" as members of " + selcontact.getTID() + "?", "Add group as members",
+                JOptionPane.OK_CANCEL_OPTION);
+        if (answer != JOptionPane.OK_OPTION) return;
+        int[] added = { 0 };
+        if (!MyContacts.dbTransaction("Adding the group as members",
+                () -> added[0] = selcontact.addMembers(tagged.makeOrderedContactsVector()))) return;
+        JOptionPane.showMessageDialog(this, "Added " + added[0] + " members"
+                + (added[0] < tagged.size() ? " (the others were members already, or this contact itself)." : "."),
+                "Add group as members", JOptionPane.INFORMATION_MESSAGE);
     }
 
     // an attribute's value for the screen; an empty one (stored as "null",
