@@ -55,6 +55,15 @@ public class Screenshots
 			else
 				capture(out, mode.toLowerCase());
 		}
+		// a search with results: Tag selection and Make these members of
+		SwingUtilities.invokeAndWait(() ->
+		{
+			MyContacts.selbox.searchresultlist = MyContacts.selbox.searchAttribute("smith");
+			MyContacts.topgui.mode = "SEARCH";
+			MyContacts.topgui.refreshView();
+		});
+		settle();
+		capture(out, "search-found");
 		System.out.println("screenshots written to " + out);
 		System.exit(0);
 	}

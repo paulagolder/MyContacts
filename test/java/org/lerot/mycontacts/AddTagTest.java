@@ -11,7 +11,7 @@ import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-// mcContact.addTag, used by the search page's "Tag selection"
+// mcContact.addTag and removeTag: Search's "Tag selection", Browse's Tag button
 class AddTagTest
 {
 	@TempDir
@@ -62,5 +62,16 @@ class AddTagTest
 		new mcContacts().doExecute("delete from attributeValues where cid = 2 and root = 'tags'");
 		assertTrue(mcContact.getContact("2").addTag("bristol"));
 		assertEquals(Set.of("bristol"), tags(2));
+	}
+
+	@Test
+	void removesOnlyThatTag()
+	{
+		mcContact carol = mcContact.getContact("3");
+		carol.addTag("tagged");
+		carol.addTag("untagged");
+		assertTrue(mcContact.getContact("3").removeTag("tagged"));
+		assertEquals(Set.of("work", "untagged"), tags(3));
+		assertFalse(mcContact.getContact("3").removeTag("tagged"));
 	}
 }

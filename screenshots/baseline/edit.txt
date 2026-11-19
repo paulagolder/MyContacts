@@ -25,10 +25,10 @@ JPanel 0,34 1198x864
       jswHorizontalPanel 'HP:' 1,40 1193x43
         jswButton 'Previous' 5,5 90x33
           JButton 0,1 90x30
-        jswDropDownContactBox 'contactselect' 492,5 115x33
+        jswDropDownContactBox 'contactselect' 499,5 115x33
           JComboBox 5,5 105x23
-        jswButton 'TempTag' 608,5 94x33
-          JButton 0,1 94x30
+        jswButton 'Tag' 615,5 80x33
+          JButton 0,1 80x30
         jswButton 'Next' 1108,5 80x33
           JButton 0,1 80x30
     jswVerticalPanel 'mainpanel' 2,128 1194x734
@@ -121,7 +121,9 @@ JPanel 0,34 1198x864
                   JButton 0,0 80x30
                 jswButton 'REFLECT' 81,0 80x31
                   JButton 0,0 80x30
-        jswHorizontalPanel 'newmember' 0,327 1194x40
+        jswLabel ' Make this contact a member of a group or family, or note a relationship' 0,327 429x20
+          JLabel 1,1 427x18
+        jswHorizontalPanel 'newmember' 0,347 1194x40
           jswDropDownBox 'null' 0,0 120x40
             JComboBox 0,5 120x30
           jswDropDownContactBox 'dropdown' 121,0 300x40
@@ -132,9 +134,3 @@ JPanel 0,34 1198x864
           jswHorizontalPanel 'HP:' 1082,0 112x40
             jswButton 'ADD AS LINK' 5,5 102x30
               JButton 0,0 102x30
-        jswHorizontalPanel 'HP:' 0,367 1194x40
-          jswDropDownBox 'Select Group' 0,0 100x40
-            JComboBox 0,5 100x30
-          jswHorizontalPanel 'HP:' 1006,0 188x40
-            jswButton 'ADD GROUP AS MEMBERS' 5,5 178x30
-              JButton 0,0 178x30

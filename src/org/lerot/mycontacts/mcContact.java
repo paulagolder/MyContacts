@@ -1266,6 +1266,17 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
         return true;
     }
 
+    // take a tag off; false if the contact did not have it
+    public boolean removeTag(String tag)
+    {
+        getAttributes();
+        mcAttribute tags = getAttribute("tags", "");
+        if (tags == null || !mcTagListDataType.getTags(tags).contains(tag)) return false;
+        tags.getAttributevalue().setValue(mcTagListDataType.deleteTags(tags.getValue(), Set.of(tag)), "now");
+        tags.dbupsertAttribute();
+        return true;
+    }
+
     // a dropped vCard: add the details this contact does not have yet
     public void importVcard(VCard vcard)
     {

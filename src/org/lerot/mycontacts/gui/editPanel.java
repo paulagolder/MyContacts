@@ -44,7 +44,6 @@ public class editPanel extends jswVerticalPanel implements ActionListener
     private jswTextBox atype;
     private String edattributename;
     private jswDropDownBox linkselect;
-    private jswDropDownBox groupselect;
     private int selectedtag=-1;
 
     public editPanel()
@@ -162,6 +161,11 @@ public class editPanel extends jswVerticalPanel implements ActionListener
             } else if (action.equals("ADDLINK"))
             {
                 mcContact linkcontact = parentselect.getSelectedValue();
+                if (linkcontact == null)
+                {
+                    JOptionPane.showMessageDialog(this, "Choose the group, family or person first.");
+                    return;
+                }
                 String linktype = linkselect.getSelectedValue();
                 System.out.println("adding " + selcontact + " as " + linktype + " : " + linkcontact);
                 // member links are keyed by the linked contact's id; a related
@@ -210,9 +214,6 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                 {
                     JOptionPane.showMessageDialog(this, "This contact already has a " + root + " link called " + qualifier + ".\nEdit that one first, then reflect again.");
                 }
-            } else if (action.startsWith("ADDGROUP"))
-            {
-                addGroupAsMembers(selcontact, groupselect.getSelectedValue());
             } else if (action.startsWith("ADDTOGROUP"))
             {
                 mcContact parent = parentselect.getSelectedValue();
@@ -381,23 +382,6 @@ public class editPanel extends jswVerticalPanel implements ActionListener
             System.out.println(evt.getSource().toString());
         }
         makeEditPanel();
-    }
-
-    // everyone with the tag joins this contact's Has Members, after asking
-    private void addGroupAsMembers(mcContact selcontact, String tag)
-    {
-        mcContacts tagged = tag == null ? null : MyContacts.selbox.searchTag(tag);
-        if (tagged == null || tagged.isEmpty()) return;
-        int answer = JOptionPane.showConfirmDialog(this, "Add the " + tagged.size() + " contacts tagged \""
-                + tag + "\" as members of " + selcontact.getTID() + "?", "Add group as members",
-                JOptionPane.OK_CANCEL_OPTION);
-        if (answer != JOptionPane.OK_OPTION) return;
-        int[] added = { 0 };
-        if (!MyContacts.dbTransaction("Adding the group as members",
-                () -> added[0] = selcontact.addMembers(tagged.makeOrderedContactsVector()))) return;
-        JOptionPane.showMessageDialog(this, "Added " + added[0] + " members"
-                + (added[0] < tagged.size() ? " (the others were members already, or this contact itself)." : "."),
-                "Add group as members", JOptionPane.INFORMATION_MESSAGE);
     }
 
     // an attribute's value for the screen; an empty one (stored as "null",
@@ -1206,6 +1190,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
 
         if (edit.equalsIgnoreCase(""))
         {
+            add(new jswLabel(" Make this contact a member of a group or family, or note a relationship"));
             jswHorizontalPanel newmemberpanel = new jswHorizontalPanel("newmember", false);
             //newmemberpanel.setTrace(true);
             newmemberpanel.applyStyle(panelstyles.getStyle("borderstyle"));
@@ -1220,6 +1205,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
             linkselect.applyStyle();
             parentselect = new jswDropDownContactBox(null, "Select Contact", false);
             parentselect.addList(MyContacts.selbox.getAllcontactlist().makeOrderedContactsVector());
+            parentselect.setPlaceholder("Choose group, family or person");
             newmemberpanel.add("  ", parentselect);// paul to fix
             parentselect.setStyleAttribute("mywidth", 300);
             parentselect.setBorder(BorderFactory.createEmptyBorder()); // or its border squeezes the list
@@ -1233,19 +1219,6 @@ public class editPanel extends jswVerticalPanel implements ActionListener
             buttonbox.add("RIGHT", addmember);
             newmemberpanel.add("RIGHT", buttonbox);
             add(" FILLW ", newmemberpanel);
-            jswHorizontalPanel groupmemberpanel = new jswHorizontalPanel();
-            groupmemberpanel.applyStyle(panelstyles.getStyle("borderstyle"));
-            groupselect = new jswDropDownBox(this, "Select Group");
-            groupselect.addList(MyContacts.selbox.getTaglist());
-            groupmemberpanel.add(" WIDTH=300 ", groupselect);// paul to fix
-            // atteditbox = new jswTextBox();
-            // atteditbox.setEnabled(true);
-            // groupmemberpanel.add(atteditbox);
-            jswPanel bbuttonbox = new jswHorizontalPanel();
-            jswButton addgroup = new jswButton(this, "ADD GROUP AS MEMBERS", "ADDGROUP");
-            bbuttonbox.add("RIGHT", addgroup);
-            groupmemberpanel.add("RIGHT", bbuttonbox);
-            add(" FILLW ", groupmemberpanel);
         }
         this.repaint();
         this.validate();

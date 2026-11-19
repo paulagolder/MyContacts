@@ -59,7 +59,7 @@ public class labelprintPanel extends jswVerticalPanel implements ActionListener,
         filterbar.add(" LEFT ", selectedoption);
         selectedoption.setStyleAttribute("width", 300);
         selectedoption.applyStyle();
-        hashtagsource = labelsource.addNewOption("temptag");
+        hashtagsource = labelsource.addNewOption("Tagged");
         hashtagsource.setTag("hashtag");
         filterbar.add(" ", hashtagsource);
         hashtagsource.setStyleAttribute("mywidth", 300);
@@ -173,7 +173,7 @@ public class labelprintPanel extends jswVerticalPanel implements ActionListener,
 
     private mcContacts chooseSource(boolean hashtagged)
     {
-        if (hashtagged) return topgui.templist.toContactList();
+        if (hashtagged) return MyContacts.selbox.taggedContacts();
         mcContacts list = MyContacts.selbox.getBrowsecontactlist();
         if (list == null) list = MyContacts.selbox.getAllcontactlist();
         return list;
@@ -187,9 +187,7 @@ public class labelprintPanel extends jswVerticalPanel implements ActionListener,
         if(searchterm == null) searchterm="ALL";
         selectedoption.setText(searchterm + " (" + nbrowsecontacts + ")");
         System.out.println(" selected contacts " + nbrowsecontacts);
-        int hashtagcontacts = topgui.templist.size();
-        hashtagsource.setText("#TAGGED (" + hashtagcontacts + ")");
-        System.out.println(" #tag contacts " + hashtagcontacts);
+        hashtagsource.setText("Tagged (" + MyContacts.selbox.taggedContacts().size() + ")");
        // topgui.refreshView();
         topgui.getContentPane().validate();
     }

@@ -355,14 +355,7 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 				{
 					browsepanel.add(" FILLW ",memberstable);
 				} else
-				{
-					jswScrollPane scrollableTextArea = new jswScrollPane(memberstable, -10, -10);
-					scrollableTextArea.setName("resultscroll");
-					scrollableTextArea.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-					scrollableTextArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-					browsepanel.add(" FILLH ", scrollableTextArea);
-					scrollableTextArea.setVisible(true);
-				}
+					browsepanel.add(" ", scrolled(memberstable, hasmemberslist.size()));
 			}
 			if (memberoflist != null)
 			{
@@ -430,18 +423,27 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 			return vpanel;
 		} else
 		{
-			jswScrollPane scrollableTextArea = new jswScrollPane(memberpanel,
-					-10, -10);
-			scrollableTextArea.setName("resultscroll");
-			scrollableTextArea.setHorizontalScrollBarPolicy(
-					ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-			scrollableTextArea.setVerticalScrollBarPolicy(
-					ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-			vpanel.add(" FILLH ", scrollableTextArea);
-			scrollableTextArea.setVisible(true);
+			vpanel.add(" ", scrolled(memberpanel, row));
 			return vpanel;
 		}
 
+	}
+
+	// a long list of links scrolls, about five rows high; left to the layout
+	// the scroll box was squeezed to a sliver and the links could not be seen
+	private static jswScrollPane scrolled(jswTable table, int rows)
+	{
+		jswScrollPane scroll = new jswScrollPane(table, -10, -10);
+		scroll.setName("resultscroll");
+		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		Dimension full = table.getPreferredSize();
+		int bar = UIManager.getInt("ScrollBar.width");
+		Dimension size = new Dimension(full.width + bar + 4, full.height * 11 / (2 * rows) + 4);
+		scroll.setPreferredSize(size);
+		scroll.setMinimumSize(size);
+		scroll.setMaximumSize(size);
+		return scroll;
 	}
 
 /*	private jswTable makeLinktotable(mcContacts hasmemberslist)

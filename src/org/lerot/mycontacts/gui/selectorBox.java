@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -16,6 +17,8 @@ public class selectorBox extends jswVerticalPanel
         implements ActionListener, FocusListener, KeyListener
 {
     private static final long serialVersionUID = 1L;
+    // the tag the Tag button puts on contacts picked out while browsing
+    public static final String TAGGED = "tagged";
     private final jswButton temptag;
     private final jswHorizontalPanel filterpanel;
     public mcContacts browsecontactlist;
@@ -79,7 +82,7 @@ public class selectorBox extends jswVerticalPanel
         contactselectbox = new jswDropDownContactBox(this, "Select Contact", false);
         contactselectbox.setPanelname("contactselect");
         selectbox.add(" MIDDLE  ", contactselectbox);
-        temptag = new jswButton(this, "TempTag");
+        temptag = new jswButton(this, "Tag", "TEMPTAG");
         selectbox.add("  ", temptag);
         contactselectbox.addList(browsecontactlist.makeOrderedContactsVector());
         contactselectbox.addActionListener(this, "contactselected");
@@ -109,8 +112,7 @@ public class selectorBox extends jswVerticalPanel
             update();
         } else if (action.equalsIgnoreCase("TEMPTAG"))
         {
-            MyContacts.topgui.templist.add(selcontact);
-            MyContacts.topgui.templist.printlist("temptag");
+            toggleTagged();
         } else if (action.equals("REFRESH"))
         {
             // refreshSelection();
@@ -138,6 +140,7 @@ public class selectorBox extends jswVerticalPanel
             return;
         } else
             System.out.println("action  " + action + " unrecognised in selectorbox ");
+        refreshTagButton();
         MyContacts.topgui.refreshView();
     }
 
@@ -486,6 +489,7 @@ public class selectorBox extends jswVerticalPanel
         }
         // keep the selected contact in step with the drop-down
         selcontact = contactselectbox.getSelectedValue();
+        refreshTagButton();
         filterbox.clear();
     }
 
@@ -504,7 +508,57 @@ public class selectorBox extends jswVerticalPanel
             }
         }
         contactselectbox.addActionListener(this);
+        refreshTagButton();
         // filterbox.clear();
+    }
+
+    // the contacts with the "tagged" tag (a tag search also finds "untagged")
+    public mcContacts taggedContacts()
+    {
+        mcContacts tagged = new mcContacts();
+        mcContacts found = searchTag(TAGGED);
+        if (found == null) return tagged;
+        for (mcContact contact : found.makeOrderedContactsVector())
+            if (isTagged(contact)) tagged.put(contact.getIDstr(), contact);
+        return tagged;
+    }
+
+    public static boolean isTagged(mcContact contact)
+    {
+        Set<String> tags = contact.getTagList();
+        return tags != null && tags.contains(TAGGED);
+    }
+
+    // the Tag button puts the contact on the tagged list, or takes it off
+    private void toggleTagged()
+    {
+        if (selcontact == null) return;
+        mcContact contact = selcontact;
+        boolean on = isTagged(contact);
+        if (!MyContacts.dbTransaction(on ? "Untagging the contact" : "Tagging the contact",
+                () -> { if (on) contact.removeTag(TAGGED); else contact.addTag(TAGGED); })) return;
+        setTaglist();
+        // browsing the tagged list, an untagged contact leaves it: move to the next
+        if (on && TAGGED.equals(browsefilter))
+        {
+            Vector<mcContact> shown = browsecontactlist.makeOrderedContactsVector();
+            int at = shown.indexOf(contact);
+            selcontact = at >= 0 && at + 1 < shown.size() ? shown.get(at + 1) : null;
+            update();
+        }
+        refreshTagButton();
+    }
+
+    // Tag or Untag for the contact shown, and how many are on the list
+    private void refreshTagButton()
+    {
+        boolean on = selcontact != null && isTagged(selcontact);
+        JButton button = (JButton) temptag.getComponent(0);
+        button.setText((on ? "Untag" : "Tag") + " (" + taggedContacts().size() + ")");
+        button.setToolTipText(on ? "Take this contact off the tagged list"
+                : "Put this contact on the tagged list, to print labels for or to make members of a group later");
+        temptag.setEnabled(selcontact != null);
+        temptag.applyStyle();
     }
 
     // show this contact (a group member's VIEW button); if the browse list,

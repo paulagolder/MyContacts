@@ -24,6 +24,7 @@ public class jswDropDownContactBox extends jswPanel implements ActionListener
     int bl = 100;
     int bh = 30;
     DefaultComboBoxModel<mcContact> listModel;
+    String placeholder; // shown, greyed, while nothing is chosen
 
     public jswDropDownContactBox(ActionListener c, String inlabel)
     {
@@ -182,6 +183,13 @@ public class jswDropDownContactBox extends jswPanel implements ActionListener
             contactddbox.setSelectedIndex(0);
     }
 
+    // start with nothing chosen, showing a prompt instead of the first contact
+    public void setPlaceholder(String prompt)
+    {
+        placeholder = prompt;
+        contactddbox.setSelectedIndex(-1);
+    }
+
     public void setSelected(int selindex)
     {
         contactddbox.setSelectedIndex(selindex);
@@ -283,6 +291,10 @@ public class jswDropDownContactBox extends jswPanel implements ActionListener
             {
                 mcContact foo = (mcContact) value;
                 setText(foo.getName());
+            } else if (value == null && placeholder != null)
+            {
+                setText(placeholder);
+                if (index < 0) setForeground(UIManager.getColor("Label.disabledForeground"));
             }
 
             return this;

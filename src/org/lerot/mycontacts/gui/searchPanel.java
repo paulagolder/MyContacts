@@ -1,5 +1,6 @@
 package org.lerot.mycontacts.gui;
 
+import org.lerot.mycontacts.gui.widgets.jswDropDownContactBox;
 import org.lerot.mycontacts.mcContact;
 import org.lerot.mycontacts.mcContacts;
 import org.lerot.mycontacts.MyContacts;
@@ -18,6 +19,8 @@ public class searchPanel extends jswVerticalPanel implements ActionListener
     private static final long serialVersionUID = 1L;
     jswTextBox searchfield;
     private ActionListener parentlistener;
+    // set while the panel is built, when the members box's events are not choices
+    private boolean building;
 
     public searchPanel(String title, boolean border, boolean titledborder)
     {
@@ -25,12 +28,10 @@ public class searchPanel extends jswVerticalPanel implements ActionListener
     }
 
     // the contacts found get a tag made from the search term ("La Rochelle"
-    // gives "la rochelle"), and join the temporary list for printing labels
+    // gives "la rochelle")
     private void tagSelection()
     {
         mcContacts sellist = MyContacts.selbox.getSearchResultList();
-        for (Entry<String, mcContact> contactentry : sellist.entrySet())
-            MyContacts.topgui.templist.add(contactentry.getValue());
         String term = MyContacts.selbox.getSearchterm();
         String tag = term == null ? "" : term.toLowerCase().replaceAll("[;,#]", " ").replaceAll("\\s+", " ").trim();
         if (tag.length() < 3)
@@ -57,9 +58,26 @@ public class searchPanel extends jswVerticalPanel implements ActionListener
                 "Tag selection", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    // the contacts found join the parent's Has Members, after asking
+    private void makeMembersOf(mcContact parent)
+    {
+        mcContacts found = MyContacts.selbox.getSearchResultList();
+        if (parent == null || found.isEmpty()) return;
+        int answer = JOptionPane.showConfirmDialog(this, "Make the " + found.size() + " contacts found members of "
+                + parent.getName() + "?", "Make members", JOptionPane.OK_CANCEL_OPTION);
+        if (answer != JOptionPane.OK_OPTION) return;
+        int[] added = { 0 };
+        if (!MyContacts.dbTransaction("Making the contacts found members",
+                () -> added[0] = parent.addMembers(found.makeOrderedContactsVector()))) return;
+        JOptionPane.showMessageDialog(this, "Added " + added[0] + " members to " + parent.getName()
+                + (added[0] < found.size() ? " (the others were members already, or " + parent.getName() + " itself)." : "."),
+                "Make members", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     @Override
     public void actionPerformed(ActionEvent evt)
     {
+        if (building) return;
 
         String cmd = evt.getActionCommand();
         System.out.println(" here we are sp " + cmd);
@@ -82,6 +100,9 @@ String action = cmd;
             {
                 searchfield.clear();
             }
+        } else if (action.startsWith("MAKEMEMBERS:"))
+        {
+            makeMembersOf(MyContacts.selbox.FindbyIDstr(action.substring(12)));
         } else if (action.startsWith("TAGSELECTION"))
         {
             tagSelection();
@@ -122,6 +143,7 @@ String action = cmd;
     {
         jswTheme.tint(this, jswTheme.DETAILAREA);
         parentlistener = alistener;
+        building = true;
         jswVerticalPanel searchpanel = this;
         //this.setTag("trace");
         //this.setBorder(setLineBorder(Color.red, 4));
@@ -154,6 +176,18 @@ String action = cmd;
         }
         jswLabel summ = new jswLabel(" Total Found =" + sellist.size());
         summary.add(" FILLW ", summ);
+        if (sellist.size() > 0)
+        {
+            summary.add(" RIGHT ", new jswLabel("Make these members of "));
+            jswDropDownContactBox parentselect = new jswDropDownContactBox(this, "Choose contact", false);
+            parentselect.setActionCommand("MAKEMEMBERS");
+            parentselect.addList(selbox.getAllcontactlist().makeOrderedContactsVector());
+            parentselect.setPlaceholder("Choose group or family");
+            parentselect.setStyleAttribute("mywidth", 250);
+            parentselect.setBorder(BorderFactory.createEmptyBorder()); // or its border squeezes the list
+            parentselect.applyStyle();
+            summary.add(" RIGHT ", parentselect);
+        }
         searchpanel.add(" FILLW ", summary);
         jswTable resulttable = new jswTable(this, "contactsfound", searchTableStyles());
 
@@ -198,6 +232,7 @@ String action = cmd;
                 //scrollableTextArea.setBorder(setLineBorder(Color.red, 4));
             }
         }
+        building = false;
         resulttable.repaint();
         searchpanel.repaint();
         // the window keeps the size the user gave it

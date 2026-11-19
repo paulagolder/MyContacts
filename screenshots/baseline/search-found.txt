@@ -1,0 +1,57 @@
+JPanel 0,34 1198x864
+  jswVerticalPanel 'bigpanel' 0,0 1198x864
+    jswHorizontalPanel 'HP:' 2,2 1194x36
+      jswButton 'New contact' 6,5 131x26
+        JButton 0,0 131x26
+      jswPushButtonset 'mode' 829,5 360x26
+        jswPushButton 'Browse' 1,1 82x24
+          JToggleButton 0,0 82x24
+        jswPushButton 'Search' 84,1 78x24
+          JToggleButton 0,0 78x24
+        jswPushButton 'Edit' 163,1 61x24
+          JToggleButton 0,0 61x24
+        jswPushButton 'Tools' 225,1 70x24
+          JToggleButton 0,0 70x24
+        jswPushButton 'Info' 296,1 62x24
+          JToggleButton 0,0 62x24
+    selectorBox 'selectorbox' 2,38 1194x42
+      jswHorizontalPanel 'HP:' 1,1 1193x41
+        jswLabel 'All Contacts' 5,5 82x31
+          JLabel 1,1 80x29
+        jswDropDownBox 'tagselect' 547,5 100x31
+          JComboBox 0,0 100x30
+        jswLabel 'Browsing:' 1076,5 112x31
+          JLabel 1,1 110x29
+    jswVerticalPanel 'mainpanel' 2,80 1194x782
+      searchPanel 'search' 0,0 1194x782
+        jswHorizontalPanel 'idbox' 0,0 1194x30
+          jswLabel 'Enter Search Term:' 0,0 114x30
+            JLabel 1,1 112x28
+          jswTextBox 'Search for' 115,0 889x30
+            JTextField 1,1 887x28
+          jswButton 'Search' 1004,0 80x30
+            JButton 0,0 80x30
+          jswButton 'Search Tags' 1085,0 109x30
+            JButton 0,0 109x30
+        jswHorizontalPanel 'HP:' 0,30 1194x40
+          jswButton 'Tag selection' 5,5 116x30
+            JButton 0,0 116x30
+          jswLabel ' Total Found =1' 122,5 667x30
+            JLabel 1,1 665x28
+          jswLabel 'Make these members of ' 789,5 149x30
+            JLabel 1,1 147x28
+          jswDropDownContactBox 'dropdown' 939,5 250x30
+            JComboBox 0,0 250x30
+        jswTable 'contactsfound' 0,70 1194x36
+          jswCell 'acell' 2,1 48x32
+            jswLabel '000001' 3,0 45x31
+              JLabel 1,1 43x29
+          jswCell 'acell' 48,1 975x32
+            jswLabel 'Smith  Alice' 3,0 972x31
+              JLabel 1,1 970x29
+          jswCell 'acell' 1021,1 84x32
+            jswButton 'VIEW' 3,0 80x30
+              JButton 0,0 80x30
+          jswCell 'acell' 1103,1 91x32
+            jswButton 'REMOVE' 3,0 87x30
+              JButton 0,0 87x30

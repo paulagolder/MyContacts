@@ -27,8 +27,8 @@ JPanel 0,34 1198x864
                   jswHorizontalPanel 'fiterbar' 0,30 1188x61
                     jswOption 'Selected contacts (0)' 10,29 165x22
                       JRadioButton 0,0 61x20
-                    jswOption 'temptag' 176,29 95x22
-                      JRadioButton 0,0 96x20
+                    jswOption 'Tagged' 176,29 88x22
+                      JRadioButton 0,0 84x20
                   jswHorizontalPanel 'HP:' 0,91 391x40
                     jswButton 'Select' 5,5 80x30
                       JButton 0,0 80x30

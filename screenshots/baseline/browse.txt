@@ -31,10 +31,10 @@ JPanel 0,34 1198x864
               jswTextPrompt 7,3 184x22
           jswButton '>' 201,0 40x33
             JButton 0,1 32x30
-        jswDropDownContactBox 'contactselect' 492,5 115x33
+        jswDropDownContactBox 'contactselect' 499,5 115x33
           JComboBox 5,5 105x23
-        jswButton 'TempTag' 608,5 94x33
-          JButton 0,1 94x30
+        jswButton 'Tag' 615,5 80x33
+          JButton 0,1 80x30
         jswButton 'Next' 1108,5 80x33
           JButton 0,1 80x30
     jswVerticalPanel 'mainpanel' 2,128 1194x734
