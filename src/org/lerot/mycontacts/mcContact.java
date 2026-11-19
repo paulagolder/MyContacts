@@ -1088,11 +1088,11 @@ public class mcContact extends mcDataObject implements Comparable<mcContact>
         return anattribute;
     }
 
-    public void updateAttributebyKey(String editattributekey,
-                                     String newattributevalue)
+    public mcAttribute updateAttributebyKey(String editattributekey,
+                                            String newattributevalue)
     {
         String[] part = mcUtilities.parseLabel(editattributekey);
-        updateAttribute(part[0], part[1], newattributevalue);
+        return updateAttribute(part[0], part[1], newattributevalue);
     }
 
     public boolean updateContact()

@@ -1,5 +1,12 @@
 package org.lerot.mycontacts;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -10,6 +17,33 @@ public class mcImageDataType extends mcDataType
 	public mcImageDataType()
 	{
 		super("image", "image");
+	}
+
+	// photos are stored no bigger than this on their longer side
+	public static final int PHOTOSIZE = 133;
+
+	/*
+	 * A picture file (JPEG, PNG, GIF or BMP) as a stored photo: shrunk to
+	 * fit PHOTOSIZE, as a JPEG in base64. Null if it cannot be read as a
+	 * picture.
+	 */
+	public static String photoFromFile(File file) throws IOException
+	{
+		BufferedImage picture = ImageIO.read(file);
+		if (picture == null) return null;
+		double scale = Math.min(1.0, (double) PHOTOSIZE / Math.max(picture.getWidth(), picture.getHeight()));
+		int width = Math.max(1, (int) Math.round(picture.getWidth() * scale));
+		int height = Math.max(1, (int) Math.round(picture.getHeight() * scale));
+		// drawn onto white, as JPEG has no transparency
+		BufferedImage photo = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = photo.createGraphics();
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		g.drawImage(picture, 0, 0, width, height, Color.WHITE, null);
+		g.dispose();
+		ByteArrayOutputStream jpeg = new ByteArrayOutputStream();
+		ImageIO.write(photo, "jpg", jpeg);
+		return Base64.getEncoder().encodeToString(jpeg.toByteArray());
 	}
 
 	public static String[] getVCardEncodedLines(String foriegnlabel, String rawvalue)

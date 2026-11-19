@@ -236,18 +236,28 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                 if (edattribute == null) return;
             } else if (action.startsWith("REPLACE"))
             {
-                JFileChooser chooser = new JFileChooser();
-                File file = null;
-                int returnValue = chooser.showOpenDialog(null);
-                if (returnValue == JFileChooser.APPROVE_OPTION)
+                // a picture, shrunk to photo size, saved straight away;
+                // cancelling leaves the photo as it was
+                JFileChooser chooser = new JFileChooser(System.getProperty("user.home") + "/Pictures");
+                chooser.setFileFilter(new FileNameExtensionFilter("Pictures", "jpg", "jpeg", "png", "gif", "bmp"));
+                if (chooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) return;
+                File file = chooser.getSelectedFile();
+                String newattributevalue;
+                try
                 {
-                    file = chooser.getSelectedFile();
+                    newattributevalue = mcImageDataType.photoFromFile(file);
+                } catch (IOException e)
+                {
+                    newattributevalue = null;
                 }
-                System.out.println(" file selected " + file);
-                jswImage newimage = new jswImage();
-                newimage.importfile(file.getPath());
-                String newattributevalue = newimage.getEncodedImage();
-                selcontact.updateAttributebyKey(editattributekey, newattributevalue);
+                if (newattributevalue == null)
+                {
+                    JOptionPane.showMessageDialog(this, "Cannot read " + file.getName() + " as a picture.",
+                            "Photo", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                mcAttribute photo = selcontact.updateAttributebyKey(editattributekey, newattributevalue);
+                mcDataObject.current().transaction(photo::dbupsertAttribute);
                 System.out.println(" updated image " + editattributekey + " for " + selcontact);
                 edit = "";
             } else if (action.equalsIgnoreCase("UPDATEID"))
