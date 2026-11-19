@@ -13,8 +13,9 @@ import java.sql.Statement;
 
 /*
  * The first start on a new computer: the settings folder (~/.mccontacts/)
- * gets an empty database and the label and address templates, from the
- * starter kit inside the program (resources/org/lerot/mycontacts/starter).
+ * gets a new database, holding just the author's entry, and the label and
+ * address templates, from the starter kit inside the program
+ * (resources/org/lerot/mycontacts/starter).
  * A folder that already holds a database is left as it is.
  */
 public class mcStarter
@@ -42,6 +43,7 @@ public class mcStarter
 			{
 				Path db = Path.of(mcSettings.databasePath());
 				createDatabase(db);
+				addAuthor(db);
 				System.out.println("New contacts database " + db);
 			}
 		} catch (IOException | SQLException e)
@@ -54,6 +56,15 @@ public class mcStarter
 	public static void createDatabase(Path db) throws IOException, SQLException
 	{
 		try (InputStream in = kit("newdb.sql"))
+		{
+			runScript(db, new String(in.readAllBytes(), StandardCharsets.UTF_8));
+		}
+	}
+
+	// the author's name and email, so a new address book is not empty
+	public static void addAuthor(Path db) throws IOException, SQLException
+	{
+		try (InputStream in = kit("author.sql"))
 		{
 			runScript(db, new String(in.readAllBytes(), StandardCharsets.UTF_8));
 		}

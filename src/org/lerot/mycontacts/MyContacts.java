@@ -92,6 +92,12 @@ public class MyContacts extends JFrame implements ActionListener
     public MyContacts(int w, int h)
     {
         super("MyContacts");
+        // FlatLaf draws the title bar, with soft corners, like the viewer's
+        setUndecorated(true);
+        getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
+        // in the colour of the mode buttons' strip below it
+        getRootPane().putClientProperty("JRootPane.titleBarBackground", Color.decode(jswTheme.NAVAREA));
+        Main.roundCorners(this);
         defdimension = new Dimension(w, h);
         userdir = System.getProperty("user.dir");
         userhome = System.getProperty("user.home");
@@ -422,7 +428,10 @@ public class MyContacts extends JFrame implements ActionListener
             c.gridy++;
             c.insets = new Insets(2, 0, 0, 0);
         }
-        JOptionPane.showMessageDialog(this, info, "About MyContacts", JOptionPane.PLAIN_MESSAGE);
+        String[] buttons = {"Help pages", "OK"};
+        int chosen = JOptionPane.showOptionDialog(this, info, "About MyContacts", JOptionPane.DEFAULT_OPTION,
+                JOptionPane.PLAIN_MESSAGE, null, buttons, buttons[1]);
+        if (chosen == 0) org.lerot.mycontacts.lite.MyContactsLite.help(null);
     }
 
     // what the Info popup says, unless "infotext" in the properties file replaces it

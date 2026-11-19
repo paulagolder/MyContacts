@@ -23,7 +23,8 @@ import java.net.URI;
 import java.util.List;
 
 /*
- * myContactsLite: a small, phone-shaped window titled "Contacts" for looking
+ * myContactsLite: a small, phone-shaped window (titled MyContacts, like the
+ * full window, with "Contacts" as its heading) for looking
  * up a contact while doing something else. Search, pick from the list, and
  * the contact's name (with their photo, if they have one), address, phone,
  * mobile, WhatsApp, email and birthday appear as panels of selectable text. The email opens the mail program; "Edit in
@@ -53,6 +54,7 @@ public class MyContactsLite extends JFrame
 	private final DefaultListModel<ContactCard> model = new DefaultListModel<>();
 	private final JList<ContactCard> list = new JList<>(model);
 	private final JLabel count = new JLabel();
+	private final JButton gettingStarted = new JButton("Getting started", icon("help.svg", 14));
 	private final JPanel tiles = new TilePanel();
 	private ContactCard showing;
 
@@ -92,14 +94,15 @@ public class MyContactsLite extends JFrame
 
 	public MyContactsLite(ContactStore store)
 	{
-		super("Contacts");
+		super("MyContacts");
 		this.store = store;
 		Main.closeHides(this);
 		// FlatLaf draws this window's title bar, in the page colour, so the
-		// buttons can sit in it; the full window keeps the system's
+		// buttons can sit in it
 		setUndecorated(true);
 		getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
 		getRootPane().putClientProperty("JRootPane.titleBarBackground", PAGE);
+		Main.roundCorners(this);
 		setIcon();
 		setJMenuBar(titleBar());
 		content.add(listPage(), "list");
@@ -128,7 +131,14 @@ public class MyContactsLite extends JFrame
 
 		JLabel heading = new JLabel("Contacts");
 		heading.putClientProperty("FlatLaf.styleClass", "h1");
-		page.add(heading);
+		page.add(heading, "split 2");
+		// for a new address book (just the author's entry, say): shown by filter()
+		gettingStarted.setToolTipText("How to get started, on the MyContacts help pages");
+		gettingStarted.putClientProperty("JButton.buttonType", "toolBarButton");
+		gettingStarted.setFocusable(false);
+		gettingStarted.addActionListener(e -> help(GETTINGSTARTED));
+		gettingStarted.setVisible(false);
+		page.add(gettingStarted, "gapleft push, aligny center, growx 0");
 
 		search.putClientProperty("JTextField.placeholderText", "Search");
 		search.putClientProperty("JTextField.leadingIcon", icon("search.svg", 14));
@@ -197,7 +207,8 @@ public class MyContactsLite extends JFrame
 		model.addAll(found);
 		if (!found.isEmpty()) list.setSelectedIndex(0);
 		int all = store.all().size();
-		count.setText(search.getText().isBlank() ? all + " contacts"
+		gettingStarted.setVisible(all <= 2);
+		count.setText(search.getText().isBlank() ? all + (all == 1 ? " contact" : " contacts")
 				: found.isEmpty() ? "No matches" : found.size() + " of " + all);
 	}
 
@@ -577,6 +588,12 @@ public class MyContactsLite extends JFrame
 	{
 		JMenuBar bar = new JMenuBar();
 		bar.add(Box.createHorizontalGlue());
+		JButton help = new JButton(icon("help.svg", 14));
+		help.setToolTipText("Help: the MyContacts help pages");
+		help.putClientProperty("JButton.buttonType", "toolBarButton");
+		help.setFocusable(false);
+		help.addActionListener(e -> help(null));
+		bar.add(help);
 		JButton add = new JButton(icon("plus.svg", 14));
 		add.setToolTipText("Add a new contact");
 		add.putClientProperty("JButton.buttonType", "toolBarButton");
@@ -622,6 +639,16 @@ public class MyContactsLite extends JFrame
 		{
 			public void actionPerformed(ActionEvent e) { action.run(); }
 		});
+	}
+
+	// the help pages are the GitHub wiki, which anyone can read
+	public static final String HELPPAGES = "https://github.com/paulagolder/MyContacts/wiki";
+	public static final String GETTINGSTARTED = "Getting-started";
+
+	// a help page (null for the front page) in the default browser
+	public static void help(String page)
+	{
+		openWeb(URI.create(page == null ? HELPPAGES : HELPPAGES + "/" + page));
 	}
 
 	// in the default browser

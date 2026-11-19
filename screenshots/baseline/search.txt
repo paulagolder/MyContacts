@@ -1,7 +1,7 @@
-JPanel 0,0 1200x863
-  jswVerticalPanel 'bigpanel' 0,0 1200x863
-    jswHorizontalPanel 'HP:' 2,2 1196x36
-      jswPushButtonset 'mode' 831,5 360x26
+JPanel 0,34 1198x864
+  jswVerticalPanel 'bigpanel' 0,0 1198x864
+    jswHorizontalPanel 'HP:' 2,2 1194x36
+      jswPushButtonset 'mode' 829,5 360x26
         jswPushButton 'Browse' 1,1 82x24
           JToggleButton 0,0 82x24
         jswPushButton 'Search' 84,1 78x24
@@ -12,30 +12,30 @@ JPanel 0,0 1200x863
           JToggleButton 0,0 70x24
         jswPushButton 'Info' 296,1 62x24
           JToggleButton 0,0 62x24
-    selectorBox 'selectorbox' 2,38 1196x42
-      jswHorizontalPanel 'HP:' 1,1 1195x41
+    selectorBox 'selectorbox' 2,38 1194x42
+      jswHorizontalPanel 'HP:' 1,1 1193x41
         jswLabel 'All Contacts' 5,5 82x31
           JLabel 1,1 80x29
-        jswDropDownBox 'tagselect' 548,5 100x31
+        jswDropDownBox 'tagselect' 547,5 100x31
           JComboBox 0,0 100x30
-        jswLabel 'Browsing:' 1078,5 112x31
+        jswLabel 'Browsing:' 1076,5 112x31
           JLabel 1,1 110x29
-    jswVerticalPanel 'mainpanel' 2,80 1196x781
-      searchPanel 'search' 0,0 1196x781
-        jswHorizontalPanel 'idbox' 0,0 1196x30
+    jswVerticalPanel 'mainpanel' 2,80 1194x782
+      searchPanel 'search' 0,0 1194x782
+        jswHorizontalPanel 'idbox' 0,0 1194x30
           jswLabel 'Enter Search Term:' 0,0 114x30
             JLabel 1,1 112x28
-          jswTextBox 'Search for' 115,0 891x30
-            JTextField 1,1 889x28
-              jswTextPrompt 7,3 875x22
-          jswButton 'Search' 1006,0 80x30
+          jswTextBox 'Search for' 115,0 889x30
+            JTextField 1,1 887x28
+              jswTextPrompt 7,3 873x22
+          jswButton 'Search' 1004,0 80x30
             JButton 0,0 80x30
-          jswButton 'Search Tags' 1087,0 109x30
+          jswButton 'Search Tags' 1085,0 109x30
             JButton 0,0 109x30
-        jswHorizontalPanel 'HP:' 0,30 1196x30
-          jswLabel ' Total Found =0' 5,5 1186x20
-            JLabel 1,1 1184x18
-        jswTable 'contactsfound' 0,60 1196x26
+        jswHorizontalPanel 'HP:' 0,30 1194x30
+          jswLabel ' Total Found =0' 5,5 1184x20
+            JLabel 1,1 1182x18
+        jswTable 'contactsfound' 0,60 1194x26
           jswCell 'acell' 2,1 141x22
             jswLabel ' no contact selected ' 3,0 138x21
               JLabel 1,1 136x19

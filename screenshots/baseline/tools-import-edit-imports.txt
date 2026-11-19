@@ -1,7 +1,7 @@
-JPanel 0,0 1200x863
-  jswVerticalPanel 'bigpanel' 0,0 1200x863
-    jswHorizontalPanel 'HP:' 2,2 1196x36
-      jswPushButtonset 'mode' 831,5 360x26
+JPanel 0,34 1198x864
+  jswVerticalPanel 'bigpanel' 0,0 1198x864
+    jswHorizontalPanel 'HP:' 2,2 1194x36
+      jswPushButtonset 'mode' 829,5 360x26
         jswPushButton 'Browse' 1,1 82x24
           JToggleButton 0,0 82x24
         jswPushButton 'Search' 84,1 78x24
@@ -12,10 +12,10 @@ JPanel 0,0 1200x863
           JToggleButton 0,0 70x24
         jswPushButton 'Info' 296,1 62x24
           JToggleButton 0,0 62x24
-    jswVerticalPanel 'mainpanel' 2,38 1196x823
-      ToolsPanel 'toolspanel' 0,0 1196x823
-        jswTabbedPanel 'toolstabpanel' 1,1 1194x821
-          JTabbedPane 1,1 1192x819
-            importTabPanel 'importtabpanel' 0,33 1192x786
-              JTabbedPane 1,1 1190x784
-                ImportEditPanel 'importedit' 0,33 1190x751
+    jswVerticalPanel 'mainpanel' 2,38 1194x824
+      ToolsPanel 'toolspanel' 0,0 1194x824
+        jswTabbedPanel 'toolstabpanel' 1,1 1192x822
+          JTabbedPane 1,1 1190x820
+            importTabPanel 'importtabpanel' 0,33 1190x787
+              JTabbedPane 1,1 1188x785
+                ImportEditPanel 'importedit' 0,33 1188x752

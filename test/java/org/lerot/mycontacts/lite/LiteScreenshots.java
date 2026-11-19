@@ -48,6 +48,18 @@ public class LiteScreenshots
 			settle();
 			capture(out, "lite-card-" + id);
 		}
+		// a new address book, with just one entry: the Getting started button shows
+		new mcDataObject().doExecute("delete from attributeValues where cid in (2, 3)");
+		SwingUtilities.invokeAndWait(() ->
+		{
+			window.dispose();
+			window = new MyContactsLite(new ContactStore());
+			window.setAlwaysOnTop(false);
+			window.setFocusableWindowState(false);
+			window.setVisible(true);
+		});
+		settle();
+		capture(out, "lite-new");
 		System.exit(0);
 	}
 
