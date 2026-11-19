@@ -7,6 +7,7 @@ INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, '
 INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'address', '', '{ street:''1 High Street'' , city:''Testtown'' , postcode:''TT1 1AA'' ,  }', '2026-01-01 12:00:00');
 INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'phone', '', '+441234567890', '2026-01-01 12:00:00');
 INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'mobile', '', '+447700900123', '2026-01-01 12:00:00');
+INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'whatsapp', '', '+447700900123', '2026-01-01 12:00:00');
 INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'birthday', '', '{ year:''1950'' , month:''3'' , day:''2'' ,  }', '2026-01-01 12:00:00');
 INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (1, 'email', 'old', 'alice@old.example.com', '2026-01-01 12:00:00');
 INSERT INTO attributeValues(cid, root, qualifier, value, update_dt) VALUES (2, 'memberof', '000001', '000001', '2026-01-01 12:00:00');

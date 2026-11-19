@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.lerot.mycontacts.TestDatabase;
+import org.lerot.mycontacts.mcAttributeTypes;
 import org.lerot.mycontacts.mcDataObject;
 import org.lerot.mycontacts.mcDataSource;
 
@@ -49,6 +50,7 @@ class ContactStoreTest
 		assertEquals("alice@example.com", alice.email()); // not the "old" one
 		assertEquals("+441234567890", alice.phone());
 		assertEquals("+447700900123", alice.mobile());
+		assertEquals("+447700900123", alice.whatsapp());
 		assertEquals("2 March 1950", alice.birthday());
 		assertNotNull(alice.address());
 		assertTrue(alice.address().contains("1 High Street"), alice.address());
@@ -110,6 +112,35 @@ class ContactStoreTest
 		// the full window rebuilds its allcontacts summary table often
 		new mcDataObject().doExecute("create table allcontacts as select cid from attributeValues");
 		assertFalse(store.refresh());
+	}
+
+	@Test
+	void savesAWhatsAppNumberFromThePhoneBox()
+	{
+		assertNull(store.find(2).orElseThrow().whatsapp());
+		assertTrue(store.setWhatsApp(2, "07700 900456"));
+		assertTrue(store.refresh());
+		assertEquals("+447700900456", store.find(2).orElseThrow().whatsapp());
+	}
+
+	@Test
+	void aNewWhatsAppNumberReplacesTheOld()
+	{
+		store.setWhatsApp(1, "+33621250190");
+		store.refresh();
+		assertEquals("+33621250190", store.find(1).orElseThrow().whatsapp());
+		assertEquals("1", TestDatabase.value(
+				"select count(*) from attributeValues where cid = 1 and root = 'whatsapp'"));
+	}
+
+	@Test
+	void olderDatabasesGainTheWhatsAppType()
+	{
+		new mcDataObject().doExecute("delete from attribute where attributeKey = 'whatsapp'");
+		mcAttributeTypes.loadAttributeTypes();
+		assertNotNull(mcAttributeTypes.findType("whatsapp"));
+		assertEquals("cellphone", TestDatabase.value(
+				"select dataType from attribute where attributeKey = 'whatsapp'"));
 	}
 
 	@Test

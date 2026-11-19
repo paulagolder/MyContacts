@@ -24,12 +24,12 @@ import java.util.List;
 /*
  * myContactsLite: a small, phone-shaped window titled "Contacts" for looking
  * up a contact while doing something else. Search, pick from the list, and
- * the contact's name, address, phone, mobile, email and birthday appear as
- * panels of selectable text. The email opens the mail program; "Edit in
+ * the contact's name, address, phone, mobile, WhatsApp, email and birthday
+ * appear as panels of selectable text. The email opens the mail program; "Edit in
  * MyContacts" opens the full window on that contact, in the same program
  * (see Main). In the title bar, + opens it on a new contact and the window
- * button opens it as it was. Reads the database read-only, and stays on top
- * unless unpinned.
+ * button opens it as it was. The only change it makes to the database is
+ * saving a WhatsApp number from the phone box. Stays on top unless unpinned.
  *
  *   ./gradlew run
  *   java -jar MyContacts.jar
@@ -247,6 +247,7 @@ public class MyContactsLite extends JFrame
 		}
 		addPhoneTile(card, card.phone());
 		addPhoneTile(card, card.mobile());
+		addWhatsAppTile(card);
 		if (card.email() != null) tiles.add(emailTile(card.email()));
 		addTile(card.birthday());
 
@@ -275,7 +276,8 @@ public class MyContactsLite extends JFrame
 	}
 
 	// the telephone offers the number to copy, as dialled in the UK or with
-	// its country code, or a WhatsApp chat with it
+	// its country code; for a contact with no WhatsApp number yet, also a
+	// WhatsApp chat with it, or to save it as their WhatsApp number
 	private void addPhoneTile(ContactCard card, String number)
 	{
 		if (number == null) return;
@@ -288,9 +290,19 @@ public class MyContactsLite extends JFrame
 	private void usePhone(ContactCard card, String stored)
 	{
 		PhoneNumber number = PhoneNumber.of(stored);
-		String[] options = { "Copy UK", "Copy Int", "WhatsApp", "Cancel" };
 		String text = "Copy this number\n\nUK:    " + number.uk()
 				+ "\nInt:    " + number.international() + "\n ";
+		// a contact with a WhatsApp number has its own tile for that
+		if (card.whatsapp() != null)
+		{
+			String[] options = { "Copy UK", "Copy Int", "Cancel" };
+			int n = JOptionPane.showOptionDialog(this, text, "Phone",
+					JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+			if (n == 0) copy(number.uk());
+			else if (n == 1) copy(number.international());
+			return;
+		}
+		String[] options = { "Copy UK", "Copy Int", "WhatsApp", "Add WhatsApp", "Cancel" };
 		// unticked, WhatsApp opens the chat empty, as for a call
 		String greeting = greeting(card);
 		JCheckBox withGreeting = new JCheckBox("WhatsApp with \"" + greeting.trim() + "\"", greetOnWhatsApp);
@@ -300,6 +312,26 @@ public class MyContactsLite extends JFrame
 		if (n == 0) copy(number.uk());
 		else if (n == 1) copy(number.international());
 		else if (n == 2) openWeb(number.whatsApp(greetOnWhatsApp ? greeting : null));
+		else if (n == 3) addWhatsApp(card, number);
+	}
+
+	private void addWhatsApp(ContactCard card, PhoneNumber number)
+	{
+		if (!store.setWhatsApp(card.id(), number.international()))
+			JOptionPane.showMessageDialog(this, "Could not save the WhatsApp number.", "WhatsApp",
+					JOptionPane.WARNING_MESSAGE);
+	}
+
+	// the WhatsApp icon opens the chat, with the greeting if ticked last time
+	private void addWhatsAppTile(ContactCard card)
+	{
+		if (card.whatsapp() == null) return;
+		PhoneNumber number = PhoneNumber.of(card.whatsapp());
+		Tile tile = textTile(card.whatsapp(), null);
+		tile.add(iconButton("whatsapp.svg", "Open a WhatsApp chat",
+				() -> openWeb(number.whatsApp(greetOnWhatsApp ? greeting(card) : null))),
+				"cell 1 0, aligny center, hmax 12pt");
+		tiles.add(tile);
 	}
 
 	// the tick box's last setting, while the program runs

@@ -126,7 +126,21 @@ public class ContactStore
 			if (address != null) addressFrom = name(group);
 		}
 		return new ContactCard(c.getCID(), listName(c), name, address, addressFrom,
-				plain(c, "phone"), plain(c, "mobile"), plain(c, "email"), birthday(c));
+				plain(c, "phone"), plain(c, "mobile"), plain(c, "whatsapp"), plain(c, "email"), birthday(c));
+	}
+
+	/*
+	 * Save number (as +44...) as the contact's WhatsApp number, replacing
+	 * any it had. The viewer reloads once it is committed. True if saved.
+	 */
+	public boolean setWhatsApp(int id, String number)
+	{
+		mcContact contact = mcContact.getContact(String.valueOf(id));
+		if (contact == null) return false;
+		mcAttribute att = contact.getAttribute("whatsapp", "");
+		if (att == null) att = contact.createAttribute("whatsapp", "");
+		att.setValue(PhoneNumber.of(number).international(), "now");
+		return mcDataObject.current().transaction(att::dbupsertAttribute);
 	}
 
 	// the stored tid ("Surname  Forename"); getTID() is not filled in by loading

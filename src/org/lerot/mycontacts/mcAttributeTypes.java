@@ -1,5 +1,7 @@
 package org.lerot.mycontacts;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -43,6 +45,8 @@ public class mcAttributeTypes extends mcDataObject
 
 	public static void loadAttributeTypes()
 	{
+		// types added since older databases were made
+		addMissingType("whatsapp", "WhatsApp", "cellphone", 43, "EBS");
 		ArrayList<Map<String, String>> rowlist = doQuery("select * from attribute order by displayOrder ");
 		attributetypelist = new LinkedHashMap<String, mcAttributeType>();
 		for (Map<String, String> row : rowlist)
@@ -54,6 +58,25 @@ public class mcAttributeTypes extends mcDataObject
 			attributetypelist.put(akey, alabtype);
 		}
 		System.out.println( " loaded attributetypes "+attributetypelist.size());
+	}
+
+	private static void addMissingType(String key, String label, String datatype, int order, String displaygroups)
+	{
+		if (!doQuery("select attributeKey from attribute where attributeKey = ?", key).isEmpty()) return;
+		String sql = "insert into attribute (attributeKey, attributeLabel, dataType, displayOrder, `group`, displaygroups)"
+				+ " values (?, ?, ?, ?, 'all', ?)";
+		try (PreparedStatement st = conn().prepareStatement(sql))
+		{
+			st.setString(1, key);
+			st.setString(2, label);
+			st.setString(3, datatype);
+			st.setInt(4, order);
+			st.setString(5, displaygroups);
+			st.executeUpdate();
+		} catch (SQLException e)
+		{
+			sqlError(e, sql);
+		}
 	}
 	
 	public static Set<Entry<String, mcAttributeType>> entrySet()

@@ -14,6 +14,7 @@ INSERT INTO "attribute" VALUES ('birthday', 'Birthday', 'date', 80, 'all', 'EB')
 INSERT INTO "attribute" VALUES ('department', 'Department', 'text', 17, 'all', 'EB');
 INSERT INTO "attribute" VALUES ('email', 'Email', 'email', 61, 'all', 'EBS');
 INSERT INTO "attribute" VALUES ('mobile', 'Mobile', 'cellphone', 42, 'all', 'EBS');
+INSERT INTO "attribute" VALUES ('whatsapp', 'WhatsApp', 'cellphone', 43, 'all', 'EBS');
 INSERT INTO "attribute" VALUES ('name', 'Name', 'name', 1, 'all', 'E');
 INSERT INTO "attribute" VALUES ('phone', 'Phone', 'phone', 40, 'all', 'EBS');
 INSERT INTO "attribute" VALUES ('photo', 'Photo', 'image', 0, 'all', 'E');
