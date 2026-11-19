@@ -18,14 +18,15 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.util.List;
 
 /*
  * myContactsLite: a small, phone-shaped window titled "Contacts" for looking
  * up a contact while doing something else. Search, pick from the list, and
- * the contact's name, address, phone, mobile, WhatsApp, email and birthday
- * appear as panels of selectable text. The email opens the mail program; "Edit in
+ * the contact's name (with their photo, if they have one), address, phone,
+ * mobile, WhatsApp, email and birthday appear as panels of selectable text. The email opens the mail program; "Edit in
  * MyContacts" opens the full window on that contact, in the same program
  * (see Main). In the title bar, + opens it on a new contact and the window
  * button opens it as it was. The only change it makes to the database is
@@ -236,7 +237,10 @@ public class MyContactsLite extends JFrame
 	{
 		showing = card;
 		tiles.removeAll();
-		tiles.add(textTile(card.name(), "h3"));
+		Tile name = textTile(card.name(), "h3");
+		BufferedImage photo = store.photo(card.id());
+		if (photo != null) name.add(new JLabel(new PhotoIcon(photo, 72)), "cell 1 0, aligny top");
+		tiles.add(name);
 		if (card.address() != null)
 		{
 			Tile address = textTile(card.address(), null);
@@ -438,6 +442,33 @@ public class MyContactsLite extends JFrame
 			super(SHADE, null, 16);
 			setLayout(new MigLayout("insets 10 14 10 14, fill", "[grow, fill]"));
 			add(text, "wmin 0");
+		}
+	}
+
+	// a photo drawn size px high (as wide as its shape needs), with rounded corners
+	static class PhotoIcon implements Icon
+	{
+		private final BufferedImage photo;
+		private final int width, height;
+
+		PhotoIcon(BufferedImage photo, int size)
+		{
+			this.photo = photo;
+			height = jswScale.px(size);
+			width = Math.max(1, Math.round(height * (float) photo.getWidth() / photo.getHeight()));
+		}
+
+		public int getIconWidth() { return width; }
+		public int getIconHeight() { return height; }
+
+		public void paintIcon(Component c, Graphics g, int x, int y)
+		{
+			Graphics2D g2 = (Graphics2D) g.create();
+			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+			g2.clip(new RoundRectangle2D.Float(x, y, width, height, jswScale.px(10), jswScale.px(10)));
+			g2.drawImage(photo, x, y, width, height, null);
+			g2.dispose();
 		}
 	}
 

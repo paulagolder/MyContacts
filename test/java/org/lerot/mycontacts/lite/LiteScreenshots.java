@@ -4,6 +4,7 @@ import org.lerot.mycontacts.Screenshots;
 import org.lerot.mycontacts.mcSettings;
 import org.lerot.mycontacts.mcDataObject;
 import org.lerot.mycontacts.mcDataSource;
+import org.lerot.mycontacts.mcImageDataType;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -40,6 +41,7 @@ public class LiteScreenshots
 		SwingUtilities.invokeAndWait(() -> window.search.setText("smith"));
 		settle();
 		capture(out, "lite-search");
+		givePhoto(2, args[1]);
 		for (int id : new int[] { 1, 2 })
 		{
 			SwingUtilities.invokeAndWait(() -> window.open(window.store.find(id).orElseThrow()));
@@ -62,6 +64,20 @@ public class LiteScreenshots
 		});
 		ImageIO.write(image[0], "png", new File(out, name + ".png"));
 		System.out.println("captured " + name);
+	}
+
+	// a made-up photo (a soft gradient) for a contact
+	static void givePhoto(int id, String folder) throws Exception
+	{
+		BufferedImage picture = new BufferedImage(120, 140, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = picture.createGraphics();
+		g.setPaint(new GradientPaint(0, 0, new Color(0x9DB7D9), 120, 140, new Color(0xE8C9A0)));
+		g.fillRect(0, 0, 120, 140);
+		g.dispose();
+		File file = new File(folder, "photo.png");
+		ImageIO.write(picture, "png", file);
+		new mcDataObject().doExecute("insert into attributeValues(cid, root, qualifier, value) values ("
+				+ id + ", 'photo', '', '" + mcImageDataType.photoFromFile(file) + "')");
 	}
 
 	static void settle() throws Exception

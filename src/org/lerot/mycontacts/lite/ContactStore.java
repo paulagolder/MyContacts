@@ -2,6 +2,10 @@ package org.lerot.mycontacts.lite;
 
 import org.lerot.mycontacts.*;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -127,6 +131,22 @@ public class ContactStore
 		}
 		return new ContactCard(c.getCID(), listName(c), name, address, addressFrom,
 				plain(c, "phone"), plain(c, "mobile"), plain(c, "whatsapp"), plain(c, "email"), birthday(c));
+	}
+
+	// the contact's photo, or null if it has none or it cannot be read
+	public BufferedImage photo(int id)
+	{
+		mcContact contact = mcContact.getContact(String.valueOf(id));
+		mcAttribute att = contact == null ? null : contact.getAttribute("photo", "");
+		String value = att == null ? null : att.getValue();
+		if (value == null || value.isBlank()) return null;
+		try
+		{
+			return ImageIO.read(new ByteArrayInputStream(Base64.getMimeDecoder().decode(value)));
+		} catch (IOException | IllegalArgumentException e)
+		{
+			return null;
+		}
 	}
 
 	/*

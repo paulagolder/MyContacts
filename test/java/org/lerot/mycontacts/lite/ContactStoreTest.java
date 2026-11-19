@@ -144,6 +144,25 @@ class ContactStoreTest
 	}
 
 	@Test
+	void showsAPhotoWhenThereIsOne()
+	{
+		assertNull(store.photo(1));
+		// a 1x1 JPEG, folded over two lines as some imports leave it
+		String jpeg = "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=";
+		new mcDataObject().doExecute("insert into attributeValues(cid, root, qualifier, value) values (1, 'photo', '', '"
+				+ jpeg.substring(0, 60) + "\n" + jpeg.substring(60) + "')");
+		assertNotNull(store.photo(1));
+	}
+
+	@Test
+	void aCutShortPhotoIsNotShown()
+	{
+		new mcDataObject().doExecute("insert into attributeValues(cid, root, qualifier, value) values (1, 'photo', '', "
+				+ "'/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAs')");
+		assertNull(store.photo(1));
+	}
+
+	@Test
 	void reloadsWhenAnotherDatabaseIsOpened()
 	{
 		assertFalse(store.refresh());
