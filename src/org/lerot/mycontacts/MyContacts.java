@@ -157,6 +157,13 @@ public class MyContacts extends JFrame implements ActionListener
         buttonset.addNewButton("Tools");
         infobutton = buttonset.addNewButton("Info","INFO");
         buttonset.setButtonSelection("Browse");
+        // a new contact, from any mode, with the + of the Contacts viewer
+        jswButton newcontact = new jswButton(this, "New contact", "NEWCONTACT");
+        JButton plus = (JButton) newcontact.getComponent(0);
+        plus.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("org/lerot/mycontacts/lite/icons/plus.svg", 14, 14));
+        // sized again, for the icon as well as the words
+        newcontact.applyStyle();
+        optionBar.add(" LEFT ", newcontact);
         optionBar.add(" RIGHT ", buttonset);
       //  optionBar.add(" RIGHT ", new jswButton(this, "Info", "INFO"));
         optionBar.setBorder(BorderFactory.createEmptyBorder(2, 8, 2, 8));
@@ -373,7 +380,11 @@ public class MyContacts extends JFrame implements ActionListener
     {
         String action = evt.getActionCommand().toUpperCase();
         System.out.println(" MyContacts action :" + action);
-        if (action.equals("MODE:INFO"))
+        if (action.equals("NEWCONTACT"))
+        {
+            editContact(mcContacts.createNewContact().getID());
+            return;
+        } else if (action.equals("MODE:INFO"))
         {
             infoMenu();
             return;

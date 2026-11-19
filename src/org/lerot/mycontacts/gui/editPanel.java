@@ -826,10 +826,10 @@ public class editPanel extends jswVerticalPanel implements ActionListener
     public void makeEditPanel()
     {
         this.removeAll();
-        jswHorizontalPanel newcontactbox = new jswHorizontalPanel("newcontact", false);
-        add(" FILLW ", newcontactbox);
-        jswButton ncbutton = new jswButton(this, "New Contact", "NEWCONTACT");
-        newcontactbox.add("MIDDLE", ncbutton);
+        // editing the contact itself (its name, or DELETE) leaves nothing else
+        // to click until UPDATE or CANCEL: the details show without their Edit
+        // buttons, and the links are hidden (New contact is in the top strip)
+        boolean renaming = edit.equalsIgnoreCase("editid");
         mcContact selcontact = MyContacts.selbox.getSelcontact();
         //setBackground(new Color(0, 0, 0, 0));
         setBackground(background);
@@ -841,7 +841,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         if (selcontact != null) idpanel1.setText(selcontact.getIDstr());
         else
         {
-            // no contacts yet (a new database): only the New Contact button
+            // no contacts yet (a new database): New contact is in the top strip
             idpanel1.setText(" no contact selected ");
             this.repaint();
             this.validate();
@@ -1100,10 +1100,8 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                         jswLabel alabel2 = new jswLabel(value);
                         attributepanel.addCell(alabel2, " FILLW ", row, 2);
                     }
-                    jswPanel buttonbox = new jswVerticalPanel("title", false, false);
-                    jswButton idedit = new jswButton(this, "Edit", "EDITATTRIBUTE:" + attributekey);
-                    buttonbox.add(idedit);
-                    attributepanel.addCell(buttonbox, row, 3);
+                    // the Edit button comes below, and only outside the
+                    // contact's own edit (its name and DELETE), until CANCEL
                 }
 
                 if (edit.equalsIgnoreCase(""))
@@ -1134,21 +1132,21 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         }
 
         mcAttributes relationslist = selcontact.selectLinkToAttributes("related");
-        if (relationslist != null)
+        if (!renaming && relationslist != null)
         {
             jswVerticalPanel relationspanel = makeLinkToPanel(relationslist, "related", "Related to");
             add(relationspanel);
         }
 
         mcAttributes memberstlist = selcontact.selectLinkToAttributes("hasmember");
-        if (memberstlist != null)
+        if (!renaming && memberstlist != null)
         {
             jswVerticalPanel memberspanel = makeLinkToPanel(memberstlist, "hasmember", "Has Members");
             add(memberspanel);
         }
 
         mcAttributes orglist = selcontact.selectLinkToAttributes("memberof");
-        if (orglist != null)
+        if (!renaming && orglist != null)
         {
             jswVerticalPanel orgpanel = makeLinkToPanel(orglist, "memberof", "Member Of");
             add(orgpanel);
@@ -1156,7 +1154,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
 
         mcAttributes relatedlist = selcontact.selectLinkFromAttributes("related");
 
-        if (relatedlist != null)
+        if (!renaming && relatedlist != null)
         {
             jswVerticalPanel linkfrompanel = makeLinkedFromPanel(relatedlist, "related", "Related to, not yet reflected",
                     "These contacts list this one as a relation, but it does not list them. REFLECT adds the link here and asks what the relationship is from this side.");
@@ -1164,7 +1162,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         }
 
         mcAttributes linkedmemberlist = selcontact.selectLinkFromAttributes("memberof");
-        if (linkedmemberlist != null)
+        if (!renaming && linkedmemberlist != null)
         {
             jswVerticalPanel linkfrompanel = makeLinkedFromPanel(linkedmemberlist, "memberof", "Has Members, not yet reflected",
                     "These contacts say they are members of this one, but it does not list them as members. REFLECT adds them to Has Members.");
@@ -1172,7 +1170,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         }
 
         mcAttributes linkedorglist = selcontact.selectLinkFromAttributes("hasmember");
-        if (linkedorglist != null)
+        if (!renaming && linkedorglist != null)
         {
             jswVerticalPanel linkfrompanel = makeLinkedFromPanel(linkedorglist, "hasmember", "Member Of, not yet reflected",
                     "These contacts list this one as a member, but it does not say it belongs to them. REFLECT adds them to Member Of.");

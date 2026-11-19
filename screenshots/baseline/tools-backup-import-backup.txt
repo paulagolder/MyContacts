@@ -1,6 +1,8 @@
 JPanel 0,34 1198x864
   jswVerticalPanel 'bigpanel' 0,0 1198x864
     jswHorizontalPanel 'HP:' 2,2 1194x36
+      jswButton 'New contact' 6,5 131x26
+        JButton 0,0 131x26
       jswPushButtonset 'mode' 829,5 360x26
         jswPushButton 'Browse' 1,1 82x24
           JToggleButton 0,0 82x24
