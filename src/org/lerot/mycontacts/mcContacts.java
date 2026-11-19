@@ -42,20 +42,40 @@ public class mcContacts extends mcDataObject
 	// besides its name and tags
 	static final String[] NEWCONTACTDETAILS = { "address", "mobile", "email" };
 
-	public static mcContact createNewContact()
+	// a new contact with the name given (as if typed into its name on the
+	// Edit screen), and the basic details to fill in as empty rows; all in
+	// one transaction. Null if it could not be saved.
+	public static mcContact createNewContact(String forename, String surname)
 	{
-		mcContact newcontact = new mcContact();
-		newcontact.setTID("new contact");
-		newcontact.setTags("newcontact");
-		newcontact.setUpdate();
-		int nid = newcontact.insertNewContact();
-		newcontact.setID(nid);
-		// the basic details to fill in, as empty rows on the Edit screen
-		// (as if added with CREATE NEW ATTRIBUTE)
-		for (String root : NEWCONTACTDETAILS)
-			newcontact.createAttribute(root, "").dbinsertAttribute();
-		MyContacts.selbox.put(newcontact);
-		return newcontact;
+		mcContact[] made = { null };
+		boolean saved = mcDataObject.current().transaction(() ->
+		{
+			mcContact newcontact = new mcContact();
+			newcontact.setTID("new contact");
+			newcontact.setTags("newcontact");
+			newcontact.setUpdate();
+			int nid = newcontact.insertNewContact();
+			if (nid <= 0) throw new IllegalStateException("no id for the new contact");
+			newcontact.setID(nid);
+			newcontact.fillContact();
+			Map<String, String> parts = new LinkedHashMap<>();
+			parts.put("title", "");
+			parts.put("fn", forename.trim());
+			parts.put("mn", "");
+			parts.put("sn", surname.trim());
+			mcAttribute name = newcontact.getAttribute("name", "");
+			name.getAttributevalue().setValue(parts, "now");
+			name.dbupdateAttribute();
+			String tid = name.getFormattedValue();
+			newcontact.updateAttribute("tid", "", tid).dbupdateAttribute();
+			newcontact.setTID(tid);
+			for (String root : NEWCONTACTDETAILS)
+				newcontact.createAttribute(root, "").dbinsertAttribute();
+			made[0] = newcontact;
+		});
+		if (!saved || made[0] == null) return null;
+		if (MyContacts.selbox != null) MyContacts.selbox.put(made[0]);
+		return made[0];
 	}
 
 	/*

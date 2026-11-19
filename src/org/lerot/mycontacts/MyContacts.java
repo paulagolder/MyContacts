@@ -238,7 +238,47 @@ public class MyContacts extends JFrame implements ActionListener
     public static void newContact()
     {
         open(null);
-        SwingUtilities.invokeLater(() -> topgui.editContact(mcContacts.createNewContact().getID()));
+        SwingUtilities.invokeLater(() -> topgui.addContact());
+    }
+
+    // asks for the new contact's name first: nothing is saved without one
+    public void addContact()
+    {
+        JTextField forename = new JTextField(18);
+        JTextField surname = new JTextField(18);
+        JPanel form = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.WEST;
+        c.insets = new Insets(3, 0, 3, 8);
+        c.gridy = 0;
+        form.add(new JLabel("Forename"), c);
+        form.add(forename, c);
+        c.gridy = 1;
+        form.add(new JLabel("Surname"), c);
+        form.add(surname, c);
+        // the cursor starts in Forename
+        forename.addAncestorListener(new javax.swing.event.AncestorListener()
+        {
+            public void ancestorAdded(javax.swing.event.AncestorEvent e) { forename.requestFocusInWindow(); }
+
+            public void ancestorRemoved(javax.swing.event.AncestorEvent e) {}
+
+            public void ancestorMoved(javax.swing.event.AncestorEvent e) {}
+        });
+        int answer = JOptionPane.showConfirmDialog(this, form, "New contact", JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE);
+        if (answer != JOptionPane.OK_OPTION) return;
+        if (forename.getText().isBlank() && surname.getText().isBlank()) return;
+        mcContact contact = mcContacts.createNewContact(forename.getText(), surname.getText());
+        if (contact == null)
+        {
+            JOptionPane.showMessageDialog(this, "The new contact could not be saved.", "New contact",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        // into the drop-down, then shown
+        selbox.update();
+        editContact(contact.getID());
     }
 
     // show a contact in the Edit view
@@ -382,7 +422,7 @@ public class MyContacts extends JFrame implements ActionListener
         System.out.println(" MyContacts action :" + action);
         if (action.equals("NEWCONTACT"))
         {
-            editContact(mcContacts.createNewContact().getID());
+            addContact();
             return;
         } else if (action.equals("MODE:INFO"))
         {

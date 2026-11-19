@@ -129,11 +129,6 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                 linkselect.removeActionListener(this);
                 linkselect.setSelected(value);
                 linkselect.addActionListener(this,"changebox");
-            } else if (action.startsWith("NEWCONTACT"))
-            {
-                selcontact = mcContacts.createNewContact();
-                MyContacts.topgui.refreshView();
-                MyContacts.selbox.setSelcontact(selcontact);
             } else if (action.startsWith("IMPORT"))
             {
                 JTextArea textArea = new JTextArea(6, 25);
@@ -311,11 +306,20 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                 // System.out.println("reply =" + n);
                 if (n == YES)
                 {
-                    MyContacts.selbox.getSelcontact().deleteContact();
-                    MyContacts.selbox.refreshAll();
+                    // then on to the next contact in the browse list (the
+                    // first, if this was the last)
+                    mcContact gone = MyContacts.selbox.getSelcontact();
+                    Vector<mcContact> browsing = MyContacts.selbox.getBrowsecontactlist().makeOrderedContactsVector();
+                    int at = browsing.indexOf(gone);
+                    mcContact next = at >= 0 && at + 1 < browsing.size() ? browsing.get(at + 1)
+                            : browsing.isEmpty() || browsing.get(0) == gone ? null : browsing.get(0);
+                    gone.deleteContact();
+                    MyContacts.selbox.setSelcontact(next);
+                    MyContacts.selbox.update();
                     edit = "";
-                }
-                edit = "editid";
+                    MyContacts.topgui.refreshView();
+                } else
+                    edit = "editid";
             } else if (action.equalsIgnoreCase("DELETETAGS"))
             {
                 Set<String> ataglist = new HashSet<String>();
@@ -981,6 +985,9 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                             jswPanel buttonbox = new jswVerticalPanel(" button box ", false, false);
                             Map<mcfield, String> attarry = anattribute.getFieldValueMap();
                             jswTable fieldlistbox = new jswTable(this, "fieldtable", arraytablestyles);
+                            // boxes left from a longer detail (an address's postcode,
+                            // county...) must not be saved into this one, e.g. a name
+                            Arrays.fill(attfieldeditbox, null);
                             int frow = 0;
                             for (Entry<mcfield, String> arow : attarry.entrySet())
                             {
