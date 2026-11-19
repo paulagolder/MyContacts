@@ -150,7 +150,8 @@ public class editPanel extends jswVerticalPanel implements ActionListener
             {
                 String vstr = action.substring(5);
                 selcontact = MyContacts.selbox.FindbyID(vstr);
-                MyContacts.selbox.setSelcontact(selcontact);
+                // the drop-down at the top follows
+                MyContacts.selbox.showContact(selcontact);
                 edit = "";
                 MyContacts.topgui.refreshView();
             } else if (action.startsWith("DISCONNECT:"))

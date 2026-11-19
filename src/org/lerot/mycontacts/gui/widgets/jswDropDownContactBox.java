@@ -54,11 +54,19 @@ public class jswDropDownContactBox extends jswPanel implements ActionListener
         //doStyling();
     }
 
+    // contacts are matched by id: reloading the contacts makes new objects,
+    // so the one asked for may not be the one in the list
     public boolean contains(mcContact target)
     {
-        int fnd = listModel.getIndexOf(target);
-        if (fnd == -1) return false;
-        else return true;
+        return indexOf(target) >= 0;
+    }
+
+    private int indexOf(mcContact target)
+    {
+        if (target == null) return -1;
+        for (int i = 0; i < listModel.getSize(); i++)
+            if (listModel.getElementAt(i).getCID() == target.getCID()) return i;
+        return -1;
     }
 
     public void applyStyle(jswStyle style)
@@ -167,10 +175,11 @@ public class jswDropDownContactBox extends jswPanel implements ActionListener
 
     public void setSelected(mcContact selitem)
     {
-        if (contains(selitem))
-            contactddbox.setSelectedItem(selitem);
-        else
-            contactddbox.setSelectedItem(0);
+        int at = indexOf(selitem);
+        if (at >= 0)
+            contactddbox.setSelectedIndex(at);
+        else if (listModel.getSize() > 0)
+            contactddbox.setSelectedIndex(0);
     }
 
     public void setSelected(int selindex)
@@ -202,6 +211,8 @@ public class jswDropDownContactBox extends jswPanel implements ActionListener
                 newModel.addElement(list.get(i));
             }
         }
+        // the list searched by contains() and setSelected() is this new one
+        listModel = newModel;
         contactddbox.setModel(newModel);
         if (list.size() > 0)
             contactddbox.setSelectedIndex(0);

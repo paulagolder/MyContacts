@@ -108,7 +108,8 @@ String action = cmd;
         {
             String selcon = action.substring(5);
             MyContacts.topgui.mode = "BROWSE";
-            MyContacts.selbox.setSelcontact(selcon);
+            // the drop-down at the top follows
+            MyContacts.selbox.showContact(MyContacts.selbox.FindbyIDstr(selcon));
             //mcContact scon = MyContacts.selbox.getSelcontact();
             MyContacts.topgui.refreshView();
         } else
