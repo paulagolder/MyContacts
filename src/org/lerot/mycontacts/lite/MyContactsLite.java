@@ -76,6 +76,12 @@ public class MyContactsLite extends JFrame
 		window.toFront();
 	}
 
+	// the viewer's left edge on screen, or null if it is not showing
+	public static Integer leftEdge()
+	{
+		return window != null && window.isVisible() ? window.getX() : null;
+	}
+
 	static void setupLookAndFeel()
 	{
 		Main.setupLookAndFeel();

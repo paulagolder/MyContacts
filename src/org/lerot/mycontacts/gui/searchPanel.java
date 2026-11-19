@@ -199,8 +199,8 @@ String action = cmd;
         }
         resulttable.repaint();
         searchpanel.repaint();
-        MyContacts.topgui.pack();
-        MyContacts.topgui.setVisible(true);
+        // the window keeps the size the user gave it
+        MyContacts.topgui.mainpanel.revalidate();
         MyContacts.topgui.mainpanel.repaint();
         this.repaint();
         MyContacts.topgui.getContentPane().validate();

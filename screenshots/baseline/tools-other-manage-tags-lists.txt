@@ -1,45 +1,45 @@
-JPanel 0,0 1200x900
-  jswVerticalPanel 'bigpanel' 0,0 1200x900
+JPanel 0,0 1200x863
+  jswVerticalPanel 'bigpanel' 0,0 1200x863
     jswHorizontalPanel 'HP:' 2,2 1196x36
-      jswPushButtonset 'mode' 871,5 320x26
-        jswPushButton 'Browse' 1,1 74x24
-          JToggleButton 0,0 74x24
-        jswPushButton 'Search' 76,1 70x24
+      jswPushButtonset 'mode' 831,5 360x26
+        jswPushButton 'Browse' 1,1 82x24
+          JToggleButton 0,0 82x24
+        jswPushButton 'Search' 84,1 78x24
+          JToggleButton 0,0 78x24
+        jswPushButton 'Edit' 163,1 61x24
+          JToggleButton 0,0 61x24
+        jswPushButton 'Tools' 225,1 70x24
           JToggleButton 0,0 70x24
-        jswPushButton 'Edit' 147,1 53x24
-          JToggleButton 0,0 53x24
-        jswPushButton 'Tools' 201,1 62x24
+        jswPushButton 'Info' 296,1 62x24
           JToggleButton 0,0 62x24
-        jswPushButton 'Info' 264,1 54x24
-          JToggleButton 0,0 54x24
-    jswVerticalPanel 'mainpanel' 2,38 1196x860
-      ToolsPanel 'toolspanel' 0,0 1196x860
-        jswTabbedPanel 'toolstabpanel' 1,1 1194x858
-          JTabbedPane 1,1 1192x856
-            OtherTabPanel 'othertabpanel' 0,33 1192x823
-              JTabbedPane 1,1 1190x821
-                manageTagsPanel 'managetagspanel' 0,33 1190x788
+    jswVerticalPanel 'mainpanel' 2,38 1196x823
+      ToolsPanel 'toolspanel' 0,0 1196x823
+        jswTabbedPanel 'toolstabpanel' 1,1 1194x821
+          JTabbedPane 1,1 1192x819
+            OtherTabPanel 'othertabpanel' 0,33 1192x786
+              JTabbedPane 1,1 1190x784
+                manageTagsPanel 'managetagspanel' 0,33 1190x751
                   jswHorizontalPanel 'HP:' 0,0 92x30
                     jswLabel 'Manage Tags' 5,5 82x20
                       JLabel 1,1 80x18
                   jswHorizontalPanel 'HP:' 0,30 147x30
                     jswLabel ' 3 different tags found ' 5,5 137x20
                       JLabel 1,1 135x18
-                  jswHorizontalPanel 'HP:' 0,60 395x40
-                    jswButton 'MERGE' 5,5 72x30
-                      JButton 0,0 72x30
-                    jswButton 'DELETE' 78,5 72x30
-                      JButton 0,0 72x30
-                    jswButton 'RENAME' 151,5 79x30
-                      JButton 0,0 79x30
-                    jswButton 'DUPLICATE' 231,5 86x30
-                      JButton 0,0 86x30
-                    jswButton 'NORM' 318,5 72x30
-                      JButton 0,0 72x30
-                  jswScrollPane 'scrollpane' 0,100 1190x688
-                    JScrollPane 0,0 1190x688
-                      JViewport 1,1 1188x686
-                        jswTable 'tags' 0,0 1188x686
+                  jswHorizontalPanel 'HP:' 0,60 435x40
+                    jswButton 'MERGE' 5,5 80x30
+                      JButton 0,0 80x30
+                    jswButton 'DELETE' 86,5 80x30
+                      JButton 0,0 80x30
+                    jswButton 'RENAME' 167,5 87x30
+                      JButton 0,0 87x30
+                    jswButton 'DUPLICATE' 255,5 94x30
+                      JButton 0,0 94x30
+                    jswButton 'NORM' 350,5 80x30
+                      JButton 0,0 80x30
+                  jswScrollPane 'scrollpane' 0,100 1190x651
+                    JScrollPane 0,0 1190x651
+                      JViewport 1,1 1188x649
+                        jswTable 'tags' 0,0 1188x649
                           jswCell 'acell' 3,2 52x22
                             jswLabel 'friends' 3,0 49x21
                               JLabel 1,1 47x19

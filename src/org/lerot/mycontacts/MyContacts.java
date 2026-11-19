@@ -138,7 +138,8 @@ public class MyContacts extends JFrame implements ActionListener
         bigpanel.setName("bigpanel");
         bigpanel.setPreferredSize(defdimension);
         bigpanel.setSize(defdimension);
-        bigpanel.setMinimumSize(defdimension);
+        // free to shrink with the window (see open() for how far)
+        bigpanel.setMinimumSize(new Dimension(0, 0));
         getContentPane().add(bigpanel);
         jswHorizontalPanel optionBar = new jswHorizontalPanel();
         buttonset = new jswPushButtonset(this, "mode", false, false);
@@ -202,9 +203,16 @@ public class MyContacts extends JFrame implements ActionListener
             mframe.getContentPane().setLayout(
                     new BoxLayout(mframe.getContentPane(), BoxLayout.X_AXIS));
             mframe.setSize(size);
-            Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-            int x = (int) ((dimension.getWidth() - mframe.getWidth()) / 2);
-            int y = (int) ((dimension.getHeight() - mframe.getHeight()) / 2);
+            // narrower than this, the buttons in a row would overlap
+            mframe.setMinimumSize(jswScale.windowSize(700, 500));
+            // centred, but moved left if need be to clear the Contacts
+            // viewer at the top right, as far as the screen allows
+            Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+            int x = screen.x + (screen.width - mframe.getWidth()) / 2;
+            Integer viewer = org.lerot.mycontacts.lite.MyContactsLite.leftEdge();
+            if (viewer != null) x = Math.min(x, viewer - jswScale.px(16) - mframe.getWidth());
+            x = Math.max(screen.x, x);
+            int y = screen.y + Math.max(0, (screen.height - mframe.getHeight()) / 2);
             mframe.setLocation(x, y);
         }
         mframe.setVisible(true);

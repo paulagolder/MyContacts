@@ -1,17 +1,17 @@
 JPanel 0,0 1200x863
   jswVerticalPanel 'bigpanel' 0,0 1200x863
     jswHorizontalPanel 'HP:' 2,2 1196x36
-      jswPushButtonset 'mode' 871,5 320x26
-        jswPushButton 'Browse' 1,1 74x24
-          JToggleButton 0,0 74x24
-        jswPushButton 'Search' 76,1 70x24
+      jswPushButtonset 'mode' 831,5 360x26
+        jswPushButton 'Browse' 1,1 82x24
+          JToggleButton 0,0 82x24
+        jswPushButton 'Search' 84,1 78x24
+          JToggleButton 0,0 78x24
+        jswPushButton 'Edit' 163,1 61x24
+          JToggleButton 0,0 61x24
+        jswPushButton 'Tools' 225,1 70x24
           JToggleButton 0,0 70x24
-        jswPushButton 'Edit' 147,1 53x24
-          JToggleButton 0,0 53x24
-        jswPushButton 'Tools' 201,1 62x24
+        jswPushButton 'Info' 296,1 62x24
           JToggleButton 0,0 62x24
-        jswPushButton 'Info' 264,1 54x24
-          JToggleButton 0,0 54x24
     selectorBox 'selectorbox' 2,38 1196x90
       jswHorizontalPanel 'HP:' 1,1 1195x40
         jswLabel 'All Contacts' 5,5 82x30
@@ -21,20 +21,20 @@ JPanel 0,0 1200x863
         jswLabel 'Browsing:' 1078,5 112x30
           JLabel 1,1 110x28
       jswHorizontalPanel 'HP:' 1,40 1195x43
-        jswButton 'Previous' 5,5 82x33
-          JButton 0,1 82x30
-        jswHorizontalPanel 'filterpanel' 88,5 241x33
+        jswButton 'Previous' 5,5 90x33
+          JButton 0,1 90x30
+        jswHorizontalPanel 'filterpanel' 96,5 241x33
           jswTextBox 'stuff' 0,0 200x33
             JTextField 1,2 198x28
               jswTextPrompt 7,3 184x22
           jswButton '>' 201,0 40x33
-            JButton 0,1 24x30
-        jswDropDownContactBox 'contactselect' 497,5 115x33
+            JButton 0,1 32x30
+        jswDropDownContactBox 'contactselect' 493,5 115x33
           JComboBox 5,5 105x23
-        jswButton 'TempTag' 613,5 86x33
-          JButton 0,1 86x30
-        jswButton 'Next' 1118,5 72x33
-          JButton 0,1 72x30
+        jswButton 'TempTag' 609,5 94x33
+          JButton 0,1 94x30
+        jswButton 'Next' 1110,5 80x33
+          JButton 0,1 80x30
     jswVerticalPanel 'mainpanel' 2,128 1196x733
       browsePanel 'browse' 0,0 1196x733
         jswHorizontalPanel 'idbox' 0,0 1196x30
@@ -42,8 +42,8 @@ JPanel 0,0 1200x863
             JLabel 1,1 66x28
           jswLabel ' ' 69,0 111x30
             JLabel 1,1 109x28
-          jswButton 'Export vCard' 1088,0 108x30
-            JButton 0,0 108x30
+          jswButton 'Export vCard' 1080,0 116x30
+            JButton 0,0 116x30
         jswTable 'attributes' 0,30 1196x26
           jswCell 'acell' 2,1 34x22
             jswLabel 'tags' 3,0 31x21
@@ -54,10 +54,10 @@ JPanel 0,0 1200x863
           jswCell 'acell' 1190,1 6x22
             jswLabel '' 3,0 3x21
               JLabel 1,1 1x19
-        jswVerticalPanel 'LinkTo' 0,56 205x61
+        jswVerticalPanel 'LinkTo' 0,56 213x61
           jswLabel 'Related to' 0,0 63x20
             JLabel 1,1 61x18
-          jswTable 'related' 0,20 205x36
+          jswTable 'related' 0,20 213x36
             jswCell 'acell' 2,1 83x32
               jswLabel 'Smith  Alice' 3,0 80x31
                 JLabel 1,1 78x29
@@ -67,9 +67,9 @@ JPanel 0,0 1200x863
             jswCell 'acell' 122,1 9x32
               jswLabel ' ' 3,0 6x31
                 JLabel 1,1 4x29
-            jswCell 'acell' 129,1 76x32
-              jswButton 'VIEW' 3,0 72x30
-                JButton 0,0 72x30
+            jswCell 'acell' 129,1 84x32
+              jswButton 'VIEW' 3,0 80x30
+                JButton 0,0 80x30
         jswLabel 'Correspondance' 0,117 101x20
           JLabel 1,1 99x18
         correspondancePanel 'correspondance panel' 0,137 1196x596
@@ -78,9 +78,9 @@ JPanel 0,0 1200x863
               JViewport 1,1 1192x492
                 jswTable 'correspondance table' 0,0 1192x492
           jswHorizontalPanel 'fred' 0,496 1196x100
-            jswDropPane 'HP:' 0,0 561x100
-              JLabel 219,41 123x17
-            jswButton 'note' 562,0 72x100
-              JButton 6,35 72x30
-            jswDropPane 'HP:' 635,0 561x100
-              JLabel 207,41 147x17
+            jswDropPane 'HP:' 0,0 557x100
+              JLabel 217,41 123x17
+            jswButton 'note' 558,0 80x100
+              JButton 6,35 80x30
+            jswDropPane 'HP:' 639,0 557x100
+              JLabel 205,41 147x17
