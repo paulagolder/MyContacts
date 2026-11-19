@@ -24,17 +24,18 @@ JPanel 0,34 1198x864
                   jswHorizontalPanel 'HP:' 0,0 138x30
                     jswLabel ' Print address Labels ' 5,5 128x20
                       JLabel 1,1 126x18
-                  jswHorizontalPanel 'fiterbar' 0,30 1188x61
-                    jswOption 'Selected contacts (0)' 10,29 165x22
-                      JRadioButton 0,0 61x20
-                    jswOption 'Tagged' 176,29 88x22
-                      JRadioButton 0,0 84x20
-                  jswHorizontalPanel 'HP:' 0,91 391x40
+                  ContactSource 0,30 349x27
+                    JRadioButton 6,3 105x21
+                    Filler 117,13 20x0
+                    JRadioButton 143,3 74x21
+                    JComboBox 223,2 114x23
+                    JLabel 343,13 0x0
+                  jswHorizontalPanel 'HP:' 0,57 391x40
                     jswButton 'Select' 5,5 80x30
                       JButton 0,0 80x30
                     jswTextBox ' ' 86,5 300x30
                       JTextField 1,1 298x28
-                  jswHorizontalPanel 'HP:' 0,131 258x40
+                  jswHorizontalPanel 'HP:' 0,97 258x40
                     jswDropDownBox 'Select layout' 5,5 100x30
                       JComboBox 0,0 100x30
                     jswThumbwheel 'Start Position' 106,5 147x30
@@ -44,12 +45,12 @@ JPanel 0,34 1198x864
                          38,14 21x13
                         NumberEditor 1,1 37x26
                           JFormattedTextField 0,0 37x26
-                  jswHorizontalPanel 'HP:' 0,171 93x32
+                  jswHorizontalPanel 'HP:' 0,137 93x32
                     jswCheckbox 'Show UK?' 5,5 83x22
                       JCheckBox 1,1 81x20
-                  jswHorizontalPanel 'HP:' 0,203 90x40
+                  jswHorizontalPanel 'HP:' 0,169 90x40
                     jswButton 'PRINT' 5,5 80x30
                       JButton 0,0 80x30
-                  jswHorizontalPanel 'HP:' 0,243 206x30
+                  jswHorizontalPanel 'HP:' 0,209 206x30
                     jswLabel ' Selecting source and output file ' 5,5 196x20
                       JLabel 1,1 194x18

@@ -578,6 +578,21 @@ public class selectorBox extends jswVerticalPanel
         update2();
     }
 
+    public String getBrowseFilter()
+    {
+        return browsefilter;
+    }
+
+    // the contacts a browse choice gives, for the Tools' Selection: "tagged"
+    // exactly, "selection" only the search results (none if no search)
+    public mcContacts contactsFor(String choice)
+    {
+        if (choice == null || choice.equals("all")) return allcontactlist;
+        if (choice.equals(TAGGED)) return taggedContacts();
+        if (choice.equals("selection")) return searchresultlist.createCopy();
+        return searchTag(choice);
+    }
+
     public void setBrowseFilter(jswDropDownBox sb)
     {
         browsefilter = sb.getSelectedValue();
@@ -607,6 +622,7 @@ public class selectorBox extends jswVerticalPanel
 
     public Vector<String> getTaglist()
     {
+        if (taglist == null) return new Vector<String>(); // not loaded yet
         return taglist.toList();
     }
 

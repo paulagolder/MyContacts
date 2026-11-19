@@ -87,22 +87,24 @@ JPanel 0,34 1198x864
           jswHorizontalPanel 'HP:' 1018,5 171x40
             jswButton 'CREATE NEW ATTRIBUTE' 5,5 161x30
               JButton 0,0 161x30
-        jswVerticalPanel 'LinkTo' 0,180 292x61
+        jswVerticalPanel 'LinkTo' 0,180 380x61
           jswLabel 'Related to' 0,0 63x20
             JLabel 1,1 61x18
-          jswTable 'related' 0,20 292x36
+          jswTable 'related' 0,20 380x36
             jswCell 'acell' 2,1 83x32
               jswLabel 'Smith  Alice' 3,0 80x31
                 JLabel 1,1 78x29
             jswCell 'acell' 83,1 46x32
               jswLabel 'friend' 3,0 43x31
                 JLabel 1,1 41x29
-            jswCell 'acell' 127,1 165x32
-              jswHorizontalPanel 'HP:' 3,0 162x31
+            jswCell 'acell' 127,1 253x32
+              jswHorizontalPanel 'HP:' 3,0 250x31
                 jswButton 'VIEW' 0,0 80x31
                   JButton 0,0 80x30
                 jswButton 'Edit' 81,0 80x31
                   JButton 0,0 80x30
+                jswButton 'Remove' 162,0 87x31
+                  JButton 0,0 87x30
         jswVerticalPanel 'title' 0,241 645x86
           jswLabel 'Member Of, not yet reflected' 0,0 174x20
             JLabel 1,1 172x18

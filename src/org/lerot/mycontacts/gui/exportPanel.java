@@ -1,5 +1,6 @@
 package org.lerot.mycontacts.gui;
 
+import org.lerot.mycontacts.gui.widgets.ContactSource;
 import org.lerot.mycontacts.mcAttribute;
 import org.lerot.mycontacts.mcContacts;
 import org.lerot.mycontacts.mcDateDataType;
@@ -39,7 +40,7 @@ public class exportPanel extends jswVerticalPanel implements ActionListener
 	jswHorizontalPanel exportresult;
 	private mcContacts exportsource;
 	private jswButton testbutton;
-	private jswLabel browselabel;
+	private ContactSource source;
 	private jswButton savebutton;
 
 	public exportPanel()
@@ -50,11 +51,8 @@ public class exportPanel extends jswVerticalPanel implements ActionListener
 		jswLabel heading = new jswLabel(" Exporting Data ");
 		header.add(" FILLW ", heading);
 		this.add(header);
-		jswHorizontalPanel filterbar = new jswHorizontalPanel();
-        browselabel = new jswLabel(" ");
-        browselabel.setText("Browse Contacts "+ MyContacts.selbox.getBrowsecontactlist().size());
-		filterbar.add(" MIDDLE ", browselabel);
-		this.add(filterbar);
+		source = new ContactSource();
+		this.add(" FILLW ", source);
 		jswHorizontalPanel filebar = new jswHorizontalPanel();
 		selbutton = new jswButton(this, "Select");
 		filebar.add(" LEFT ", selbutton);
@@ -292,7 +290,7 @@ public class exportPanel extends jswVerticalPanel implements ActionListener
 			}
 			selectors.setVisible(true);
 			selectors.repaint();
-			exportsource = MyContacts.selbox.getBrowsecontactlist();
+			exportsource = source.contacts();
 			try
 			{
 				new File(exportfilename);
@@ -319,8 +317,6 @@ public class exportPanel extends jswVerticalPanel implements ActionListener
 
 	public void refresh()
 	{
-		//int nbrowsecontacts = MyContacts.selbox.getBrowsecontactlist().size();
-		int nbrowsecontacts = 1234;
-		browselabel.setText("Browse Contacts (" + nbrowsecontacts + ")");
+		source.refresh();
 	}
 }

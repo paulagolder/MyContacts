@@ -224,6 +224,9 @@ public class editPanel extends jswVerticalPanel implements ActionListener
             } else if (action.equals("EDITID"))
             {
                 edit = "editid";
+            } else if (action.startsWith("REMOVELINK:"))
+            {
+                removeLink(selcontact, selcontact.getAttributebyKey(action.substring(11).toLowerCase()));
             } else if (action.startsWith("EDITATTRIBUTE:"))
             {
                 edit = "editattribute";
@@ -368,7 +371,6 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                     edattribute.dbdeleteAttribute();
                     edit = "";
                 }
-                edit = "editid";
 
             } else if (action.equalsIgnoreCase("CREATE NEW ATTRIBUTE"))
             {
@@ -382,6 +384,25 @@ public class editPanel extends jswVerticalPanel implements ActionListener
             System.out.println(evt.getSource().toString());
         }
         makeEditPanel();
+    }
+
+    // take a link off this contact, after asking; the other contact keeps
+    // any link it has back, which then shows under "not yet reflected"
+    private void removeLink(mcContact selcontact, mcAttribute link)
+    {
+        if (link == null) return;
+        String list = switch (link.getRoot())
+        {
+            case "hasmember" -> "Has Members";
+            case "memberof" -> "Member Of";
+            default -> "Related to";
+        };
+        int answer = JOptionPane.showConfirmDialog(this, "Remove " + link.getTag() + " from " + list + "?",
+                "Remove link", JOptionPane.OK_CANCEL_OPTION);
+        if (answer != JOptionPane.OK_OPTION) return;
+        if (!MyContacts.dbTransaction("Removing the link", link::dbdeleteAttribute)) return;
+        selcontact.removeAttributebyKey(link.getKey());
+        edit = "";
     }
 
     // an attribute's value for the screen; an empty one (stored as "null",
@@ -732,8 +753,16 @@ public class editPanel extends jswVerticalPanel implements ActionListener
 
                 jswButton viewcontact2 = new jswButton(this, "VIEW", "VIEW:" + value);
                 buttonpanel.add(viewcontact2);
-                jswButton disconnect = new jswButton(this, "Edit", "EDITATTRIBUTE:" + anattribute.getKey());
-                buttonpanel.add(disconnect);
+                // a related link's relationship can be changed; a member link
+                // holds only the other contact's id, so has nothing to edit
+                if (selector.equals("related"))
+                {
+                    jswButton disconnect = new jswButton(this, "Edit", "EDITATTRIBUTE:" + anattribute.getKey());
+                    buttonpanel.add(disconnect);
+                }
+                jswButton remove = new jswButton(this, "Remove", "REMOVELINK:" + anattribute.getKey());
+                remove.setToolTipText("Remove " + tid + " from " + title);
+                buttonpanel.add(remove);
                 memberpanel.addCell(buttonpanel, row, 2);
             }
             row++;

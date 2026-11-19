@@ -24,21 +24,20 @@ JPanel 0,34 1198x864
                   jswHorizontalPanel 'HP:' 0,0 142x30
                     jswLabel ' Backing Up Contacts ' 5,5 132x20
                       JLabel 1,1 130x18
-                  jswHorizontalPanel 'HP:' 0,30 1188x32
-                    jswOption 'All Contacts 0' 5,5 123x22
-                      JRadioButton 0,0 109x20
-                    jswOption 'Browse Contacts 0' 518,5 153x22
-                      JRadioButton 0,0 139x20
-                    jswOption 'Selected Contacts 0' 1024,5 159x22
-                      JRadioButton 0,0 145x20
-                  jswHorizontalPanel 'HP:' 0,62 542x40
+                  ContactSource 0,30 349x27
+                    JRadioButton 6,3 105x21
+                    Filler 117,13 20x0
+                    JRadioButton 143,3 74x21
+                    JComboBox 223,2 114x23
+                    JLabel 343,13 0x0
+                  jswHorizontalPanel 'HP:' 0,57 542x40
                     jswButton 'Select' 5,5 80x30
                       JButton 0,0 80x30
                     jswTextBox '/home/paul/Development/GitHubWorkspace/myContacts/build/screenshots/home/backups/contacts_bu_20261119.xml' 86,5 350x30
                       JTextField 1,1 348x28
                     jswDropDownBox 'type' 437,5 100x30
                       JComboBox 0,0 100x30
-                  jswHorizontalPanel 'HP:' 0,102 94x40
+                  jswHorizontalPanel 'HP:' 0,97 94x40
                     jswButton 'BackUp' 5,5 84x30
                       JButton 0,0 84x30
-                  jswHorizontalPanel 'HP:' 0,142 10x10
+                  jswHorizontalPanel 'HP:' 0,137 10x10

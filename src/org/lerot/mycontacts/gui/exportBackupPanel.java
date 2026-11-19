@@ -1,6 +1,7 @@
 package org.lerot.mycontacts.gui;
 
 import org.lerot.mycontacts.*;
+import org.lerot.mycontacts.gui.widgets.ContactSource;
 import org.lerot.mywidgets.*;
 
 import javax.swing.*;
@@ -35,11 +36,8 @@ public class exportBackupPanel extends jswVerticalPanel
 	private int crows, orows;
 	private jswLabel countlabel;
 	jswHorizontalPanel exportresult;
-	private jswOptionset optionset;
 	private mcContacts exportsource;
-	private jswOption allcontacts;
-	private jswOption browsecontacts;
-	private jswOption selectedcontacts;
+	private ContactSource source;
 	private jswButton testbutton;
 	private File fileToSave;
 
@@ -51,30 +49,8 @@ public class exportBackupPanel extends jswVerticalPanel
 		jswLabel heading = new jswLabel(" Backing Up Contacts ");
 		header.add(" FILLW ", heading);
 		this.add(header);
-		jswHorizontalPanel filterbar = new jswHorizontalPanel();
-		optionset = new jswOptionset(this,"source", false, false);
-		allcontacts = optionset
-				.addNewOption("All Contacts " + MyContacts.selbox.countAll(), "allcontacts");
-		allcontacts.setTag("all");
-		allcontacts.setStyleAttribute("mywidth",300);
-		allcontacts.applyStyle();
-		browsecontacts = optionset.addNewOption(
-				"Browse Contacts " + MyContacts.selbox.getBrowsecontactlist().size(),"Browse");
-		browsecontacts.setTag("browse");
-		browsecontacts.setStyleAttribute("mywidth",300);
-		browsecontacts.applyStyle();
-		selectedcontacts = optionset.addNewOption(
-				"Selected Contacts " + MyContacts.selbox.getSearchResultList().size(),
-				"selected");
-		selectedcontacts.setTag("selected");
-		selectedcontacts.setStyleAttribute("mywidth",300);
-		selectedcontacts.applyStyle();
-		filterbar.add(" LEFT ", allcontacts);
-		filterbar.add(" MIDDLE ", browsecontacts);
-		browsecontacts.setSelected(true);
-
-		filterbar.add(" RIGHT ", selectedcontacts);
-		this.add(" FILLW ", filterbar);
+		source = new ContactSource();
+		this.add(" FILLW ", source);
 		jswHorizontalPanel filebar = new jswHorizontalPanel();
 		selbutton = new jswButton(this, "Select");
 		filebar.add(" LEFT ", selbutton);
@@ -158,15 +134,7 @@ public class exportBackupPanel extends jswVerticalPanel
 		{
 
 			Vector<String> attkeys = new Vector<String>();
-			String selection = optionset.getSelected();
-			System.out.println(selection);
-			if (selection.equals("all"))
-				exportsource = MyContacts.selbox.getAllcontactlist();
-			else if (selection.equals("selected"))
-			{
-				exportsource = MyContacts.selbox.getSearchResultList();
-			} else
-				exportsource = MyContacts.selbox.getBrowsecontactlist();
+			exportsource = source.contacts();
 			try
 			{
 				Vector<mcContact> sortedcontacts = exportsource
@@ -200,11 +168,6 @@ public class exportBackupPanel extends jswVerticalPanel
 
 	public void refresh()
 	{
-		int ncontacts = MyContacts.selbox.countAll();
-		int nsearchcontacts = MyContacts.selbox.getSearchResultList().size();
-		int nbrowsecontacts = MyContacts.selbox.getBrowsecontactlist().size();
-		allcontacts.setText("All Contacts (" + ncontacts + ")");
-		browsecontacts.setText("Browse Contacts (" + nbrowsecontacts + ")");
-		selectedcontacts.setText("Selected Contacts (" + nsearchcontacts + ")");
+		source.refresh();
 	}
 }

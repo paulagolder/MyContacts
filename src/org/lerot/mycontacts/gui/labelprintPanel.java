@@ -1,5 +1,6 @@
 package org.lerot.mycontacts.gui;
 
+import org.lerot.mycontacts.gui.widgets.ContactSource;
 import org.lerot.mycontacts.mcContacts;
 import org.lerot.mycontacts.mcLetter;
 import org.lerot.mycontacts.mcPDF;
@@ -22,8 +23,7 @@ import static org.lerot.mycontacts.MyContacts.topgui;
 public class labelprintPanel extends jswVerticalPanel implements ActionListener, ComponentListener
 {
     private static final long serialVersionUID = 1L;
-    private final jswOption selectedoption;
-    private final jswOption hashtagsource;
+    private final ContactSource source;
     private final jswButton selbutton;
     private final jswTextBox selectedfile;
     private final jswLabel prog;
@@ -50,21 +50,8 @@ public class labelprintPanel extends jswVerticalPanel implements ActionListener,
         jswLabel heading = new jswLabel(" Print address Labels ");
         header.add(" FILLW ", heading);
         this.add(header);
-        jswOptionset labelsource = new jswOptionset(this, "source", false, true, true);
-        jswHorizontalPanel filterbar = new jswHorizontalPanel("fiterbar", true, true);
-        // selectedcontacts = new jswLabel("Selected Contacts");
-        // selectedcontacts.setText("Selected contacts (" + nbrowsecontacts + ")");
-        selectedoption = labelsource.addNewOption("Selected contacts (" + nbrowsecontacts + ")", "selected");
-        selectedoption.setTag("selecting");
-        filterbar.add(" LEFT ", selectedoption);
-        selectedoption.setStyleAttribute("width", 300);
-        selectedoption.applyStyle();
-        hashtagsource = labelsource.addNewOption("Tagged");
-        hashtagsource.setTag("hashtag");
-        filterbar.add(" ", hashtagsource);
-        hashtagsource.setStyleAttribute("mywidth", 300);
-        hashtagsource.applyStyle();
-        add(" fillw ", filterbar);
+        source = new ContactSource();
+        add(" FILLW ", source);
         jswHorizontalPanel filebar = new jswHorizontalPanel();
         selbutton = new jswButton(this, "Select");
         filebar.add(" LEFT ", selbutton);
@@ -115,14 +102,7 @@ public class labelprintPanel extends jswVerticalPanel implements ActionListener,
        // if( cmdmap.get("COMMAND") == null) action = cmd;
         //String action = cmdmap.get("COMMAND").toUpperCase();
      //   System.out.println("action : " + action);
-        if (action.startsWith("SOURCE:"))
-        {
-            jswOptionset sourcelist = (jswOptionset)evt.getSource();
-            String sourcetag  = action;
-          //  String sourcetag = cmdmap.get("VALUE");
-            sellist = chooseSource(sourcetag.equalsIgnoreCase("source:hashtag"));
-            System.out.println("contacts selected :"+sellist.size());
-        } else if (action.equals("SELECT"))
+        if (action.equals("SELECT"))
         {
             JFileChooser fc = new JFileChooser(MyContacts.letterfolder);
             fc.setDialogTitle("Specify a file to save label");
@@ -160,8 +140,7 @@ public class labelprintPanel extends jswVerticalPanel implements ActionListener,
             String pagelayout = layoutpanel.getSelectedValue();
             labelpages = new mcPDF(afile, "Lerot Contacts Labels");
             labelpages.setLayout(pagelayout);
-            // the source buttons may never have been clicked, so read them now
-            sellist = chooseSource(hashtagsource.isSelected());
+            sellist = source.contacts();
             System.out.println("label print : " + sellist.size());
             int ncount = labelpages.makeLabelsPages(sellist, sp, showcountryselected);
             prog.setText(" Printing complete " + ncount + " pages");
@@ -171,24 +150,9 @@ public class labelprintPanel extends jswVerticalPanel implements ActionListener,
         topgui.getContentPane().validate();
     }
 
-    private mcContacts chooseSource(boolean hashtagged)
-    {
-        if (hashtagged) return MyContacts.selbox.taggedContacts();
-        mcContacts list = MyContacts.selbox.getBrowsecontactlist();
-        if (list == null) list = MyContacts.selbox.getAllcontactlist();
-        return list;
-    }
-
     public void refresh()
     {
-        mcContacts slist = MyContacts.selbox.getBrowsecontactlist();
-        int nbrowsecontacts = MyContacts.selbox.getBrowsecontactlist().size();
-        String searchterm = MyContacts.selbox.getSearchterm();
-        if(searchterm == null) searchterm="ALL";
-        selectedoption.setText(searchterm + " (" + nbrowsecontacts + ")");
-        System.out.println(" selected contacts " + nbrowsecontacts);
-        hashtagsource.setText("Tagged (" + MyContacts.selbox.taggedContacts().size() + ")");
-       // topgui.refreshView();
+        source.refresh();
         topgui.getContentPane().validate();
     }
 
