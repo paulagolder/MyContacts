@@ -88,6 +88,7 @@ public class MyContacts extends JFrame implements ActionListener
     private final String userhome;
     private ImageIcon jstatIcon;
     private String dbtitle;
+    private jswPushButton infobutton;
 
     public MyContacts(int w, int h)
     {
@@ -154,7 +155,7 @@ public class MyContacts extends JFrame implements ActionListener
         buttonset.addNewButton("Search");
         buttonset.addNewButton("Edit");
         buttonset.addNewButton("Tools");
-        buttonset.addNewButton("Info","INFO");
+        infobutton = buttonset.addNewButton("Info","INFO");
         buttonset.setButtonSelection("Browse");
         optionBar.add(" RIGHT ", buttonset);
       //  optionBar.add(" RIGHT ", new jswButton(this, "Info", "INFO"));
@@ -374,7 +375,7 @@ public class MyContacts extends JFrame implements ActionListener
         System.out.println(" MyContacts action :" + action);
         if (action.equals("MODE:INFO"))
         {
-            showInfo();
+            infoMenu();
             return;
         } else if (action.startsWith("MODE:"))
         {
@@ -392,7 +393,32 @@ public class MyContacts extends JFrame implements ActionListener
         refreshView();
     }
 
-    // the Info popup: facts about this build and the open database, then the
+    // Info offers the help pages and the About popup; the mode button that
+    // was lit before stays lit
+    private void infoMenu()
+    {
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem help = new JMenuItem("Help pages");
+        help.addActionListener(e -> org.lerot.mycontacts.lite.MyContactsLite.help(null));
+        menu.add(help);
+        JMenuItem about = new JMenuItem("About MyContacts");
+        about.addActionListener(e -> showInfo());
+        menu.add(about);
+        menu.addPopupMenuListener(new javax.swing.event.PopupMenuListener()
+        {
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent e) {}
+
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent e)
+            {
+                buttonset.setButtonSelection(mode);
+            }
+
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent e) {}
+        });
+        menu.show(infobutton, 0, infobutton.getHeight());
+    }
+
+    // the About popup: facts about this build and the open database, then the
     // descriptive lines (and credits) from "infotext" in the properties file
     public void showInfo()
     {
@@ -428,10 +454,7 @@ public class MyContacts extends JFrame implements ActionListener
             c.gridy++;
             c.insets = new Insets(2, 0, 0, 0);
         }
-        String[] buttons = {"Help pages", "OK"};
-        int chosen = JOptionPane.showOptionDialog(this, info, "About MyContacts", JOptionPane.DEFAULT_OPTION,
-                JOptionPane.PLAIN_MESSAGE, null, buttons, buttons[1]);
-        if (chosen == 0) org.lerot.mycontacts.lite.MyContactsLite.help(null);
+        JOptionPane.showMessageDialog(this, info, "About MyContacts", JOptionPane.PLAIN_MESSAGE);
     }
 
     // what the Info popup says, unless "infotext" in the properties file replaces it
