@@ -28,7 +28,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
     private static jswStyles tablestyles;
     private static jswStyles linktablestyles;
     private final jswTextBox[] attfieldeditbox = new jswTextBox[10];
-    private final jswCheckbox[] tagcheckbox = new jswCheckbox[10];
+    private jswCheckbox[] tagcheckbox = new jswCheckbox[0];
     private final Color background = Color.decode(jswTheme.EDITAREA);
     boolean addselector = false;
     private jswTextBox atteditbox;
@@ -94,6 +94,11 @@ public class editPanel extends jswVerticalPanel implements ActionListener
     public void actionPerformed(ActionEvent evt)
     {
         mcContact selcontact = MyContacts.selbox.getSelcontact();
+        // the detail being edited, looked up on the contact shown now: after
+        // moving to another contact, the one remembered from when Edit was
+        // pressed belongs to the previous contact
+        if (selcontact != null && editattributekey != null && !editattributekey.isEmpty())
+            edattribute = selcontact.getAttributebyKey(editattributekey);
         String cmd = evt.getActionCommand();
         System.out.println(" action ep: " + cmd);
        // HashMap<String, String> cmdmap = jswUtils.parsecsvstring(cmd);
@@ -358,10 +363,19 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                 Set<String> ataglist = new HashSet<String>();
                 // jswTextBox atag = newtagpanel;
                 String newtagvalue = newtagpanel.getText().trim();
-                ataglist.add(newtagvalue);
-                edattribute.getAttributevalue().insertTagValues(ataglist);
-                edattribute.dbupdateAttribute();
                 edit = "editattribute";
+                if (newtagvalue.length() < 2)
+                {
+                    JOptionPane.showMessageDialog(this, "Type the new tag (at least two letters) first.");
+                } else if (edattribute.getTags().contains(newtagvalue))
+                {
+                    JOptionPane.showMessageDialog(this, "This contact already has the tag " + newtagvalue + ".");
+                } else
+                {
+                    ataglist.add(newtagvalue);
+                    edattribute.getAttributevalue().insertTagValues(ataglist);
+                    edattribute.dbupdateAttribute();
+                }
             } else if (action.equalsIgnoreCase("DELETEATTRIBUTE"))
             {
                 int n = JOptionPane.showConfirmDialog(this, "Do you want to delete this attribute?", "DELETE ATTRIBUTE?", JOptionPane.YES_NO_OPTION);
@@ -1046,11 +1060,13 @@ public class editPanel extends jswVerticalPanel implements ActionListener
                             jswLabel keypanel = new jswLabel("new");
 
                             fieldlistbox.addCell(keypanel, frow, 0);
-                            newtagpanel = new jswTextBox(this, "textbox");
-                            newtagpanel.setText(" ");
+                            // Enter in the box adds the tag, as the ADD TAG button does
+                            newtagpanel = new jswTextBox(this, "new tag", 100, "INSERTTAG");
+                            newtagpanel.setText("");
                             newtagpanel.setEnabled(true);
                             fieldlistbox.addCell(newtagpanel, " FILLW ", frow, 1);
                             frow++;
+                            tagcheckbox = new jswCheckbox[attarry.size() + 1];
                             for (String arow : attarry)
                             {
                               //  tagcheckbox[frow] = new jswCheckbox(this, "");
