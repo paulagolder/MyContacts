@@ -96,8 +96,22 @@ jobs:
           retention-days: 2   # only to download a trial build; a release page keeps its files
           name: MyContacts-${{ matrix.os }}
           path: myContacts/build/package/*
+
+  # one job makes the release, with the files from all four machines (when
+  # each machine made it itself, two at once left an empty draft beside it)
+  release:
+    needs: package
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          path: files
+          merge-multiple: true
+      - name: Version (from the tag, e.g. v1.2.0)
+        run: echo "APP_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
       - name: Release page
-        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v3
         with:
-          files: myContacts/build/package/*
+          name: MyContacts ${{ env.APP_VERSION }}
+          files: files/*
