@@ -1172,7 +1172,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         {
             jswHorizontalPanel newattributepanel = new jswHorizontalPanel();
             newlabel = new jswDropDownBox(null, "Select:", "something");
-            ArrayList<String> varry = mcAttributeTypes.toList();
+            ArrayList<String> varry = mcAttributeTypes.editableList();
             newlabel.setEnabled(false);
             newlabel.addList(varry);
             newlabel.setEnabled(true);

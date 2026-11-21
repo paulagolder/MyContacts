@@ -23,6 +23,19 @@ public class mcAttributeTypes extends mcDataObject
 		return  mainList;
 	}
 
+	// the types the Edit page shows in its table (E in displaygroups), for
+	// its "Create new attribute" list
+	public static ArrayList<String> editableList()
+	{
+		ArrayList<String> list = new ArrayList<String>();
+		for (Entry<String, mcAttributeType> entry : attributetypelist.entrySet())
+		{
+			String groups = entry.getValue().getDisplaygroup();
+			if (groups != null && groups.contains("E")) list.add(entry.getKey());
+		}
+		return list;
+	}
+
 	public static boolean containsKey(String key)
 	{
 		return attributetypelist.containsKey(key);
@@ -47,6 +60,11 @@ public class mcAttributeTypes extends mcDataObject
 	{
 		// types added since older databases were made
 		addMissingType("whatsapp", "WhatsApp", "cellphone", 43, "EBS");
+		// tid is edited in the Edit page's heading, and kind (a vCard's
+		// person/group/organisation) is not edited at all; older databases
+		// showed both in the Edit table
+		hideFromEdit("tid");
+		hideFromEdit("kind");
 		ArrayList<Map<String, String>> rowlist = doQuery("select * from attribute order by displayOrder ");
 		attributetypelist = new LinkedHashMap<String, mcAttributeType>();
 		for (Map<String, String> row : rowlist)
@@ -79,6 +97,20 @@ public class mcAttributeTypes extends mcDataObject
 		}
 	}
 	
+	private static void hideFromEdit(String key)
+	{
+		String sql = "update attribute set displaygroups = replace(displaygroups, 'E', '')"
+				+ " where attributeKey = ? and displaygroups like '%E%'";
+		try (PreparedStatement st = conn().prepareStatement(sql))
+		{
+			st.setString(1, key);
+			st.executeUpdate();
+		} catch (SQLException e)
+		{
+			sqlError(e, sql);
+		}
+	}
+
 	public static Set<Entry<String, mcAttributeType>> entrySet()
 	{
 		return attributetypelist.entrySet();
