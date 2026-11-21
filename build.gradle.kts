@@ -194,14 +194,16 @@ tasks.register<Copy>("deploy") {
 }
 
 // ./gradlew packageApp builds an installer that brings its own Java, so it
-// runs on a computer without Java: a .deb on Linux, an .msi on Windows
-// (jpackage can only make a package for the system it runs on; the GitHub
-// workflow .github/workflows/package.yml builds both). It goes to
-// build/package. Options:
+// runs on a computer without Java: a .deb on Linux, an .msi on Windows, a
+// .dmg on a Mac, for the kind of Mac it is built on (jpackage can only make
+// a package for the system it runs on; the GitHub workflow
+// .github/workflows/package.yml builds them all). It goes to build/package.
+// Options:
 //   -PappVersion=1.2.0          the version shown to the system (default 1.0.0)
 //   -PpackageType=app-image     just the runnable folder, no installer, to try
 val appVersion = providers.gradleProperty("appVersion").getOrElse("1.0.0")
 val windows = System.getProperty("os.name").startsWith("Windows")
+val mac = System.getProperty("os.name").startsWith("Mac")
 
 tasks.register("packageApp") {
     group = "distribution"
@@ -209,14 +211,16 @@ tasks.register("packageApp") {
     dependsOn(tasks.jar)
     // local copies: the task must not refer to the build script itself
     val windows = windows
+    val mac = mac
     val version = appVersion
     val jpackage = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(21) }
         .map { it.metadata.installationPath.file(if (windows) "bin/jpackage.exe" else "bin/jpackage").asFile.path }
-    val type = providers.gradleProperty("packageType").getOrElse(if (windows) "msi" else "deb")
+    val type = providers.gradleProperty("packageType").getOrElse(if (windows) "msi" else if (mac) "dmg" else "deb")
     val out = layout.buildDirectory.dir("package").get().asFile
     val input = layout.buildDirectory.dir("package-input").get().asFile
     val jar = tasks.jar.get().archiveFile.get().asFile
-    val icon = file(if (windows) "packaging/mycontacts.ico" else "packaging/mycontacts.png").path
+    val icon = file(if (windows) "packaging/mycontacts.ico" else if (mac) "packaging/mycontacts.icns"
+        else "packaging/mycontacts.png").path
     doLast {
         out.deleteRecursively()
         input.deleteRecursively()
@@ -239,7 +243,12 @@ tasks.register("packageApp") {
                 "jdk.charsets", "jdk.localedata", "jdk.zipfs").joinToString(","),
             "--jlink-options", "--strip-debug --no-man-pages --no-header-files --include-locales=en,fr")
         args += listOf("--icon", icon)
-        if (type != "app-image") args += if (windows) listOf(
+        if (mac) args += listOf(
+            "--mac-package-name", "MyContacts",
+            "--mac-package-identifier", "org.lerot.mycontacts",
+            // the viewer's menus at the top of the screen, as Mac programs have them
+            "--java-options", "-Dapple.laf.useScreenMenuBar=true")
+        else if (type != "app-image") args += if (windows) listOf(
             "--win-menu", "--win-menu-group", "MyContacts", "--win-shortcut",
             // installs for the user only, so no administrator is needed
             "--win-per-user-install", "--win-dir-chooser",

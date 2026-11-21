@@ -61,11 +61,13 @@ public class Main
 	}
 
 	// soft corners for a window whose title bar FlatLaf draws: Windows 11
-	// rounds them itself, elsewhere they are square, so the window is cut to a
-	// rounded outline (square again when maximised, to fill the screen)
+	// rounds them itself, and a Mac window keeps its own rounded title bar;
+	// elsewhere they are square, so the window is cut to a rounded outline
+	// (square again when maximised, to fill the screen)
 	public static void roundCorners(JFrame frame)
 	{
-		if (System.getProperty("os.name").startsWith("Windows")) return;
+		String os = System.getProperty("os.name");
+		if (os.startsWith("Windows") || os.startsWith("Mac")) return;
 		if (!frame.getGraphicsConfiguration().getDevice()
 				.isWindowTranslucencySupported(GraphicsDevice.WindowTranslucency.PERPIXEL_TRANSPARENT)) return;
 		int arc = org.lerot.mywidgets.jswScale.px(20);
