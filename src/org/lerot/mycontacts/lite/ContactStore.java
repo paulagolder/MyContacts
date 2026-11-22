@@ -116,21 +116,51 @@ public class ContactStore
 		}
 	}
 
+	// shown in the card's heading, whatever their Lite tick
+	private static final Set<String> HEADING = Set.of("name", "photo");
+
 	static ContactCard card(mcContact c, List<Integer> groupIds, Map<Integer, mcContact> contacts)
 	{
-		String name = name(c);
-		// no address of its own: that of the first group (with one) it belongs to
-		String address = address(c), addressFrom = null;
-		for (int gid : groupIds)
+		String addressFrom = null;
+		List<ContactCard.Detail> details = new ArrayList<>();
+		// the types ticked for Lite, in display order
+		for (mcAttributeType type : mcAttributeTypes.getAll().values())
 		{
-			if (address != null) break;
-			mcContact group = contacts.get(gid);
-			if (group == null || group == c) continue;
-			address = address(group);
-			if (address != null) addressFrom = name(group);
+			String key = type.getKey();
+			String groups = type.getDisplaygroup();
+			if (HEADING.contains(key) || groups == null || !groups.contains("L")) continue;
+			String text = text(c.getAttribute(key, ""), type.getDataTypeKey());
+			// no address of its own: that of the first group (with one) it belongs to
+			if (text == null && key.equals("address"))
+				for (int gid : groupIds)
+				{
+					mcContact group = contacts.get(gid);
+					if (group == null || group == c) continue;
+					text = text(group.getAttribute("address", ""), type.getDataTypeKey());
+					if (text != null)
+					{
+						addressFrom = name(group);
+						break;
+					}
+				}
+			if (text != null)
+				details.add(new ContactCard.Detail(key, mcAttributeTypes.labelOf(key), type.getDataTypeKey(), text));
 		}
-		return new ContactCard(c.getCID(), listName(c), name, address, addressFrom,
-				plain(c, "phone"), plain(c, "mobile"), plain(c, "whatsapp"), plain(c, "email"), birthday(c));
+		return new ContactCard(c.getCID(), listName(c), name(c), addressFrom, List.copyOf(details));
+	}
+
+	// a detail as the card shows it, by its kind of data; null if empty or
+	// not shown as text (a photo or a link to another contact)
+	private static String text(mcAttribute att, String datatype)
+	{
+		if (att == null || att.isEmpty()) return null;
+		return switch (datatype == null ? "" : datatype)
+		{
+			case "address" -> address(att);
+			case "date" -> date(att);
+			case "image", "link" -> null;
+			default -> tidy(att.getValue());
+		};
 	}
 
 	// the contact's photo, or null if it has none or it cannot be read
@@ -183,10 +213,9 @@ public class ContactStore
 		return att == null ? null : tidy(att.getValue());
 	}
 
-	private static String address(mcContact c)
+	private static String address(mcAttribute att)
 	{
-		mcAttribute att = c.getAttribute("address", "");
-		if (att == null || att.isEmpty() || !(att.getDataType() instanceof mcAddressDataType type))
+		if (!(att.getDataType() instanceof mcAddressDataType type))
 			return null;
 		String block = type.getBlockFormattedValue(att.getValue(), "\n", false);
 		if (block == null) return null;
@@ -198,10 +227,8 @@ public class ContactStore
 	}
 
 	// e.g. "2 March 1950", "2 March" (year unknown) or "1950" (only the year)
-	private static String birthday(mcContact c)
+	private static String date(mcAttribute att)
 	{
-		mcAttribute att = c.getAttribute("birthday", "");
-		if (att == null) return null;
 		String ymd = att.getFormattedValue("-"); // yyyy-mm-dd, 00 where unknown
 		if (ymd == null) return null;
 		String[] p = ymd.split("-");

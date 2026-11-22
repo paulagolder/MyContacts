@@ -9,15 +9,15 @@ CREATE TABLE `attribute` (
   `displayOrder` int(11) NOT NULL,
   `group` varchar(20)  NOT NULL
 , "displaygroups" VARCHAR);
-INSERT INTO "attribute" VALUES ('address', 'Address', 'address', 20, 'all', 'EBSO');
-INSERT INTO "attribute" VALUES ('birthday', 'Birthday', 'date', 80, 'all', 'EB');
+INSERT INTO "attribute" VALUES ('address', 'Address', 'address', 20, 'all', 'EBSOL');
+INSERT INTO "attribute" VALUES ('birthday', 'Birthday', 'date', 80, 'all', 'EBL');
 INSERT INTO "attribute" VALUES ('department', 'Department', 'text', 17, 'all', 'EB');
-INSERT INTO "attribute" VALUES ('email', 'Email', 'email', 61, 'all', 'EBS');
-INSERT INTO "attribute" VALUES ('mobile', 'Mobile', 'cellphone', 42, 'all', 'EBS');
-INSERT INTO "attribute" VALUES ('whatsapp', 'WhatsApp', 'cellphone', 43, 'all', 'EBS');
-INSERT INTO "attribute" VALUES ('name', 'Name', 'name', 1, 'all', 'E');
-INSERT INTO "attribute" VALUES ('phone', 'Phone', 'phone', 40, 'all', 'EBS');
-INSERT INTO "attribute" VALUES ('photo', 'Photo', 'image', 0, 'all', 'E');
+INSERT INTO "attribute" VALUES ('email', 'Email', 'email', 61, 'all', 'EBSL');
+INSERT INTO "attribute" VALUES ('mobile', 'Mobile', 'cellphone', 42, 'all', 'EBSL');
+INSERT INTO "attribute" VALUES ('whatsapp', 'WhatsApp', 'cellphone', 43, 'all', 'EBSL');
+INSERT INTO "attribute" VALUES ('name', 'Name', 'name', 1, 'all', 'EL');
+INSERT INTO "attribute" VALUES ('phone', 'Phone', 'phone', 40, 'all', 'EBSL');
+INSERT INTO "attribute" VALUES ('photo', 'Photo', 'image', 0, 'all', 'EL');
 INSERT INTO "attribute" VALUES ('position', 'Position', 'text', 16, 'all', 'EBS');
 INSERT INTO "attribute" VALUES ('tags', 'Tags', 'textlist', 90, 'all', 'EB');
 INSERT INTO "attribute" VALUES ('webpage', 'Webpage', 'http', 70, 'all', 'EB');

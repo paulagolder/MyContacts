@@ -17,7 +17,7 @@ import java.util.Set;
 /*
  * Tools > Other > Attribute Types: the kinds of detail a contact can have.
  * Each type's label, order and whether it shows on the Edit and Browse pages
- * can be changed in the table (saved at once); a new type can be added, and
+ * and the Contacts window (Lite) can be changed in the table (saved at once); a new type can be added, and
  * one no contact uses (and the program does not rely on) can be deleted.
  */
 public class attributeTypesPanel extends jswPanel
@@ -29,6 +29,8 @@ public class attributeTypesPanel extends jswPanel
 	// shown in their own parts of the pages, or edited in the heading, so
 	// their Edit and Browse ticks stay as they are
 	private static final Set<String> FIXED = Set.of("tid", "kind", "memberof", "hasmember", "related");
+	// the Contacts window's heading always shows these
+	private static final Set<String> LITE_HEADING = Set.of("name", "photo");
 
 	private final List<mcAttributeType> types = new ArrayList<>();
 	private Map<String, Integer> usage = Map.of();
@@ -47,7 +49,7 @@ public class attributeTypesPanel extends jswPanel
 		setOpaque(false);
 
 		JLabel intro = new JLabel("<html>The kinds of detail a contact can have. Change a label or order, or tick where "
-				+ "a type shows, in the table; changes are saved at once.</html>");
+				+ "a type shows (Lite is the Contacts window), in the table; changes are saved at once.</html>");
 		intro.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
 		add(intro, BorderLayout.NORTH);
 
@@ -55,7 +57,7 @@ public class attributeTypesPanel extends jswPanel
 		table.setFillsViewportHeight(true);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.getSelectionModel().addListSelectionListener(e -> updateDelete());
-		int[] widths = { 220, 160, 140, 70, 70, 70, 90 };
+		int[] widths = { 220, 160, 140, 70, 70, 70, 70, 90 };
 		for (int i = 0; i < widths.length; i++)
 			table.getColumnModel().getColumn(i).setPreferredWidth(widths[i]);
 		// the figures and ticks stay narrow; the names take the spare width
@@ -194,7 +196,7 @@ public class attributeTypesPanel extends jswPanel
 
 	private class TypeModel extends AbstractTableModel
 	{
-		private final String[] names = { "Label", "Key", "Kind of data", "Order", "Edit", "Browse", "Contacts" };
+		private final String[] names = { "Label", "Key", "Kind of data", "Order", "Edit", "Browse", "Lite", "Contacts" };
 
 		public int getRowCount() { return types.size(); }
 		public int getColumnCount() { return names.length; }
@@ -205,8 +207,8 @@ public class attributeTypesPanel extends jswPanel
 		{
 			return switch (c)
 			{
-				case 3, 6 -> Integer.class;
-				case 4, 5 -> Boolean.class;
+				case 3, 7 -> Integer.class;
+				case 4, 5, 6 -> Boolean.class;
 				default -> String.class;
 			};
 		}
@@ -215,7 +217,9 @@ public class attributeTypesPanel extends jswPanel
 		public boolean isCellEditable(int r, int c)
 		{
 			if (c == 0 || c == 3) return true;
-			return (c == 4 || c == 5) && !FIXED.contains(types.get(r).getKey());
+			String key = types.get(r).getKey();
+			if (c == 6 && LITE_HEADING.contains(key)) return false;
+			return (c == 4 || c == 5 || c == 6) && !FIXED.contains(key);
 		}
 
 		public Object getValueAt(int r, int c)
@@ -229,6 +233,7 @@ public class attributeTypesPanel extends jswPanel
 				case 3 -> t.getOrder();
 				case 4 -> t.getDisplaygroup().contains("E");
 				case 5 -> t.getDisplaygroup().contains("B");
+				case 6 -> LITE_HEADING.contains(t.getKey()) || t.getDisplaygroup().contains("L");
 				default -> uses(t);
 			};
 		}
@@ -250,6 +255,7 @@ public class attributeTypesPanel extends jswPanel
 				case 3 -> order = value == null ? order : (Integer) value;
 				case 4 -> groups = withGroup(groups, 'E', (Boolean) value);
 				case 5 -> groups = withGroup(groups, 'B', (Boolean) value);
+				case 6 -> groups = withGroup(groups, 'L', (Boolean) value);
 				default -> { return; }
 			}
 			String key = t.getKey();

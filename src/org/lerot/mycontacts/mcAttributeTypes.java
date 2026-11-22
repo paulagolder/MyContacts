@@ -89,12 +89,13 @@ public class mcAttributeTypes extends mcDataObject
 	public static void loadAttributeTypes()
 	{
 		// types added since older databases were made
-		addMissingType("whatsapp", "WhatsApp", "cellphone", 43, "EBS");
+		addMissingType("whatsapp", "WhatsApp", "cellphone", 43, "EBSL");
 		// tid is edited in the Edit page's heading, and kind (a vCard's
 		// person/group/organisation) is not edited at all; older databases
 		// showed both in the Edit table
 		hideFromEdit("tid");
 		hideFromEdit("kind");
+		addLiteGroup();
 		ArrayList<Map<String, String>> rowlist = doQuery("select * from attribute order by displayOrder ");
 		attributetypelist = new LinkedHashMap<String, mcAttributeType>();
 		for (Map<String, String> row : rowlist)
@@ -127,6 +128,19 @@ public class mcAttributeTypes extends mcDataObject
 		}
 	}
 	
+	// the types the Contacts window (myContactsLite) shows: L in displaygroups.
+	// Older databases had no L; they get it on the types the window always
+	// showed, once only, so a type unticked later stays unticked
+	static final List<String> LITE_DEFAULT = List.of("name", "photo", "address", "phone", "mobile", "whatsapp",
+			"email", "birthday");
+
+	private static void addLiteGroup()
+	{
+		if (!doQuery("select attributeKey from attribute where displaygroups like '%L%'").isEmpty()) return;
+		for (String key : LITE_DEFAULT)
+			execute("update attribute set displaygroups = coalesce(displaygroups, '') || 'L' where attributeKey = ?", key);
+	}
+
 	private static void hideFromEdit(String key)
 	{
 		String sql = "update attribute set displaygroups = replace(displaygroups, 'E', '')"
@@ -172,6 +186,7 @@ public class mcAttributeTypes extends mcDataObject
 		execute("update attribute set attributeLabel = ?, displayOrder = ?, displaygroups = ? where attributeKey = ?",
 				label, order, displaygroups, key);
 		loadAttributeTypes();
+		fireContactsChanged(); // the Contacts window shows the change
 	}
 
 	// only a type no contact uses

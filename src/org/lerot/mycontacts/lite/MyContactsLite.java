@@ -21,6 +21,7 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 /*
  * myContactsLite: a small, phone-shaped window (titled MyContacts, like the
@@ -258,19 +259,14 @@ public class MyContactsLite extends JFrame
 		BufferedImage photo = store.photo(card.id());
 		if (photo != null) name.add(new JLabel(new PhotoIcon(photo, 72)), "cell 1 0, aligny top");
 		tiles.add(name);
-		if (card.address() != null)
+		// the details ticked for Lite in Tools > Other > Attribute Types
+		for (ContactCard.Detail detail : card.details())
 		{
-			Tile address = textTile(card.address(), null);
-			// the envelope opens the full window's "Use this address" box
-			address.add(iconButton("envelope.svg", "Write a letter or print a label",
-					() -> useAddress(card)), "cell 1 0, aligny top");
-			tiles.add(card.addressFrom() == null ? address : noted(address, "from " + card.addressFrom()));
+			Tile tile = detailTile(card, detail);
+			// the usual ones speak for themselves; others say what they are
+			if (!UNLABELLED.contains(detail.key())) noted(tile, detail.label());
+			tiles.add(tile);
 		}
-		addPhoneTile(card, card.phone());
-		addPhoneTile(card, card.mobile());
-		addWhatsAppTile(card);
-		addEmailTile(card.email());
-		addTile(card.birthday());
 
 		JButton edit = new JButton("Edit in MyContacts");
 		edit.putClientProperty("JButton.buttonType", "borderless");
@@ -296,16 +292,40 @@ public class MyContactsLite extends JFrame
 		addressDialog.show(this, contact, address);
 	}
 
-	// the telephone offers the number to copy, as dialled in the UK or with
-	// its country code; for a contact with no WhatsApp number yet, also a
-	// WhatsApp chat with it, or to save it as their WhatsApp number
-	private void addPhoneTile(ContactCard card, String number)
+	// the details the window always showed, which need no label
+	private static final Set<String> UNLABELLED = Set.of("address", "phone", "mobile", "whatsapp", "email", "birthday");
+
+	// a detail's tile, with the icon for its kind of data
+	private Tile detailTile(ContactCard card, ContactCard.Detail detail)
 	{
-		if (number == null) return;
-		Tile tile = textTile(number, null);
-		tile.add(iconButton("phone.svg", "Copy this number, or WhatsApp it",
-				() -> usePhone(card, number)), "cell 1 0, aligny center, hmax 12pt"); // no taller than the text
-		tiles.add(tile);
+		String text = detail.text();
+		Tile tile = textTile(text, null);
+		if (detail.key().equals("address"))
+		{
+			// the envelope opens the full window's "Use this address" box
+			tile.add(iconButton("envelope.svg", "Write a letter or print a label",
+					() -> useAddress(card)), "cell 1 0, aligny top");
+			if (card.addressFrom() != null) noted(tile, "from " + card.addressFrom());
+		}
+		else if (detail.key().equals("whatsapp"))
+		{
+			// the WhatsApp icon opens the chat, with the greeting if ticked last time
+			PhoneNumber number = PhoneNumber.of(text);
+			tile.add(iconButton("whatsapp.svg", "Open a WhatsApp chat",
+					() -> openWeb(number.whatsApp(greetOnWhatsApp ? greeting(card) : null))),
+					"cell 1 0, aligny center, hmax 12pt");
+		}
+		else if (detail.datatype().equals("phone") || detail.datatype().equals("cellphone"))
+			// the telephone offers the number to copy, as dialled in the UK or
+			// with its country code; for a contact with no WhatsApp number yet,
+			// also a WhatsApp chat with it, or to save it as their WhatsApp number
+			tile.add(iconButton("phone.svg", "Copy this number, or WhatsApp it",
+					() -> usePhone(card, text)), "cell 1 0, aligny center, hmax 12pt"); // no taller than the text
+		else if (detail.datatype().equals("email"))
+			// the @ offers the address to copy, or an email to it in the mail program
+			tile.add(iconButton("at.svg", "Copy this address, or write an email",
+					() -> useEmail(text)), "cell 1 0, aligny center, hmax 12pt");
+		return tile;
 	}
 
 	private void usePhone(ContactCard card, String stored)
@@ -343,18 +363,6 @@ public class MyContactsLite extends JFrame
 					JOptionPane.WARNING_MESSAGE);
 	}
 
-	// the WhatsApp icon opens the chat, with the greeting if ticked last time
-	private void addWhatsAppTile(ContactCard card)
-	{
-		if (card.whatsapp() == null) return;
-		PhoneNumber number = PhoneNumber.of(card.whatsapp());
-		Tile tile = textTile(card.whatsapp(), null);
-		tile.add(iconButton("whatsapp.svg", "Open a WhatsApp chat",
-				() -> openWeb(number.whatsApp(greetOnWhatsApp ? greeting(card) : null))),
-				"cell 1 0, aligny center, hmax 12pt");
-		tiles.add(tile);
-	}
-
 	// the tick box's last setting, while the program runs
 	private static boolean greetOnWhatsApp = false;
 
@@ -380,11 +388,6 @@ public class MyContactsLite extends JFrame
 		button.setFocusable(false);
 		button.addActionListener(e -> action.run());
 		return button;
-	}
-
-	private void addTile(String text)
-	{
-		if (text != null) tiles.add(textTile(text, null));
 	}
 
 	private void showList()
@@ -430,16 +433,6 @@ public class MyContactsLite extends JFrame
 		label.setForeground(MUTED);
 		tile.add(label, "newline, gaptop 4");
 		return tile;
-	}
-
-	// the @ offers the address to copy, or an email to it in the mail program
-	private void addEmailTile(String email)
-	{
-		if (email == null) return;
-		Tile tile = textTile(email, null);
-		tile.add(iconButton("at.svg", "Copy this address, or write an email",
-				() -> useEmail(email)), "cell 1 0, aligny center, hmax 12pt");
-		tiles.add(tile);
 	}
 
 	private void useEmail(String email)

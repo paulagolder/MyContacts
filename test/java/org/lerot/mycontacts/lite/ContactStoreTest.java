@@ -169,4 +169,49 @@ class ContactStoreTest
 		mcDataObject.useDataSource(ds);
 		assertTrue(store.refresh());
 	}
+
+	@Test
+	void showsTheTypesTickedForLiteInDisplayOrder()
+	{
+		assertEquals(java.util.List.of("address", "phone", "mobile", "whatsapp", "email", "birthday"),
+				store.find(1).orElseThrow().details().stream().map(ContactCard.Detail::key).toList());
+	}
+
+	@Test
+	void aTypeTickedForLiteShowsWithItsLabel()
+	{
+		new mcDataObject().doExecute("insert into attributeValues(cid, root, qualifier, value) values (1, 'position', '', 'Head gardener')");
+		new mcDataObject().doExecute("insert into attributeValues(cid, root, qualifier, value) values (1, 'note', 'old', 'qualified')");
+		mcAttributeTypes.updateType("position", "Job", 16, "EBSL");
+		mcAttributeTypes.updateType("note", "Note", 90, "EBL");
+		assertTrue(store.refresh(), "a changed type reloads the cards");
+		ContactCard alice = store.find(1).orElseThrow();
+		assertEquals("Head gardener", alice.value("position"));
+		assertEquals("Job", alice.details().stream().filter(d -> d.key().equals("position")).findFirst().orElseThrow().label());
+		// before the address: position's order is 16, address's 20
+		assertEquals("position", alice.details().get(0).key());
+		assertNull(alice.value("note"), "only the plain detail shows");
+		assertEquals(1, store.search("gardener").size());
+	}
+
+	@Test
+	void aTypeUntickedForLiteIsNotShown()
+	{
+		mcAttributeTypes.updateType("email", "Email", 61, "EBS");
+		store.refresh();
+		assertNull(store.find(1).orElseThrow().email());
+	}
+
+	@Test
+	void olderDatabasesGainLiteOnTheUsualTypesOnce()
+	{
+		new mcDataObject().doExecute("update attribute set displaygroups = replace(displaygroups, 'L', '')");
+		mcAttributeTypes.loadAttributeTypes();
+		assertTrue(mcAttributeTypes.findType("email").getDisplaygroup().contains("L"));
+		assertFalse(mcAttributeTypes.findType("fax").getDisplaygroup().contains("L"));
+		// unticked later, it stays unticked
+		mcAttributeTypes.updateType("email", "Email", 61, "EBS");
+		mcAttributeTypes.loadAttributeTypes();
+		assertFalse(mcAttributeTypes.findType("email").getDisplaygroup().contains("L"));
+	}
 }
