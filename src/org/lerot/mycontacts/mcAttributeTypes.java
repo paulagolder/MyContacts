@@ -182,6 +182,36 @@ public class mcAttributeTypes extends mcDataObject
 		loadAttributeTypes();
 	}
 
+	// the tag Tools > Attribute Types gives the contacts with a type: "has fax"
+	public static String usersTag(String key)
+	{
+		return "has " + key;
+	}
+
+	// gives every contact with a detail of this type the tag usersTag(key), and
+	// takes it off contacts that no longer have one, so the tag lists exactly
+	// the contacts that have it now; returns how many have it
+	public static int tagUsers(String key)
+	{
+		String tag = usersTag(key);
+		Set<String> users = new HashSet<String>();
+		for (Map<String, String> row : doQuery("select distinct cid from attributeValues where root = ?", key))
+			users.add(row.get("cid"));
+		for (Map<String, String> row : doQuery("select cid, value from attributeValues where root = 'tags'"))
+		{
+			String cid = row.get("cid");
+			if (users.contains(cid) || !mcTagListDataType.getSetfromString(row.get("value")).contains(tag)) continue;
+			mcContact former = mcContact.getContact(cid);
+			if (former != null) former.removeTag(tag);
+		}
+		for (String cid : users)
+		{
+			mcContact user = mcContact.getContact(cid);
+			if (user != null) user.addTag(tag);
+		}
+		return users.size();
+	}
+
 	private static void execute(String sql, Object... params)
 	{
 		try (PreparedStatement st = conn().prepareStatement(sql))

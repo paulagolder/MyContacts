@@ -1,6 +1,7 @@
 package org.lerot.mycontacts.gui;
 
 import net.miginfocom.swing.MigLayout;
+import org.lerot.mycontacts.MyContacts;
 import org.lerot.mycontacts.mcAttributeType;
 import org.lerot.mycontacts.mcAttributeTypes;
 import org.lerot.mywidgets.jswPanel;
@@ -34,6 +35,7 @@ public class attributeTypesPanel extends jswPanel
 	private final TypeModel model = new TypeModel();
 	private final JTable table = new JTable(model);
 	private final JButton delete = new JButton("Delete selected type");
+	private final JButton tagUsers = new JButton("Tag contacts with it");
 	private final JTextField newLabel = new JTextField(14);
 	private final JComboBox<String> newDatatype = new JComboBox<>(DATATYPES);
 	private final JComboBox<String> after = new JComboBox<>();
@@ -70,11 +72,13 @@ public class attributeTypesPanel extends jswPanel
 		bottom.add(after);
 		JButton add = new JButton("Add");
 		bottom.add(add);
+		bottom.add(tagUsers, "split 2");
 		bottom.add(delete);
 		add(bottom, BorderLayout.SOUTH);
 
 		add.addActionListener(e -> addType());
 		delete.addActionListener(e -> deleteType());
+		tagUsers.addActionListener(e -> tagUsers());
 		refresh();
 	}
 
@@ -101,6 +105,10 @@ public class attributeTypesPanel extends jswPanel
 				: null;
 		delete.setEnabled(why == null);
 		delete.setToolTipText(why);
+		tagUsers.setEnabled(t != null && uses(t) > 0);
+		tagUsers.setToolTipText(t == null ? "Select a type first" : uses(t) == 0 ? "No contact has this type"
+				: "Tag the " + uses(t) + " contacts with this type \"" + mcAttributeTypes.usersTag(t.getKey())
+						+ "\", to go through them on Browse or Search");
 	}
 
 	private mcAttributeType selected()
@@ -134,6 +142,24 @@ public class attributeTypesPanel extends jswPanel
 		newLabel.setText("");
 		refresh();
 		selectKey(key);
+	}
+
+	// tags the contacts that have the selected type, so Browse or Search can
+	// step through them; run again, it brings the tag up to date
+	private void tagUsers()
+	{
+		mcAttributeType t = selected();
+		if (t == null) return;
+		String tag = mcAttributeTypes.usersTag(t.getKey());
+		int[] tagged = { 0 };
+		if (!MyContacts.dbTransaction("Tagging the contacts with " + t.getAttributeLabel(),
+				() -> tagged[0] = mcAttributeTypes.tagUsers(t.getKey()))) return;
+		// the tag in the browse list's tag selector
+		MyContacts.selbox.setTaglist();
+		JOptionPane.showMessageDialog(this, tagged[0] + " contacts now have the tag \"" + tag + "\".\n\n"
+				+ "Choose \"" + tag + "\" in the list at the top left to step through them on Browse,\n"
+				+ "or type it on Search and click Search Tags. Remove the tag when you are done\n"
+				+ "with Tools > Other > Manage Tags & Lists.", "Tag contacts", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	private void deleteType()

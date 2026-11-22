@@ -74,6 +74,26 @@ class AttributeTypesTest
 	}
 
 	@Test
+	void tagUsersTagsExactlyTheContactsWithTheType() throws Exception
+	{
+		mcContacts db = new mcContacts();
+		db.doExecute("insert into attributeValues(cid, root, qualifier, value) values (1, 'fax', '', '01543 000000')");
+		// a contact tagged earlier that no longer has a fax loses the tag
+		assertTrue(mcContact.getContact("2").addTag("has fax"));
+		assertEquals(1, mcAttributeTypes.tagUsers("fax"));
+		assertTrue(tags(1).contains("has fax"));
+		assertFalse(tags(2).contains("has fax"));
+		// again: no change, no duplicate
+		assertEquals(1, mcAttributeTypes.tagUsers("fax"));
+		assertEquals(1, tags(1).split("has fax", -1).length - 1);
+	}
+
+	private static String tags(int cid)
+	{
+		return TestDatabase.value("select value from attributeValues where cid = ? and root = 'tags'", cid);
+	}
+
+	@Test
 	void aTypeInUseIsNotDeleted() throws Exception
 	{
 		mcAttributeTypes.addType("Skype", "text", 44, "EB");
