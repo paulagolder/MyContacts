@@ -981,7 +981,7 @@ public class editPanel extends jswVerticalPanel implements ActionListener
 
             if (anattribute.isDisplaygroup("E"))
             {
-                jswLabel alabel = new jswLabel(attributeroot);
+                jswLabel alabel = new jswLabel(anattribute.getTypeLabel());
                 attributepanel.addCell(alabel, row, 0);
                 if (edit.equalsIgnoreCase("editattribute"))
                 {

@@ -11,6 +11,7 @@ public class OtherTabPanel extends jswTabbedPanel
 	private mergeContactPanel mergeContactPanel3;
 	private deleteContactPanel deleteContactPanel3;
 	private editListPanel editListPanel3;
+	private attributeTypesPanel attributeTypesPanel3;
 
 	public OtherTabPanel()
 	{
@@ -29,6 +30,8 @@ public class OtherTabPanel extends jswTabbedPanel
 		addTab("Delete Contacts", deleteContactPanel3);
 		editListPanel3 = new editListPanel();
 		addTab("Edit Lists", editListPanel3);
+		attributeTypesPanel3 = new attributeTypesPanel();
+		addTab("Attribute Types", attributeTypesPanel3);
 		
 		// tabbedPane.addChangeListener(this);
 
@@ -40,6 +43,7 @@ public class OtherTabPanel extends jswTabbedPanel
 		mergeContactPanel3.refresh();
 		deleteContactPanel3.initialise();
 		editListPanel3.initialise();
+		attributeTypesPanel3.refresh();
 	}
 
 }

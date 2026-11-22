@@ -111,6 +111,59 @@ public class mcAttributeTypes extends mcDataObject
 		}
 	}
 
+	// the types the program relies on, which Tools > Attribute Types will not delete
+	public static final Set<String> CORE = Set.of("name", "tid", "tags", "default", "kind", "key", "photo",
+			"memberof", "hasmember", "related", "note", "address", "phone", "mobile", "whatsapp", "email",
+			"birthday");
+
+	// how many contacts have a detail of each type
+	public static Map<String, Integer> usage()
+	{
+		Map<String, Integer> counts = new HashMap<String, Integer>();
+		for (Map<String, String> row : doQuery("select root, count(distinct cid) as n from attributeValues group by root"))
+			counts.put(row.get("root"), Integer.parseInt(row.get("n")));
+		return counts;
+	}
+
+	// the key a new type's label gives: lower case letters and digits only
+	public static String keyFor(String label)
+	{
+		return label.toLowerCase().replaceAll("[^a-z0-9]", "");
+	}
+
+	public static void addType(String label, String datatype, int order, String displaygroups)
+	{
+		addMissingType(keyFor(label), label, datatype, order, displaygroups);
+		loadAttributeTypes();
+	}
+
+	public static void updateType(String key, String label, int order, String displaygroups)
+	{
+		execute("update attribute set attributeLabel = ?, displayOrder = ?, displaygroups = ? where attributeKey = ?",
+				label, order, displaygroups, key);
+		loadAttributeTypes();
+	}
+
+	// only a type no contact uses
+	public static void deleteType(String key)
+	{
+		execute("delete from attribute where attributeKey = ? and attributeKey not in"
+				+ " (select distinct root from attributeValues)", key);
+		loadAttributeTypes();
+	}
+
+	private static void execute(String sql, Object... params)
+	{
+		try (PreparedStatement st = conn().prepareStatement(sql))
+		{
+			for (int i = 0; i < params.length; i++) st.setObject(i + 1, params[i]);
+			st.executeUpdate();
+		} catch (SQLException e)
+		{
+			sqlError(e, sql);
+		}
+	}
+
 	public static Set<Entry<String, mcAttributeType>> entrySet()
 	{
 		return attributetypelist.entrySet();

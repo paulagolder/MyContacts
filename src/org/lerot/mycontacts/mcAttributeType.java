@@ -22,7 +22,7 @@ public class mcAttributeType extends mcDataObject
 		return displaygroup;
 	}
 
-	String getKey()
+	public String getKey()
 	{
 		return attributeKey;
 	}
@@ -51,9 +51,14 @@ public class mcAttributeType extends mcDataObject
 		this.displaygroup = displaygroup;
 	}
 
-	String getAttributeLabel()
+	public String getAttributeLabel()
 	{
 		return attributeLabel;
+	}
+
+	public String getDataTypeKey()
+	{
+		return datatypekey;
 	}
 
 	void setAttributeLabel(String attributeLabel)

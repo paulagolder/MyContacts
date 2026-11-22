@@ -316,6 +316,23 @@ public class mcAttribute extends mcDataObject
         return img;
     }
 
+    // the type's label, as set in Tools > Attribute Types ("WhatsApp" for
+    // whatsapp), else the key; looked up afresh, so a renamed type shows at once
+    public String getTypeLabel()
+    {
+        mcAttributeType type = mcAttributeTypes.findType(root);
+        String label = type == null ? null : type.getAttributeLabel();
+        return label == null || label.isBlank() ? root : label;
+    }
+
+    // the type's label with the qualifier, as "Phone/home"
+    public String getLabel()
+    {
+        String label = getTypeLabel();
+        if (qualifier != null && !qualifier.isEmpty()) label += "/" + qualifier;
+        return label;
+    }
+
     public String getKey()
     {
         String attkey = root;

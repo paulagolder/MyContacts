@@ -208,7 +208,7 @@ public class browsePanel extends jswVerticalPanel implements ActionListener
 						{
 							attcount = attcount + 1;
 							String attributekey = anattribute.getKey();
-							jswLabel alabel = new jswLabel(attributekey);
+							jswLabel alabel = new jswLabel(anattribute.getLabel());
 							attributepanel.addCell(alabel, row, 0);
 							if (anattribute.isImage())
 							{
