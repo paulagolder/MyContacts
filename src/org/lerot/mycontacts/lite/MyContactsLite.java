@@ -269,7 +269,7 @@ public class MyContactsLite extends JFrame
 		addPhoneTile(card, card.phone());
 		addPhoneTile(card, card.mobile());
 		addWhatsAppTile(card);
-		if (card.email() != null) tiles.add(emailTile(card.email()));
+		addEmailTile(card.email());
 		addTile(card.birthday());
 
 		JButton edit = new JButton("Edit in MyContacts");
@@ -432,24 +432,23 @@ public class MyContactsLite extends JFrame
 		return tile;
 	}
 
-	// the address in link colour: a click opens the mail program, a drag
-	// selects text as usual
-	private static Tile emailTile(String email)
+	// the @ offers the address to copy, or an email to it in the mail program
+	private void addEmailTile(String email)
 	{
+		if (email == null) return;
 		Tile tile = textTile(email, null);
-		JTextArea area = (JTextArea) tile.getComponent(0);
-		area.setForeground(Color.decode(ACCENT));
-		area.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		area.setToolTipText("Write an email");
-		area.addMouseListener(new MouseAdapter()
-		{
-			@Override
-			public void mouseClicked(MouseEvent e)
-			{
-				if (area.getSelectedText() == null) openMail(email);
-			}
-		});
-		return tile;
+		tile.add(iconButton("at.svg", "Copy this address, or write an email",
+				() -> useEmail(email)), "cell 1 0, aligny center, hmax 12pt");
+		tiles.add(tile);
+	}
+
+	private void useEmail(String email)
+	{
+		String[] options = { "Copy", "Write email", "Cancel" };
+		int n = JOptionPane.showOptionDialog(this, email + "\n ", "Email",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		if (n == 0) copy(email);
+		else if (n == 1) openMail(email);
 	}
 
 	static class Tile extends RoundedPanel
