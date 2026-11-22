@@ -36,6 +36,36 @@ public class mcAttributeTypes extends mcDataObject
 		return list;
 	}
 
+	// the label a type shows, else its key
+	public static String labelOf(String key)
+	{
+		mcAttributeType type = findType(key);
+		String label = type == null ? null : type.getAttributeLabel();
+		return label == null || label.isBlank() ? key : label;
+	}
+
+	// the Edit page's first suggestion for a new detail: of the types the
+	// contact has none of yet, the one most contacts have (ties in display
+	// order); never name (every contact has one) or photo (better chosen than
+	// offered); else the first type
+	public static String suggestedNew(List<String> keys, Collection<String> has, Map<String, Integer> usage)
+	{
+		String best = null;
+		int most = -1;
+		for (String key : keys)
+		{
+			if (key.equals("photo") || key.equals("name") || has.contains(key)) continue;
+			int n = usage.getOrDefault(key, 0);
+			if (n > most)
+			{
+				best = key;
+				most = n;
+			}
+		}
+		if (best != null) return best;
+		return keys.isEmpty() ? null : keys.get(0);
+	}
+
 	public static boolean containsKey(String key)
 	{
 		return attributetypelist.containsKey(key);

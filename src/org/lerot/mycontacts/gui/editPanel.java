@@ -36,6 +36,8 @@ public class editPanel extends jswVerticalPanel implements ActionListener
     private String edit = "";
     private String editattributekey;
     private jswDropDownBox newlabel;
+    private ArrayList<String> newtypekeys = new ArrayList<String>();
+    private ArrayList<String> newtypelabels = new ArrayList<String>();
     private jswDropDownContactBox parentselect;
     private jswTextBox tideditbox;
     private jswLabel tagspanel;
@@ -388,8 +390,10 @@ public class editPanel extends jswVerticalPanel implements ActionListener
 
             } else if (action.equalsIgnoreCase("CREATE NEW ATTRIBUTE"))
             {
-                String newattlabel = newlabel.getSelectedValue();
-                mcAttribute newatt = selcontact.createAttribute(newattlabel, "");
+                // the list shows labels; the detail is made with the type's key
+                int chosen = newtypelabels.indexOf(newlabel.getSelectedValue());
+                if (chosen < 0) return;
+                mcAttribute newatt = selcontact.createAttribute(newtypekeys.get(chosen), "");
                 newatt.dbinsertAttribute();
             } else System.out.println("ep action1 " + action + " unrecognised ");
         } else
@@ -1172,9 +1176,18 @@ public class editPanel extends jswVerticalPanel implements ActionListener
         {
             jswHorizontalPanel newattributepanel = new jswHorizontalPanel();
             newlabel = new jswDropDownBox(null, "Select:", "something");
-            ArrayList<String> varry = mcAttributeTypes.editableList();
+            // the types in display order, by label, starting at the one this
+            // contact lacks that most contacts have
+            newtypekeys = mcAttributeTypes.editableList();
+            newtypelabels = new ArrayList<String>();
+            for (String key : newtypekeys) newtypelabels.add(mcAttributeTypes.labelOf(key));
+            Set<String> has = new HashSet<String>();
+            for (Entry<String, mcAttribute> anentry : MyContacts.selbox.getSelcontact().getAttributes().entrySet())
+                has.add(anentry.getValue().getRoot());
+            String suggested = mcAttributeTypes.suggestedNew(newtypekeys, has, mcAttributeTypes.usage());
             newlabel.setEnabled(false);
-            newlabel.addList(varry);
+            newlabel.addList(newtypelabels);
+            if (suggested != null) newlabel.setSelected(mcAttributeTypes.labelOf(suggested));
             newlabel.setEnabled(true);
             newattributepanel.add(" WIDTH=200 ", newlabel);
             jswPanel buttonbox = new jswHorizontalPanel();

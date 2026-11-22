@@ -60,6 +60,20 @@ class AttributeTypesTest
 	}
 
 	@Test
+	void newDetailStartsOnTheMostCommonMissingType()
+	{
+		java.util.List<String> keys = java.util.List.of("photo", "name", "position", "address", "phone", "email", "tags");
+		java.util.Map<String, Integer> usage = java.util.Map.of("name", 138, "tags", 138, "address", 100, "email", 56, "phone", 48);
+		assertEquals("address", mcAttributeTypes.suggestedNew(keys, java.util.Set.of("name", "tags"), usage));
+		assertEquals("email", mcAttributeTypes.suggestedNew(keys, java.util.Set.of("name", "tags", "address"), usage));
+		// nobody has a position: it comes after every type someone has
+		assertEquals("position", mcAttributeTypes.suggestedNew(keys,
+				java.util.Set.of("name", "tags", "address", "phone", "email"), usage));
+		// all there: the first type
+		assertEquals("photo", mcAttributeTypes.suggestedNew(keys, java.util.Set.copyOf(keys), usage));
+	}
+
+	@Test
 	void aTypeInUseIsNotDeleted() throws Exception
 	{
 		mcAttributeTypes.addType("Skype", "text", 44, "EB");
